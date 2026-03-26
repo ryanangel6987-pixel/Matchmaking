@@ -11,12 +11,16 @@ interface PhotoReviewCardProps {
   photo: {
     id: string;
     client_id: string;
-    storage_path: string;
+    storage_path?: string;
+    storage_url?: string;
+    file_path?: string;
     status: string;
-    slot_number: number | null;
-    review_notes: string | null;
-    reviewed_by: string | null;
-    reviewed_at: string | null;
+    slot_number?: number | null;
+    photo_category?: string | null;
+    review_notes?: string | null;
+    feedback?: string | null;
+    reviewed_by?: string | null;
+    reviewed_at?: string | null;
     created_at: string;
     updated_at: string;
   };
@@ -37,14 +41,16 @@ export function PhotoReviewCard({ photo, matchmakerProfileId }: PhotoReviewCardP
   const supabase = createClient();
   const [loading, setLoading] = useState(false);
   const [showNotes, setShowNotes] = useState(false);
-  const [reviewNotes, setReviewNotes] = useState(photo.review_notes ?? "");
+  const [reviewNotes, setReviewNotes] = useState(photo.review_notes ?? photo.feedback ?? "");
 
   const config = STATUS_CONFIG[photo.status] ?? STATUS_CONFIG.uploaded;
 
-  // Build Supabase storage public URL
-  const photoUrl = photo.storage_path
-    ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${photo.storage_path}`
-    : null;
+  // Build Supabase storage public URL — support both storage_url and storage_path
+  const photoUrl = photo.storage_url
+    ? photo.storage_url
+    : photo.storage_path
+      ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${photo.storage_path}`
+      : null;
 
   const updateStatus = async (newStatus: string, notes?: string) => {
     setLoading(true);
@@ -103,7 +109,7 @@ export function PhotoReviewCard({ photo, matchmakerProfileId }: PhotoReviewCardP
         )}
 
         {/* Status badge */}
-        <div className="absolute top-3 right-3">
+        <div className="absolute top-3 right-3 flex flex-col items-end gap-1.5">
           <Badge variant="outline" className={`text-[9px] uppercase tracking-widest backdrop-blur-sm bg-surface/60 ${config.badge}`}>
             <span
               className="material-symbols-outlined text-xs mr-1"
@@ -113,6 +119,18 @@ export function PhotoReviewCard({ photo, matchmakerProfileId }: PhotoReviewCardP
             </span>
             {photo.status.replace(/_/g, " ")}
           </Badge>
+          {/* Photo category badge */}
+          {photo.photo_category && photo.photo_category !== "general" && (
+            <Badge variant="outline" className="text-[9px] uppercase tracking-widest backdrop-blur-sm bg-surface/60 border-gold/30 text-gold">
+              <span
+                className="material-symbols-outlined text-xs mr-1"
+                style={{ fontVariationSettings: "'FILL' 0, 'wght' 300", fontSize: "12px" }}
+              >
+                {photo.photo_category === "face_body" ? "face" : photo.photo_category === "lifestyle" ? "collections" : photo.photo_category === "current_profile" ? "account_circle" : photo.photo_category === "curated" ? "auto_fix_high" : "image"}
+              </span>
+              {photo.photo_category.replace(/_/g, " ")}
+            </Badge>
+          )}
         </div>
       </div>
 

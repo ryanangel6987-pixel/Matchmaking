@@ -147,42 +147,176 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
       <section className="space-y-4">
         <h2 className="text-on-surface-variant text-xs uppercase tracking-widest">Client Profile</h2>
         {onboarding ? (
-          <div className="bg-surface-container-low rounded-2xl shadow-xl p-6 space-y-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[
-                { label: "Full Name", value: onboarding.full_name },
-                { label: "Age", value: onboarding.age },
-                { label: "City", value: onboarding.city },
-                { label: "Neighborhood", value: onboarding.neighborhood },
-                { label: "Profession", value: onboarding.profession },
-                { label: "Title", value: onboarding.title },
-                { label: "Height", value: onboarding.height_inches ? `${onboarding.height_inches}"` : null },
-                { label: "Education", value: onboarding.education?.join(", ") },
-                { label: "Drinks", value: onboarding.drinks_alcohol },
-                { label: "Has Kids", value: onboarding.has_kids },
-              ].map((f) => (
-                <div key={f.label}>
-                  <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-1">{f.label}</p>
-                  <p className="text-on-surface text-sm">{f.value ?? "—"}</p>
+          <div className="bg-surface-container-low rounded-2xl shadow-xl p-6 space-y-6">
+            {/* Personal */}
+            <div>
+              <h3 className="text-gold text-[10px] uppercase tracking-widest font-medium mb-3">Personal</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  { label: "Full Name", value: onboarding.full_name },
+                  { label: "Age", value: onboarding.age },
+                  { label: "City", value: onboarding.city },
+                  { label: "Neighborhood", value: onboarding.neighborhood },
+                  { label: "Profession", value: onboarding.profession },
+                  { label: "Title", value: onboarding.title },
+                  { label: "Height", value: onboarding.height_inches ? `${onboarding.height_inches}"` : null },
+                  { label: "Has Kids", value: onboarding.has_kids },
+                  { label: "Surprising Fact", value: onboarding.surprising_fact },
+                ].map((f) => (
+                  <div key={f.label}>
+                    <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-1">{f.label}</p>
+                    <p className="text-on-surface text-sm">{f.value ?? "—"}</p>
+                  </div>
+                ))}
+              </div>
+              {/* Tag lists for personal */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div>
+                  <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-2">Dating Apps Used</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {onboarding.dating_apps_used?.length ? onboarding.dating_apps_used.map((app: string) => (
+                      <span key={app} className="bg-gold/10 text-gold text-xs px-2.5 py-1 rounded-full">{app}</span>
+                    )) : <span className="text-on-surface-variant text-sm">—</span>}
+                  </div>
                 </div>
-              ))}
+                <div>
+                  <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-2">Hobbies & Interests</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {onboarding.hobbies_and_interests?.length ? onboarding.hobbies_and_interests.map((h: string) => (
+                      <span key={h} className="bg-gold/10 text-gold text-xs px-2.5 py-1 rounded-full">{h}</span>
+                    )) : <span className="text-on-surface-variant text-sm">—</span>}
+                  </div>
+                </div>
+              </div>
+              {(onboarding.personality_summary || onboarding.lifestyle_notes) && (
+                <div className="mt-4 space-y-3">
+                  {onboarding.personality_summary && (
+                    <div>
+                      <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-1">Personality Summary</p>
+                      <p className="text-on-surface text-sm whitespace-pre-wrap leading-relaxed">{onboarding.personality_summary}</p>
+                    </div>
+                  )}
+                  {onboarding.lifestyle_notes && (
+                    <div>
+                      <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-1">Lifestyle Notes</p>
+                      <p className="text-on-surface text-sm whitespace-pre-wrap leading-relaxed">{onboarding.lifestyle_notes}</p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
-            {(onboarding.personality_summary || onboarding.lifestyle_notes) && (
-              <div className="border-t border-outline-variant/20 pt-4 space-y-3">
-                {onboarding.personality_summary && (
+
+            {/* Preferences & Logistics */}
+            <div className="border-t border-outline-variant/20 pt-6">
+              <h3 className="text-gold text-[10px] uppercase tracking-widest font-medium mb-3">Preferences & Logistics</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  { label: "Communication Channel", value: onboarding.preferred_communication_channel },
+                  { label: "First Date Style", value: onboarding.preferred_first_date_style },
+                  { label: "Budget Comfort", value: onboarding.budget_comfort },
+                  { label: "Date Frequency", value: onboarding.target_date_frequency },
+                ].map((f) => (
+                  <div key={f.label}>
+                    <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-1">{f.label}</p>
+                    <p className="text-on-surface text-sm">{f.value ?? "—"}</p>
+                  </div>
+                ))}
+              </div>
+              {/* Tag lists for preferences */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div>
+                  <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-2">Preferred Neighborhoods</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {onboarding.preferred_neighborhoods?.length ? onboarding.preferred_neighborhoods.map((n: string) => (
+                      <span key={n} className="bg-gold/10 text-gold text-xs px-2.5 py-1 rounded-full">{n}</span>
+                    )) : <span className="text-on-surface-variant text-sm">—</span>}
+                  </div>
+                </div>
+                <div>
+                  <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-2">Venue Categories</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {onboarding.venues_to_use?.length ? onboarding.venues_to_use.map((v: string) => (
+                      <span key={v} className="bg-gold/10 text-gold text-xs px-2.5 py-1 rounded-full">{v}</span>
+                    )) : <span className="text-on-surface-variant text-sm">—</span>}
+                  </div>
+                </div>
+                <div>
+                  <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-2">Venue No-Gos</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {onboarding.venues_to_avoid?.length ? onboarding.venues_to_avoid.map((v: string) => (
+                      <span key={v} className="bg-red-400/10 text-red-400 text-xs px-2.5 py-1 rounded-full">{v}</span>
+                    )) : <span className="text-on-surface-variant text-sm">—</span>}
+                  </div>
+                </div>
+                <div>
+                  <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-2">Blackout Dates</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {onboarding.blackout_dates?.length ? onboarding.blackout_dates.map((d: string) => (
+                      <span key={d} className="bg-red-400/10 text-red-400 text-xs px-2.5 py-1 rounded-full">{new Date(d).toLocaleDateString()}</span>
+                    )) : <span className="text-on-surface-variant text-sm">—</span>}
+                  </div>
+                </div>
+                <div>
+                  <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-2">Days Available</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {onboarding.days_available?.length ? onboarding.days_available.map((d: string) => (
+                      <span key={d} className="bg-gold/10 text-gold text-xs px-2.5 py-1 rounded-full">{d}</span>
+                    )) : <span className="text-on-surface-variant text-sm">—</span>}
+                  </div>
+                </div>
+                <div>
+                  <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-2">Preferred Date Times</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {onboarding.preferred_date_times?.length ? onboarding.preferred_date_times.map((t: string) => (
+                      <span key={t} className="bg-gold/10 text-gold text-xs px-2.5 py-1 rounded-full">{t}</span>
+                    )) : <span className="text-on-surface-variant text-sm">—</span>}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Notes & Exclusions */}
+            <div className="border-t border-outline-variant/20 pt-6">
+              <h3 className="text-gold text-[10px] uppercase tracking-widest font-medium mb-3">Notes & Exclusions</h3>
+              <div className="space-y-4">
+                <div>
+                  <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-2">Photo Exclusions</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {onboarding.photo_exclusions?.length ? onboarding.photo_exclusions.map((e: string) => (
+                      <span key={e} className="bg-red-400/10 text-red-400 text-xs px-2.5 py-1 rounded-full">{e}</span>
+                    )) : <span className="text-on-surface-variant text-sm">—</span>}
+                  </div>
+                </div>
+                {onboarding.target_deal_breakers?.length > 0 && (
                   <div>
-                    <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-1">Personality Summary</p>
-                    <p className="text-on-surface text-sm whitespace-pre-wrap leading-relaxed">{onboarding.personality_summary}</p>
+                    <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-2">Deal Breakers</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {onboarding.target_deal_breakers.map((db: string) => (
+                        <span key={db} className="bg-red-400/10 text-red-400 text-xs px-2.5 py-1 rounded-full">{db}</span>
+                      ))}
+                    </div>
                   </div>
                 )}
-                {onboarding.lifestyle_notes && (
+                {onboarding.anything_else && (
                   <div>
-                    <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-1">Lifestyle Notes</p>
-                    <p className="text-on-surface text-sm whitespace-pre-wrap leading-relaxed">{onboarding.lifestyle_notes}</p>
+                    <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-1">Client Notes</p>
+                    <p className="text-on-surface text-sm whitespace-pre-wrap leading-relaxed">{onboarding.anything_else}</p>
+                  </div>
+                )}
+                {onboarding.prior_matchmaker_experience && (
+                  <div>
+                    <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-1">Prior Matchmaker Experience</p>
+                    <p className="text-on-surface text-sm whitespace-pre-wrap leading-relaxed">{onboarding.prior_matchmaker_experience}</p>
+                  </div>
+                )}
+                {onboarding.target_30_day_outcome && (
+                  <div>
+                    <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-1">30-Day Target Outcome</p>
+                    <p className="text-on-surface text-sm whitespace-pre-wrap leading-relaxed">{onboarding.target_30_day_outcome}</p>
                   </div>
                 )}
               </div>
-            )}
+            </div>
           </div>
         ) : (
           <div className="bg-surface-container-low rounded-2xl shadow-xl p-6">

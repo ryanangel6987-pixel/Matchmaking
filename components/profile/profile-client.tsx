@@ -28,7 +28,7 @@ export function ProfileClient({ clientId, photos }: { clientId: string; photos: 
   const curatedPhotos = photos.filter((p) => p.status === "approved");
   const livePhotos = photos.filter((p) => p.status === "live");
 
-  const handleUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>, photoCategory: string = "general") => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
@@ -50,6 +50,7 @@ export function ProfileClient({ clientId, photos }: { clientId: string; photos: 
         file_path: filePath,
         storage_url: urlData.publicUrl,
         status: "uploaded",
+        photo_category: photoCategory,
       });
     }
     setUploading(false);
@@ -164,7 +165,7 @@ export function ProfileClient({ clientId, photos }: { clientId: string; photos: 
               <span className="material-symbols-outlined text-3xl text-outline/40 mb-2 block" style={{ fontVariationSettings: "'FILL' 0, 'wght' 200" }}>face</span>
               <p className="text-on-surface-variant text-sm mb-3">Face &amp; body photos</p>
               <label>
-                <input type="file" accept="image/*" multiple onChange={handleUpload} className="hidden" disabled={uploading} />
+                <input type="file" accept="image/*" multiple onChange={(e) => handleUpload(e, "face_body")} className="hidden" disabled={uploading} />
                 <span className="inline-flex items-center justify-center gold-gradient text-on-gold font-semibold rounded-full cursor-pointer px-5 py-2 text-xs">
                   {uploading ? "Uploading..." : "Select Files"}
                 </span>
@@ -203,7 +204,7 @@ export function ProfileClient({ clientId, photos }: { clientId: string; photos: 
               <span className="material-symbols-outlined text-3xl text-outline/40 mb-2 block" style={{ fontVariationSettings: "'FILL' 0, 'wght' 200" }}>collections</span>
               <p className="text-on-surface-variant text-sm mb-3">Profile &amp; lifestyle photos</p>
               <label>
-                <input type="file" accept="image/*" multiple onChange={handleUpload} className="hidden" disabled={uploading} />
+                <input type="file" accept="image/*" multiple onChange={(e) => handleUpload(e, "lifestyle")} className="hidden" disabled={uploading} />
                 <span className="inline-flex items-center justify-center gold-gradient text-on-gold font-semibold rounded-full cursor-pointer px-5 py-2 text-xs">
                   {uploading ? "Uploading..." : "Select Files"}
                 </span>

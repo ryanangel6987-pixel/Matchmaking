@@ -127,9 +127,9 @@ export function CredentialsManager({
 
     const { error: insertError } = await supabase.from("credentials").insert({
       client_id: clientId,
-      dating_app_id: appId || null,
-      username,
-      password_encrypted: password,
+      app_id: appId || null,
+      encrypted_username: username,
+      encrypted_password: password,
       status,
       notes: notes || null,
     });
@@ -147,9 +147,9 @@ export function CredentialsManager({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const startEdit = (cred: any) => {
     setEditingId(cred.id);
-    setEditAppId(cred.dating_app_id ?? "");
-    setEditUsername(cred.username ?? "");
-    setEditPassword(cred.password_encrypted ?? "");
+    setEditAppId(cred.app_id ?? "");
+    setEditUsername(cred.encrypted_username ?? "");
+    setEditPassword(cred.encrypted_password ?? "");
     setEditNotes(cred.notes ?? "");
     setEditStatus(cred.status ?? "active");
   };
@@ -163,9 +163,9 @@ export function CredentialsManager({
     const { error: updateError } = await supabase
       .from("credentials")
       .update({
-        dating_app_id: editAppId || null,
-        username: editUsername,
-        password_encrypted: editPassword,
+        app_id: editAppId || null,
+        encrypted_username: editUsername,
+        encrypted_password: editPassword,
         status: editStatus,
         notes: editNotes || null,
       })
@@ -314,7 +314,7 @@ export function CredentialsManager({
         <div className="space-y-3">
           {credentials.map((cred) => {
             const isRevealed = revealed[cred.id] ?? false;
-            const appName = cred.dating_apps?.app_name ?? "App";
+            const appName = cred.dating_apps?.app_name ?? cred.dating_app?.app_name ?? "App";
 
             return (
               <div
@@ -445,16 +445,16 @@ export function CredentialsManager({
                           </p>
                           <p className="text-on-surface text-sm font-mono">
                             {isRevealed
-                              ? cred.username ?? "\u2014"
-                              : mask(cred.username)}
+                              ? cred.encrypted_username ?? "\u2014"
+                              : mask(cred.encrypted_username)}
                           </p>
                         </div>
-                        {isRevealed && cred.username && (
+                        {isRevealed && cred.encrypted_username && (
                           <button
                             type="button"
                             onClick={() =>
                               copyToClipboard(
-                                cred.username,
+                                cred.encrypted_username,
                                 `user-${cred.id}`
                               )
                             }
@@ -476,16 +476,16 @@ export function CredentialsManager({
                           </p>
                           <p className="text-on-surface text-sm font-mono">
                             {isRevealed
-                              ? cred.password_encrypted ?? "\u2014"
-                              : mask(cred.password_encrypted)}
+                              ? cred.encrypted_password ?? "\u2014"
+                              : mask(cred.encrypted_password)}
                           </p>
                         </div>
-                        {isRevealed && cred.password_encrypted && (
+                        {isRevealed && cred.encrypted_password && (
                           <button
                             type="button"
                             onClick={() =>
                               copyToClipboard(
-                                cred.password_encrypted,
+                                cred.encrypted_password,
                                 `pass-${cred.id}`
                               )
                             }
@@ -501,6 +501,41 @@ export function CredentialsManager({
                         )}
                       </div>
                     </div>
+
+                    {/* Associated Phone */}
+                    {cred.associated_phone && (
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-0.5">
+                            Phone
+                          </p>
+                          <p className="text-on-surface text-sm font-mono">
+                            {isRevealed
+                              ? cred.associated_phone
+                              : mask(cred.associated_phone)}
+                          </p>
+                        </div>
+                        {isRevealed && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              copyToClipboard(
+                                cred.associated_phone,
+                                `phone-${cred.id}`
+                              )
+                            }
+                            className="text-gold/60 hover:text-gold transition-colors p-1"
+                            title="Copy phone"
+                          >
+                            <span className="material-symbols-outlined text-[18px]">
+                              {copied === `phone-${cred.id}`
+                                ? "check"
+                                : "content_copy"}
+                            </span>
+                          </button>
+                        )}
+                      </div>
+                    )}
 
                     {/* Notes */}
                     {cred.notes && isRevealed && (

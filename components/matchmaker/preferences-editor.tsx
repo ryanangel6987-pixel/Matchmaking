@@ -66,16 +66,20 @@ export function PreferencesEditor({ clientId, preferences }: PreferencesEditorPr
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
-  const [ageMin, setAgeMin] = useState(String(preferences?.age_range_min ?? ""));
-  const [ageMax, setAgeMax] = useState(String(preferences?.age_range_max ?? ""));
+  // Correct column names from preferences table
+  const [ageMin, setAgeMin] = useState(String(preferences?.target_age_min ?? ""));
+  const [ageMax, setAgeMax] = useState(String(preferences?.target_age_max ?? ""));
   const [maxDistance, setMaxDistance] = useState(String(preferences?.max_distance_miles ?? ""));
-  const [heightMin, setHeightMin] = useState(String(preferences?.height_range_min ?? ""));
-  const [heightMax, setHeightMax] = useState(String(preferences?.height_range_max ?? ""));
-  const [ethnicities, setEthnicities] = useState<string[]>(preferences?.preferred_ethnicities ?? []);
-  const [bodyTypes, setBodyTypes] = useState<string[]>(preferences?.preferred_body_types ?? []);
-  const [education, setEducation] = useState(preferences?.preferred_education ?? "");
-  const [professions, setProfessions] = useState<string[]>(preferences?.preferred_professions ?? []);
-  const [additionalNotes, setAdditionalNotes] = useState(preferences?.additional_notes ?? "");
+  const [physicalPreferences, setPhysicalPreferences] = useState(
+    preferences?.physical_preferences ? JSON.stringify(preferences.physical_preferences, null, 2) : ""
+  );
+  const [education, setEducation] = useState(preferences?.education_preference ?? "");
+  const [professions, setProfessions] = useState<string[]>(preferences?.profession_preferences ?? []);
+  const [dealBreakers, setDealBreakers] = useState<string[]>(preferences?.deal_breakers ?? []);
+  const [relationshipIntent, setRelationshipIntent] = useState(preferences?.relationship_intent ?? "");
+  const [dateFrequency, setDateFrequency] = useState(preferences?.date_frequency ?? "");
+  const [kidsPreference, setKidsPreference] = useState(preferences?.kids_preference ?? "");
+  const [targetNotes, setTargetNotes] = useState(preferences?.target_notes ?? "");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const validate = (): Record<string, string> => {
@@ -83,8 +87,6 @@ export function PreferencesEditor({ clientId, preferences }: PreferencesEditorPr
     const min = ageMin ? parseInt(ageMin) : null;
     const max = ageMax ? parseInt(ageMax) : null;
     const dist = maxDistance ? parseInt(maxDistance) : null;
-    const hMin = heightMin ? parseInt(heightMin) : null;
-    const hMax = heightMax ? parseInt(heightMax) : null;
 
     if (min !== null && (min < 18 || min > 99)) {
       errors.ageMin = "Age min must be between 18 and 99";
@@ -95,14 +97,15 @@ export function PreferencesEditor({ clientId, preferences }: PreferencesEditorPr
     if (min !== null && max !== null && min > max) {
       errors.ageMin = "Age min must be less than or equal to age max";
     }
-    if (min !== null && max !== null && max < min) {
-      errors.ageMax = "Age max must be greater than or equal to age min";
-    }
     if (dist !== null && (dist <= 0 || dist > 500)) {
       errors.maxDistance = "Max distance must be between 1 and 500";
     }
-    if (hMin !== null && hMax !== null && hMin > hMax) {
-      errors.heightMin = "Height min must be less than or equal to height max";
+    if (physicalPreferences) {
+      try {
+        JSON.parse(physicalPreferences);
+      } catch {
+        errors.physicalPreferences = "Invalid JSON format";
+      }
     }
     return errors;
   };
@@ -116,18 +119,28 @@ export function PreferencesEditor({ clientId, preferences }: PreferencesEditorPr
     setError("");
     setSuccess(false);
 
+    let parsedPhysical = null;
+    if (physicalPreferences) {
+      try {
+        parsedPhysical = JSON.parse(physicalPreferences);
+      } catch {
+        // validated above
+      }
+    }
+
     const payload = {
       client_id: clientId,
-      age_range_min: ageMin ? parseInt(ageMin) : null,
-      age_range_max: ageMax ? parseInt(ageMax) : null,
+      target_age_min: ageMin ? parseInt(ageMin) : null,
+      target_age_max: ageMax ? parseInt(ageMax) : null,
       max_distance_miles: maxDistance ? parseInt(maxDistance) : null,
-      height_range_min: heightMin ? parseInt(heightMin) : null,
-      height_range_max: heightMax ? parseInt(heightMax) : null,
-      preferred_ethnicities: ethnicities.length > 0 ? ethnicities : null,
-      preferred_body_types: bodyTypes.length > 0 ? bodyTypes : null,
-      preferred_education: education || null,
-      preferred_professions: professions.length > 0 ? professions : null,
-      additional_notes: additionalNotes || null,
+      physical_preferences: parsedPhysical,
+      education_preference: education || null,
+      profession_preferences: professions.length > 0 ? professions : null,
+      deal_breakers: dealBreakers.length > 0 ? dealBreakers : null,
+      relationship_intent: relationshipIntent || null,
+      date_frequency: dateFrequency || null,
+      kids_preference: kidsPreference || null,
+      target_notes: targetNotes || null,
     };
 
     const { error: upsertError } = preferences?.id
@@ -150,7 +163,7 @@ export function PreferencesEditor({ clientId, preferences }: PreferencesEditorPr
         <h2 className="font-heading text-xl font-bold text-on-surface">Dating Preferences</h2>
       </div>
 
-      {/* Age Range */}
+      {/* Age Range + Distance */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="space-y-2">
           <Label className="text-gold text-xs uppercase tracking-wider">Age Min</Label>
@@ -169,36 +182,50 @@ export function PreferencesEditor({ clientId, preferences }: PreferencesEditorPr
         </div>
       </div>
 
-      {/* Height Range */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Relationship Intent + Date Frequency + Kids Preference */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="space-y-2">
-          <Label className="text-gold text-xs uppercase tracking-wider">Height Min (inches)</Label>
-          <Input type="number" min="48" max="96" value={heightMin} onChange={(e) => setHeightMin(e.target.value)} className="bg-surface-container border-outline-variant/20 text-on-surface" />
-          {fieldErrors.heightMin && <p className="text-error-red text-xs mt-1">{fieldErrors.heightMin}</p>}
+          <Label className="text-gold text-xs uppercase tracking-wider">Relationship Intent</Label>
+          <Input value={relationshipIntent} onChange={(e) => setRelationshipIntent(e.target.value)} placeholder="e.g. Long-term, Casual, Open" className="bg-surface-container border-outline-variant/20 text-on-surface placeholder:text-outline" />
         </div>
         <div className="space-y-2">
-          <Label className="text-gold text-xs uppercase tracking-wider">Height Max (inches)</Label>
-          <Input type="number" min="48" max="96" value={heightMax} onChange={(e) => setHeightMax(e.target.value)} className="bg-surface-container border-outline-variant/20 text-on-surface" />
-          {fieldErrors.heightMax && <p className="text-error-red text-xs mt-1">{fieldErrors.heightMax}</p>}
+          <Label className="text-gold text-xs uppercase tracking-wider">Date Frequency</Label>
+          <Input value={dateFrequency} onChange={(e) => setDateFrequency(e.target.value)} placeholder="e.g. Weekly, Bi-weekly" className="bg-surface-container border-outline-variant/20 text-on-surface placeholder:text-outline" />
+        </div>
+        <div className="space-y-2">
+          <Label className="text-gold text-xs uppercase tracking-wider">Kids Preference</Label>
+          <Input value={kidsPreference} onChange={(e) => setKidsPreference(e.target.value)} placeholder="e.g. wants_kids, no_kids, open" className="bg-surface-container border-outline-variant/20 text-on-surface placeholder:text-outline" />
         </div>
       </div>
-
-      {/* Tag inputs */}
-      <TagInput label="Preferred Ethnicities" tags={ethnicities} onChange={setEthnicities} />
-      <TagInput label="Preferred Body Types" tags={bodyTypes} onChange={setBodyTypes} />
 
       {/* Education */}
       <div className="space-y-2">
-        <Label className="text-gold text-xs uppercase tracking-wider">Preferred Education</Label>
+        <Label className="text-gold text-xs uppercase tracking-wider">Education Preference</Label>
         <Input value={education} onChange={(e) => setEducation(e.target.value)} placeholder="e.g. Bachelor's, Master's, PhD" className="bg-surface-container border-outline-variant/20 text-on-surface placeholder:text-outline" />
       </div>
 
-      <TagInput label="Preferred Professions" tags={professions} onChange={setProfessions} />
+      {/* Tag inputs */}
+      <TagInput label="Profession Preferences" tags={professions} onChange={setProfessions} />
+      <TagInput label="Deal Breakers" tags={dealBreakers} onChange={setDealBreakers} />
 
-      {/* Notes */}
+      {/* Physical Preferences (JSONB) */}
       <div className="space-y-2">
-        <Label className="text-gold text-xs uppercase tracking-wider">Additional Notes</Label>
-        <Textarea value={additionalNotes} onChange={(e) => setAdditionalNotes(e.target.value)} placeholder="Any additional preference notes..." rows={3} className="bg-surface-container border-outline-variant/20 text-on-surface placeholder:text-outline" />
+        <Label className="text-gold text-xs uppercase tracking-wider">Physical Preferences (JSON)</Label>
+        <Textarea
+          value={physicalPreferences}
+          onChange={(e) => setPhysicalPreferences(e.target.value)}
+          placeholder='e.g. {"height_min": 60, "height_max": 72, "body_types": ["athletic", "slim"], "ethnicities": ["any"]}'
+          rows={4}
+          className="bg-surface-container border-outline-variant/20 text-on-surface placeholder:text-outline font-mono text-sm"
+        />
+        {fieldErrors.physicalPreferences && <p className="text-error-red text-xs mt-1">{fieldErrors.physicalPreferences}</p>}
+        <p className="text-on-surface-variant text-[10px]">Stored as JSONB. Use valid JSON format for height, body types, ethnicities, etc.</p>
+      </div>
+
+      {/* Target Notes */}
+      <div className="space-y-2">
+        <Label className="text-gold text-xs uppercase tracking-wider">Target Notes</Label>
+        <Textarea value={targetNotes} onChange={(e) => setTargetNotes(e.target.value)} placeholder="Any additional notes about what the client is looking for..." rows={3} className="bg-surface-container border-outline-variant/20 text-on-surface placeholder:text-outline" />
       </div>
 
       {error && <p className="text-error-red text-sm">{error}</p>}

@@ -28,7 +28,7 @@ export function ProfileMobile({ clientId, photos }: { clientId: string; photos: 
   const curatedPhotos = photos.filter((p) => p.status === "approved");
   const livePhotos = photos.filter((p) => p.status === "live");
 
-  const handleUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>, photoCategory: string = "general") => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
@@ -50,6 +50,7 @@ export function ProfileMobile({ clientId, photos }: { clientId: string; photos: 
         file_path: filePath,
         storage_url: urlData.publicUrl,
         status: "uploaded",
+        photo_category: photoCategory,
       });
     }
     setUploading(false);
@@ -119,7 +120,7 @@ export function ProfileMobile({ clientId, photos }: { clientId: string; photos: 
               </div>
             </div>
             <label className="block">
-              <input type="file" accept="image/*" multiple onChange={handleUpload} className="hidden" disabled={uploading} />
+              <input type="file" accept="image/*" multiple onChange={(e) => handleUpload(e, "face_body")} className="hidden" disabled={uploading} />
               <span className="flex items-center justify-center w-full h-12 gold-gradient text-on-gold font-semibold rounded-xl cursor-pointer text-[16px]">
                 {uploading ? "Uploading..." : "Select Files"}
               </span>
@@ -154,7 +155,7 @@ export function ProfileMobile({ clientId, photos }: { clientId: string; photos: 
               ))}
             </div>
             <label className="block">
-              <input type="file" accept="image/*" multiple onChange={handleUpload} className="hidden" disabled={uploading} />
+              <input type="file" accept="image/*" multiple onChange={(e) => handleUpload(e, "lifestyle")} className="hidden" disabled={uploading} />
               <span className="flex items-center justify-center w-full h-12 gold-gradient text-on-gold font-semibold rounded-xl cursor-pointer text-[16px]">
                 {uploading ? "Uploading..." : "Select Files"}
               </span>
