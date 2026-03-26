@@ -53,6 +53,7 @@ export function CredentialsManager({
   const [password, setPassword] = useState("");
   const [notes, setNotes] = useState("");
   const [status, setStatus] = useState<string>("active");
+  const [phone, setPhone] = useState("");
 
   // Edit form
   const [editAppId, setEditAppId] = useState("");
@@ -60,6 +61,7 @@ export function CredentialsManager({
   const [editPassword, setEditPassword] = useState("");
   const [editNotes, setEditNotes] = useState("");
   const [editStatus, setEditStatus] = useState<string>("active");
+  const [editPhone, setEditPhone] = useState("");
 
   // --- Reveal / hide logic ---
   const hide = useCallback((id: string) => {
@@ -118,6 +120,7 @@ export function CredentialsManager({
     setPassword("");
     setNotes("");
     setStatus("active");
+    setPhone("");
   };
 
   const handleAdd = async (e: React.FormEvent) => {
@@ -132,6 +135,7 @@ export function CredentialsManager({
       encrypted_password: password,
       status,
       notes: notes || null,
+      associated_phone: phone || null,
     });
 
     if (insertError) {
@@ -152,6 +156,7 @@ export function CredentialsManager({
     setEditPassword(cred.encrypted_password ?? "");
     setEditNotes(cred.notes ?? "");
     setEditStatus(cred.status ?? "active");
+    setEditPhone(cred.associated_phone ?? "");
   };
 
   const cancelEdit = () => setEditingId(null);
@@ -168,6 +173,7 @@ export function CredentialsManager({
         encrypted_password: editPassword,
         status: editStatus,
         notes: editNotes || null,
+        associated_phone: editPhone || null,
       })
       .eq("id", credId);
 
@@ -280,6 +286,17 @@ export function CredentialsManager({
           </div>
           <div className="space-y-2">
             <Label className="text-gold text-xs uppercase tracking-wider">
+              Associated Phone
+            </Label>
+            <Input
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="e.g. +1 555-123-4567"
+              className="bg-surface-container border-outline-variant/20 text-on-surface placeholder:text-outline"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-gold text-xs uppercase tracking-wider">
               Notes
             </Label>
             <Textarea
@@ -375,6 +392,17 @@ export function CredentialsManager({
                           className="bg-surface-container border-outline-variant/20 text-on-surface"
                         />
                       </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-gold text-xs uppercase tracking-wider">
+                        Associated Phone
+                      </Label>
+                      <Input
+                        value={editPhone}
+                        onChange={(e) => setEditPhone(e.target.value)}
+                        placeholder="e.g. +1 555-123-4567"
+                        className="bg-surface-container border-outline-variant/20 text-on-surface"
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label className="text-gold text-xs uppercase tracking-wider">

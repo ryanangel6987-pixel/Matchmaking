@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 const tabs = [
   { label: "My Clients", href: "/clients", icon: "group" },
   { label: "Availability", href: "/availability", icon: "event_available" },
+  { label: "Profile", href: "/my-profile", icon: "account_circle" },
 ];
 
 interface MatchmakerNavProps {
