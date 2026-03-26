@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { LandingPage } from "@/components/landing/landing-page";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -18,15 +19,15 @@ export default async function Home() {
 
     switch (profile?.role) {
       case "client":
-        redirect("/overview");
+        redirect("/portal");
       case "matchmaker":
         redirect("/clients");
       case "admin":
         redirect("/admin");
       default:
-        redirect("/overview");
+        redirect("/portal");
     }
   }
 
-  redirect("/login");
+  return <LandingPage />;
 }
