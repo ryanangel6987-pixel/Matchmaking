@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ["192.168.4.62", "localhost", "127.0.0.1"],
   experimental: {
     staleTimes: {
-      dynamic: 30,
+      dynamic: 120,
       static: 180,
     },
   },

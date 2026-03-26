@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { createClient } from "@/lib/supabase/server";
-import { DatingAppToggle } from "@/components/admin/dating-app-toggle";
+import { DatingAppManager } from "@/components/admin/dating-app-manager";
 import { DataExport } from "@/components/admin/data-export";
 
 export default async function AdminSettingsPage() {
@@ -53,7 +53,7 @@ export default async function AdminSettingsPage() {
               </p>
             </div>
           </div>
-          <DatingAppToggle apps={datingApps ?? []} />
+          <DatingAppManager apps={datingApps ?? []} />
         </section>
 
         {/* Platform Stats */}

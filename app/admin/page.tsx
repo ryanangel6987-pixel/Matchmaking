@@ -3,6 +3,8 @@ export const dynamic = "force-dynamic";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { AdminKanban } from "@/components/admin/admin-kanban";
+import ReassignMatchmaker from "@/components/admin/reassign-matchmaker";
 
 export default async function AdminDashboardPage() {
   const supabase = await createClient();
@@ -17,6 +19,10 @@ export default async function AdminDashboardPage() {
     { data: matchmakerWorkload },
     { data: allClientProfiles },
     { data: allDateOpps },
+    { data: recentFeedback },
+    { data: allClientsRaw },
+    { data: consultationClients },
+    { data: allMatchmakersList },
   ] = await Promise.all([
     supabase.from("clients").select("*", { count: "exact", head: true }),
     supabase
@@ -47,6 +53,28 @@ export default async function AdminDashboardPage() {
     supabase
       .from("date_opportunities")
       .select("id, client_id, client_decision, created_at, client_decision_at, created_by"),
+    // Task 1: Recent client feedback
+    supabase
+      .from("date_opportunities")
+      .select("id, candidate_name, feedback_rating, feedback_notes, feedback_want_second_date, feedback_submitted_at, client_id, clients!inner(id, profile_id, profiles!inner(full_name))")
+      .eq("feedback_status", "submitted")
+      .order("feedback_submitted_at", { ascending: false })
+      .limit(10),
+    // Task 2: All clients with profiles for kanban + applications
+    supabase
+      .from("clients")
+      .select("id, profile_id, assigned_matchmaker_id, onboarding_status, created_at, profiles!inner(full_name, setup_complete)"),
+    // Task 5: Consultation bookings
+    supabase
+      .from("clients")
+      .select("id, consultation_booked_at, consultation_status, assigned_matchmaker_id, profiles!inner(full_name)")
+      .not("consultation_booked_at", "is", null)
+      .order("consultation_booked_at", { ascending: false }),
+    // All matchmakers for ReassignMatchmaker component
+    supabase
+      .from("profiles")
+      .select("id, full_name")
+      .eq("role", "matchmaker"),
   ]);
 
   // Fetch matchmaker availability and active sessions for the availability overview
@@ -58,6 +86,57 @@ export default async function AdminDashboardPage() {
     .from("matchmaker_sessions")
     .select("profile_id")
     .is("logout_at", null);
+
+  // Task 2: Fetch photo counts and recent approved dates for kanban
+  const { data: photoCounts } = await supabase
+    .from("photos")
+    .select("client_id")
+    .eq("status", "live");
+
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  const { data: recentApprovedDates } = await supabase
+    .from("date_opportunities")
+    .select("client_id")
+    .eq("client_decision", "approved")
+    .gte("client_decision_at", thirtyDaysAgo.toISOString());
+
+  // Build photo count and recent approved maps
+  const photoCountMap: Record<string, number> = {};
+  (photoCounts ?? []).forEach((p: { client_id: string }) => {
+    photoCountMap[p.client_id] = (photoCountMap[p.client_id] || 0) + 1;
+  });
+
+  const recentApprovedSet = new Set(
+    (recentApprovedDates ?? []).map((d: { client_id: string }) => d.client_id)
+  );
+
+  // Build matchmaker name lookup
+  const matchmakerNameMap: Record<string, string> = {};
+  (allMatchmakersList ?? []).forEach((mm: { id: string; full_name: string | null }) => {
+    if (mm.full_name) matchmakerNameMap[mm.id] = mm.full_name;
+  });
+
+  // Build kanban clients
+  const kanbanClients = (allClientsRaw ?? []).map((c: any) => ({
+    id: c.id,
+    profile_id: c.profile_id,
+    assigned_matchmaker_id: c.assigned_matchmaker_id,
+    onboarding_status: c.onboarding_status,
+    created_at: c.created_at,
+    profile_name: c.profiles?.full_name ?? null,
+    setup_complete: c.profiles?.setup_complete ?? false,
+    photo_count: photoCountMap[c.id] ?? 0,
+    has_recent_approved_date: recentApprovedSet.has(c.id),
+    matchmaker_name: c.assigned_matchmaker_id
+      ? matchmakerNameMap[c.assigned_matchmaker_id] ?? null
+      : null,
+  }));
+
+  // Unassigned clients for "New Applications" section
+  const unassignedClients = (allClientsRaw ?? []).filter(
+    (c: any) => !c.assigned_matchmaker_id
+  );
 
   // Build lookup maps
   const availabilityMap: Record<
@@ -580,6 +659,304 @@ export default async function AdminDashboardPage() {
                 )
               )}
             </div>
+          </div>
+        )}
+      </section>
+
+      {/* ── Recent Client Feedback ──────────────────────────────────── */}
+      <section className="space-y-4">
+        <div className="flex items-center gap-3">
+          <span
+            className="material-symbols-outlined text-xl text-gold"
+            style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
+          >
+            rate_review
+          </span>
+          <h2 className="font-heading text-lg font-semibold text-on-surface">
+            Recent Client Feedback
+          </h2>
+        </div>
+        {recentFeedback && recentFeedback.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {recentFeedback.map((fb: any) => {
+              const clientName =
+                fb.clients?.profiles?.full_name ?? "Unknown Client";
+              const rating = fb.feedback_rating ?? 0;
+              const wantSecondDate = fb.feedback_want_second_date;
+              return (
+                <div
+                  key={fb.id}
+                  className="bg-surface-container-low rounded-2xl shadow-xl p-5 space-y-3"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-on-surface text-sm font-medium">
+                        {clientName}
+                      </p>
+                      <p className="text-on-surface-variant text-xs">
+                        Date with{" "}
+                        <span className="text-gold font-medium">
+                          {fb.candidate_name}
+                        </span>
+                      </p>
+                    </div>
+                    <span className="text-outline text-[10px]">
+                      {fb.feedback_submitted_at
+                        ? new Date(fb.feedback_submitted_at).toLocaleDateString()
+                        : ""}
+                    </span>
+                  </div>
+                  {/* Star rating */}
+                  <div className="flex items-center gap-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <span
+                        key={star}
+                        className={`material-symbols-outlined text-lg ${
+                          star <= rating ? "text-gold" : "text-outline-variant/30"
+                        }`}
+                        style={{
+                          fontVariationSettings: `'FILL' ${star <= rating ? 1 : 0}, 'wght' 300`,
+                        }}
+                      >
+                        star
+                      </span>
+                    ))}
+                  </div>
+                  {/* Would see again */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-on-surface-variant text-xs">
+                      Would see again?
+                    </span>
+                    <Badge
+                      variant="outline"
+                      className={`text-[9px] uppercase tracking-widest ${
+                        wantSecondDate
+                          ? "border-green-400/30 text-green-400"
+                          : wantSecondDate === false
+                            ? "border-red-400/30 text-red-400"
+                            : "border-outline-variant/30 text-outline"
+                      }`}
+                    >
+                      {wantSecondDate === true
+                        ? "Yes"
+                        : wantSecondDate === false
+                          ? "No"
+                          : "N/A"}
+                    </Badge>
+                  </div>
+                  {/* Feedback notes */}
+                  {fb.feedback_notes && (
+                    <p className="text-on-surface-variant text-xs leading-relaxed bg-surface-container-highest/50 rounded-xl px-3 py-2">
+                      {fb.feedback_notes}
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="bg-surface-container-low rounded-2xl shadow-xl p-8 text-center">
+            <span
+              className="material-symbols-outlined text-3xl text-outline mb-2"
+              style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
+            >
+              rate_review
+            </span>
+            <p className="text-on-surface-variant text-sm">
+              No client feedback submitted yet.
+            </p>
+          </div>
+        )}
+      </section>
+
+      {/* ── New Applications (Pending Assignment) ─────────────────── */}
+      <section className="space-y-4">
+        <div className="flex items-center gap-3">
+          <span
+            className="material-symbols-outlined text-xl text-gold"
+            style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
+          >
+            person_add
+          </span>
+          <h2 className="font-heading text-lg font-semibold text-on-surface">
+            New Applications
+          </h2>
+          <span className="text-outline text-xs bg-surface-container-high px-2 py-0.5 rounded-full">
+            {unassignedClients.length}
+          </span>
+        </div>
+        {unassignedClients.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {unassignedClients.map((client: any) => (
+              <div
+                key={client.id}
+                className="bg-surface-container-low rounded-2xl shadow-xl p-5 space-y-3"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center">
+                      <span
+                        className="material-symbols-outlined text-lg text-gold"
+                        style={{
+                          fontVariationSettings: "'FILL' 0, 'wght' 300",
+                        }}
+                      >
+                        person
+                      </span>
+                    </div>
+                    <div>
+                      <p className="text-on-surface text-sm font-medium">
+                        {client.profiles?.full_name ?? "Unknown"}
+                      </p>
+                      <Badge
+                        variant="outline"
+                        className="text-[8px] uppercase tracking-widest border-outline-variant/30 text-outline mt-0.5"
+                      >
+                        {client.onboarding_status.replace("_", " ")}
+                      </Badge>
+                    </div>
+                  </div>
+                  <span className="text-outline text-[10px]">
+                    {new Date(client.created_at).toLocaleDateString()}
+                  </span>
+                </div>
+                <ReassignMatchmaker
+                  clientId={client.id}
+                  currentMatchmakerId={null}
+                  matchmakers={(allMatchmakersList ?? []).map((mm: any) => ({
+                    id: mm.id,
+                    full_name: mm.full_name ?? "Unnamed",
+                  }))}
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="bg-surface-container-low rounded-2xl shadow-xl p-8 text-center">
+            <span
+              className="material-symbols-outlined text-3xl text-outline mb-2"
+              style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
+            >
+              check_circle
+            </span>
+            <p className="text-on-surface-variant text-sm">
+              All clients have been assigned a matchmaker.
+            </p>
+          </div>
+        )}
+      </section>
+
+      {/* ── All-Clients Kanban Board ──────────────────────────────── */}
+      <section className="space-y-4">
+        <div className="flex items-center gap-3">
+          <span
+            className="material-symbols-outlined text-xl text-gold"
+            style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
+          >
+            view_kanban
+          </span>
+          <h2 className="font-heading text-lg font-semibold text-on-surface">
+            All-Clients Pipeline
+          </h2>
+        </div>
+        <AdminKanban clients={kanbanClients} />
+      </section>
+
+      {/* ── Consultation Bookings ─────────────────────────────────── */}
+      <section className="space-y-4">
+        <div className="flex items-center gap-3">
+          <span
+            className="material-symbols-outlined text-xl text-gold"
+            style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
+          >
+            calendar_month
+          </span>
+          <h2 className="font-heading text-lg font-semibold text-on-surface">
+            Consultation Bookings
+          </h2>
+        </div>
+        {consultationClients && consultationClients.length > 0 ? (
+          <div className="bg-surface-container-low rounded-2xl shadow-xl overflow-hidden">
+            <div className="grid grid-cols-4 gap-4 px-5 py-3 border-b border-outline-variant/10">
+              <p className="text-gold text-[10px] uppercase tracking-widest font-medium">
+                Client
+              </p>
+              <p className="text-gold text-[10px] uppercase tracking-widest font-medium text-center">
+                Booked
+              </p>
+              <p className="text-gold text-[10px] uppercase tracking-widest font-medium text-center">
+                Status
+              </p>
+              <p className="text-gold text-[10px] uppercase tracking-widest font-medium text-center">
+                Matchmaker
+              </p>
+            </div>
+            {consultationClients.map((client: any) => {
+              const statusColors: Record<string, string> = {
+                pending: "border-orange-400/30 text-orange-400",
+                booked: "border-blue-400/30 text-blue-400",
+                completed: "border-green-400/30 text-green-400",
+                no_show: "border-red-400/30 text-red-400",
+              };
+              const statusLabel = client.consultation_status ?? "pending";
+              return (
+                <div
+                  key={client.id}
+                  className="grid grid-cols-4 gap-4 px-5 py-4 border-b border-outline-variant/10 last:border-b-0 hover:bg-surface-container-high/50 transition-colors"
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center">
+                      <span
+                        className="material-symbols-outlined text-sm text-gold"
+                        style={{
+                          fontVariationSettings: "'FILL' 0, 'wght' 300",
+                        }}
+                      >
+                        person
+                      </span>
+                    </div>
+                    <span className="text-on-surface text-sm font-medium truncate">
+                      {client.profiles?.full_name ?? "Unknown"}
+                    </span>
+                  </div>
+                  <p className="text-on-surface-variant text-sm text-center self-center">
+                    {client.consultation_booked_at
+                      ? new Date(
+                          client.consultation_booked_at
+                        ).toLocaleDateString()
+                      : "--"}
+                  </p>
+                  <div className="flex items-center justify-center self-center">
+                    <Badge
+                      variant="outline"
+                      className={`text-[9px] uppercase tracking-widest ${
+                        statusColors[statusLabel] ??
+                        "border-outline-variant/30 text-outline"
+                      }`}
+                    >
+                      {statusLabel.replace("_", " ")}
+                    </Badge>
+                  </div>
+                  <p className="text-on-surface-variant text-sm text-center self-center">
+                    {client.assigned_matchmaker_id
+                      ? matchmakerNameMap[client.assigned_matchmaker_id] ?? "--"
+                      : "--"}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="bg-surface-container-low rounded-2xl shadow-xl p-8 text-center">
+            <span
+              className="material-symbols-outlined text-3xl text-outline mb-2"
+              style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
+            >
+              calendar_month
+            </span>
+            <p className="text-on-surface-variant text-sm">
+              No consultations booked yet.
+            </p>
           </div>
         )}
       </section>
