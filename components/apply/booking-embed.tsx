@@ -35,3 +35,4 @@ export function BookingEmbed() {
     </div>
   );
 }
+// GHL calendar configured
