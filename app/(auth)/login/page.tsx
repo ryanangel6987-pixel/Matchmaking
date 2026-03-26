@@ -45,11 +45,8 @@ export default function LoginPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col items-center space-y-4">
+      <div className="flex flex-col items-center">
         <Image src="/logo.png" alt="Private Dating Concierge" width={687} height={132} />
-        <p className="text-on-surface-variant text-sm">
-          Private Client Portal
-        </p>
       </div>
 
       {banner === "confirmed" && (

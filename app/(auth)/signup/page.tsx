@@ -51,9 +51,6 @@ export default function SignupPage() {
       <div className="space-y-8">
         <div className="flex flex-col items-center space-y-4">
           <img src="/logo.png" alt="Private Dating Concierge" className="h-12 w-auto" />
-          <p className="text-on-surface-variant text-sm">
-            Private Client Portal
-          </p>
         </div>
         <div className="rounded-2xl bg-surface-container-low p-8 space-y-4 text-center">
           <h2 className="font-heading text-xl font-bold text-gold">
@@ -80,9 +77,6 @@ export default function SignupPage() {
         <h1 className="font-heading text-3xl font-bold text-on-surface">
           Private Dating Concierge
         </h1>
-        <p className="text-on-surface-variant text-sm">
-          Private Client Portal
-        </p>
       </div>
 
       <div className="rounded-2xl bg-surface-container-low p-8 space-y-6">
