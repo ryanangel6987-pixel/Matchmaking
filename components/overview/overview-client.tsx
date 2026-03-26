@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { FeedbackModal } from "./feedback-modal";
+import { PostDateFeedback } from "./post-date-feedback";
 import { AlertDismissButton } from "@/components/alert-dismiss-button";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -574,7 +575,7 @@ function DesktopApprovedCard({ opp, photoUrl, dateInPast, hasTexted, isUrgent, h
               </div>
             )}
             {!dateInPast && texted && <div className="bg-surface-container rounded-xl p-3 flex items-center gap-2"><span className="material-symbols-outlined text-gold/40 text-sm" style={{ fontVariationSettings: "'FILL' 1, 'wght' 300" }}>check_circle</span><p className="text-on-surface-variant text-sm">Texted — good luck!</p></div>}
-            {dateInPast && <FeedbackModal opportunity={opp} clientId={clientId} />}
+            {dateInPast && <PostDateFeedback opportunity={opp} clientId={clientId} />}
             {/* Edit */}
             {!editing ? (
               <button onClick={(e) => { e.stopPropagation(); setEditing(true); }} className="flex items-center gap-1.5 text-on-surface-variant text-xs hover:text-gold transition-colors">
@@ -601,156 +602,3 @@ function DesktopApprovedCard({ opp, photoUrl, dateInPast, hasTexted, isUrgent, h
   );
 }
 
-// ── OLD ApprovedDateCard (unused, kept for reference) ───────────────
-function ApprovedDateCard({ opportunity, clientId }: { opportunity: any; clientId: string }) {
-  const [editing, setEditing] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [texted, setTexted] = useState(!!opportunity.client_texted_at);
-  const [proposedDay, setProposedDay] = useState(opportunity.proposed_day ?? "");
-  const [proposedTime, setProposedTime] = useState(opportunity.proposed_time?.slice(0, 5) ?? "");
-  const [venueText, setVenueText] = useState("");
-  const supabase = createClient();
-
-  // Is this date in the past?
-  const dateInPast = opportunity.proposed_day
-    ? new Date(opportunity.proposed_day + "T23:59:59") < new Date()
-    : false;
-
-  // Texting countdown — hours since phone was shared
-  const phoneSharedAt = opportunity.phone_shared_at ? new Date(opportunity.phone_shared_at) : null;
-  const hoursSinceShared = phoneSharedAt
-    ? Math.floor((Date.now() - phoneSharedAt.getTime()) / (1000 * 60 * 60))
-    : null;
-  const isUrgent = hoursSinceShared !== null && hoursSinceShared >= 5;
-
-  // Reservation info
-  const depositRequired = opportunity.reservation_status === "deposit_required";
-
-  const handleSaveChanges = async () => {
-    setSaving(true);
-    const updates: any = {};
-    if (proposedDay) updates.proposed_day = proposedDay;
-    if (proposedTime) updates.proposed_time = proposedTime;
-    if (venueText) updates.notes = (opportunity.notes ? opportunity.notes + "\n" : "") + `Client venue suggestion: ${venueText}`;
-    await supabase.from("date_opportunities").update(updates).eq("id", opportunity.id);
-    setSaving(false);
-    setEditing(false);
-  };
-
-  const handleMarkTexted = async () => {
-    setTexted(true);
-    await supabase.from("date_opportunities").update({ client_texted_at: new Date().toISOString() }).eq("id", opportunity.id);
-  };
-
-  const handleConfirmDeposit = async () => {
-    await supabase.from("date_opportunities").update({ deposit_confirmed: true, reservation_status: "confirmed" }).eq("id", opportunity.id);
-  };
-
-  return (
-    <div className="bg-surface-container-low rounded-xl overflow-hidden">
-      <div className="p-5 space-y-3">
-        {/* Header */}
-        <div className="flex items-start justify-between">
-          <div>
-            <p className="text-on-surface text-sm font-medium font-heading">
-              {opportunity.candidate_name}
-            </p>
-            <div className="flex items-center gap-3 mt-1 flex-wrap">
-              {opportunity.proposed_day && (
-                <p className="text-gold text-xs flex items-center gap-1">
-                  <span className="material-symbols-outlined text-xs" style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}>calendar_today</span>
-                  {new Date(opportunity.proposed_day + "T12:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}
-                  {opportunity.proposed_time && ` · ${opportunity.proposed_time.slice(0, 5)}`}
-                </p>
-              )}
-              {!opportunity.proposed_day && <p className="text-outline text-xs">Day TBD</p>}
-              {opportunity.venues?.venue_name && (
-                <p className="text-on-surface-variant text-xs flex items-center gap-1">
-                  <span className="material-symbols-outlined text-xs" style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}>restaurant</span>
-                  {opportunity.venues.venue_name}
-                </p>
-              )}
-            </div>
-          </div>
-          <button
-            onClick={() => setEditing(!editing)}
-            className="flex items-center gap-1 text-gold text-xs hover:text-gold-light transition-colors shrink-0"
-          >
-            <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}>{editing ? "close" : "edit"}</span>
-            {editing ? "Cancel" : "Edit"}
-          </button>
-        </div>
-
-        {/* Reservation status */}
-        {depositRequired && !opportunity.deposit_confirmed && (
-          <div className="bg-gold/10 border border-gold/20 rounded-lg p-3 flex items-center justify-between">
-            <div>
-              <p className="text-gold text-xs font-semibold">Deposit Required</p>
-              {opportunity.deposit_amount && <p className="text-on-surface-variant text-xs">${opportunity.deposit_amount}</p>}
-            </div>
-            <button onClick={handleConfirmDeposit} className="gold-gradient text-on-gold font-semibold rounded-full px-4 py-1.5 text-xs">
-              Confirm Deposit
-            </button>
-          </div>
-        )}
-
-        {/* Text Now / Countdown / Feedback */}
-        {!dateInPast && opportunity.phone_number && !texted && (
-          <div className={`rounded-lg p-3 flex items-center justify-between ${isUrgent ? "bg-error-red/10 border border-error-red/20" : "bg-surface-container"}`}>
-            <div>
-              <p className={`text-xs font-semibold ${isUrgent ? "text-error-red" : "text-on-surface"}`}>
-                {isUrgent ? "Text her now — don't lose momentum" : "Text her to confirm"}
-              </p>
-              <p className="text-on-surface-variant text-[10px] mt-0.5">
-                Best between 10am – 9pm
-                {hoursSinceShared !== null && ` · ${hoursSinceShared}h since number shared`}
-              </p>
-            </div>
-            <button
-              onClick={handleMarkTexted}
-              className={`font-semibold rounded-full px-4 py-2 text-xs ${isUrgent ? "bg-error-red text-white" : "gold-gradient text-on-gold"}`}
-            >
-              Text Now
-            </button>
-          </div>
-        )}
-
-        {!dateInPast && texted && (
-          <div className="bg-surface-container rounded-lg p-3 flex items-center gap-2">
-            <span className="material-symbols-outlined text-gold text-sm" style={{ fontVariationSettings: "'FILL' 1, 'wght' 400" }}>check_circle</span>
-            <p className="text-on-surface-variant text-xs">Texted — good luck!</p>
-          </div>
-        )}
-
-        {dateInPast && (
-          <div className="flex gap-2">
-            <FeedbackModal opportunity={opportunity} clientId={clientId} />
-          </div>
-        )}
-
-        {/* Edit panel */}
-        {editing && (
-          <div className="bg-surface-container rounded-xl p-4 space-y-3">
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <p className="text-gold text-[10px] uppercase tracking-widest mb-1">Preferred Day</p>
-                <input type="date" value={proposedDay} onChange={(e) => setProposedDay(e.target.value)} className="w-full bg-surface-container-low border border-outline-variant/20 rounded-lg px-3 py-2 text-on-surface text-sm focus:border-gold outline-none [color-scheme:dark]" />
-              </div>
-              <div>
-                <p className="text-gold text-[10px] uppercase tracking-widest mb-1">Preferred Time</p>
-                <input type="time" value={proposedTime} onChange={(e) => setProposedTime(e.target.value)} className="w-full bg-surface-container-low border border-outline-variant/20 rounded-lg px-3 py-2 text-on-surface text-sm focus:border-gold outline-none [color-scheme:dark]" />
-              </div>
-            </div>
-            <div>
-              <p className="text-gold text-[10px] uppercase tracking-widest mb-1">Suggest a Venue</p>
-              <input type="text" value={venueText} onChange={(e) => setVenueText(e.target.value)} placeholder="e.g. The Violet Hour, RPM Italian..." className="w-full bg-surface-container-low border border-outline-variant/20 rounded-lg px-3 py-2 text-on-surface text-sm placeholder:text-outline focus:border-gold outline-none" />
-            </div>
-            <button onClick={handleSaveChanges} disabled={saving} className="w-full gold-gradient text-on-gold font-semibold rounded-full h-10 text-sm disabled:opacity-50">
-              {saving ? "Saving..." : "Save Changes"}
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}

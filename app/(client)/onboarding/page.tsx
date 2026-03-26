@@ -728,8 +728,28 @@ export default function OnboardingPage() {
       return;
     }
 
-    // Navigate to overview
-    router.push("/overview");
+    // Create alert for admin/matchmaker: new client onboarded
+    const clientName = form.full_name || "Unknown";
+    await supabase.from("alerts").insert({
+      client_id: clientId,
+      alert_type: "onboarding_incomplete",
+      title: "New client onboarded",
+      message: `Client ${clientName} has completed onboarding and is ready for matchmaker assignment`,
+    });
+
+    // Create initial action item for matchmaker review
+    await supabase.from("actions").insert({
+      client_id: clientId,
+      title: "Review onboarding data",
+      description:
+        "New client has completed onboarding. Review preferences, photos needed, and app setup.",
+      status: "open",
+      priority: "high",
+      created_by: profileId,
+    });
+
+    // Navigate to portal
+    router.push("/portal");
     router.refresh();
   };
 

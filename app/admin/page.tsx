@@ -15,6 +15,8 @@ export default async function AdminDashboardPage() {
     { data: onboardingData },
     { data: kpiSummary },
     { data: matchmakerWorkload },
+    { data: allClientProfiles },
+    { data: allDateOpps },
   ] = await Promise.all([
     supabase.from("clients").select("*", { count: "exact", head: true }),
     supabase
@@ -36,6 +38,15 @@ export default async function AdminDashboardPage() {
       .from("profiles")
       .select("id, full_name")
       .eq("role", "matchmaker"),
+    // Business Analytics: Application funnel from profiles
+    supabase
+      .from("profiles")
+      .select("id, role, setup_complete")
+      .eq("role", "client"),
+    // Business Analytics: All date opportunities for performance metrics
+    supabase
+      .from("date_opportunities")
+      .select("id, client_id, client_decision, created_at, client_decision_at, created_by"),
   ]);
 
   // Fetch matchmaker availability and active sessions for the availability overview
@@ -122,6 +133,109 @@ export default async function AdminDashboardPage() {
         (matchmakerClientCounts[a.matchmaker_id] || 0) + 1;
     }
   });
+
+  // ── Business Analytics Calculations ──────────────────────────────
+
+  // Application Funnel
+  const totalApplications = allClientProfiles?.length ?? 0;
+  const totalOnboardedProfiles = allClientProfiles?.filter(
+    (p: { setup_complete: boolean }) => p.setup_complete
+  ).length ?? 0;
+
+  // Clients with assigned matchmaker
+  const clientsWithMatchmaker = onboardingData?.filter((c: any) => {
+    const assignment = assignments?.find((a: any) => a.matchmaker_id !== null);
+    return assignment;
+  });
+  // More accurate: count from assignments
+  const activeClientsCount = assignments?.filter(
+    (a: { matchmaker_id: string | null }) => a.matchmaker_id !== null
+  ).length ?? 0;
+
+  // Date Performance
+  const totalDatesCreated = allDateOpps?.length ?? 0;
+  const totalDatesApprovedAll = allDateOpps?.filter(
+    (d: { client_decision: string }) => d.client_decision === "approved"
+  ).length ?? 0;
+  const totalDatesDeclined = allDateOpps?.filter(
+    (d: { client_decision: string }) => d.client_decision === "declined"
+  ).length ?? 0;
+  const decidedDates = totalDatesApprovedAll + totalDatesDeclined;
+  const approvalRate = decidedDates > 0
+    ? Math.round((totalDatesApprovedAll / decidedDates) * 100)
+    : 0;
+
+  // Unique clients with dates
+  const uniqueClientsWithDates = new Set(
+    (allDateOpps ?? []).map((d: { client_id: string }) => d.client_id)
+  ).size;
+  const avgDatesPerClient = uniqueClientsWithDates > 0
+    ? (totalDatesCreated / uniqueClientsWithDates).toFixed(1)
+    : "0";
+
+  // Response Time: avg hours from created_at to client_decision_at
+  const responseTimes = (allDateOpps ?? [])
+    .filter(
+      (d: { client_decision_at: string | null; created_at: string }) =>
+        d.client_decision_at !== null
+    )
+    .map((d: { client_decision_at: string; created_at: string }) => {
+      const created = new Date(d.created_at).getTime();
+      const decided = new Date(d.client_decision_at).getTime();
+      return (decided - created) / (1000 * 60 * 60); // hours
+    });
+  const avgResponseHours = responseTimes.length > 0
+    ? (responseTimes.reduce((a: number, b: number) => a + b, 0) / responseTimes.length).toFixed(1)
+    : "N/A";
+
+  // Matchmaker Utilization
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  const matchmakerUtilization = (matchmakerWorkload ?? []).map(
+    (mm: { id: string; full_name: string | null }) => {
+      const clientCount = matchmakerClientCounts[mm.id] ?? 0;
+
+      // Dates closed this month (created_by = matchmaker, has client_decision_at this month)
+      const datesThisMonth = (allDateOpps ?? []).filter(
+        (d: { created_by: string; client_decision_at: string | null }) =>
+          d.created_by === mm.id &&
+          d.client_decision_at &&
+          new Date(d.client_decision_at) >= startOfMonth
+      ).length;
+
+      // Avg response time for this matchmaker's dates
+      const mmResponseTimes = (allDateOpps ?? [])
+        .filter(
+          (d: {
+            created_by: string;
+            client_decision_at: string | null;
+            created_at: string;
+          }) =>
+            d.created_by === mm.id && d.client_decision_at !== null
+        )
+        .map(
+          (d: { client_decision_at: string; created_at: string }) =>
+            (new Date(d.client_decision_at).getTime() -
+              new Date(d.created_at).getTime()) /
+            (1000 * 60 * 60)
+        );
+      const mmAvgResponse = mmResponseTimes.length > 0
+        ? (
+            mmResponseTimes.reduce((a: number, b: number) => a + b, 0) /
+            mmResponseTimes.length
+          ).toFixed(1)
+        : "N/A";
+
+      return {
+        id: mm.id,
+        name: mm.full_name ?? "Unnamed",
+        clientCount,
+        datesThisMonth,
+        avgResponse: mmAvgResponse,
+      };
+    }
+  );
 
   const funnelStages = [
     {
@@ -277,6 +391,198 @@ export default async function AdminDashboardPage() {
           <p className="font-heading text-3xl font-bold text-gold">OK</p>
         </div>
       </div>
+
+      {/* ── Business Analytics ─────────────────────────────────────── */}
+      <section className="space-y-6">
+        <div className="flex items-center gap-3">
+          <span
+            className="material-symbols-outlined text-xl text-gold"
+            style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
+          >
+            insights
+          </span>
+          <h2 className="font-heading text-lg font-semibold text-on-surface">
+            Business Analytics
+          </h2>
+        </div>
+
+        {/* Application Funnel */}
+        <div>
+          <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-3">
+            Application Funnel
+          </p>
+          <div className="grid grid-cols-3 gap-4">
+            <div className="bg-surface-container-low p-5 rounded-2xl shadow-xl relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-gold to-gold/40" />
+              <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-1">
+                Applications
+              </p>
+              <p className="font-heading text-3xl font-bold text-on-surface">
+                {totalApplications}
+              </p>
+            </div>
+            <div className="bg-surface-container-low p-5 rounded-2xl shadow-xl relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-gold/80 to-gold/30" />
+              <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-1">
+                Onboarded
+              </p>
+              <p className="font-heading text-3xl font-bold text-on-surface">
+                {totalOnboardedProfiles}
+              </p>
+            </div>
+            <div className="bg-surface-container-low p-5 rounded-2xl shadow-xl relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-gold/60 to-gold/20" />
+              <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-1">
+                Active Clients
+              </p>
+              <p className="font-heading text-3xl font-bold text-on-surface">
+                {activeClientsCount}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 mt-2 px-1">
+            <div className="flex-1 h-px bg-outline-variant/20" />
+            <span className="material-symbols-outlined text-xs text-outline" style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}>arrow_forward</span>
+            <div className="flex-1 h-px bg-outline-variant/20" />
+            <span className="material-symbols-outlined text-xs text-outline" style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}>arrow_forward</span>
+            <div className="flex-1 h-px bg-outline-variant/20" />
+          </div>
+        </div>
+
+        {/* Date Performance */}
+        <div>
+          <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-3">
+            Date Performance
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            <div className="bg-surface-container-low p-4 rounded-2xl shadow-xl">
+              <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-1">
+                Total Created
+              </p>
+              <p className="font-heading text-2xl font-bold text-on-surface">
+                {totalDatesCreated}
+              </p>
+            </div>
+            <div className="bg-surface-container-low p-4 rounded-2xl shadow-xl">
+              <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-1">
+                Approved
+              </p>
+              <p className="font-heading text-2xl font-bold text-gold">
+                {totalDatesApprovedAll}
+              </p>
+            </div>
+            <div className="bg-surface-container-low p-4 rounded-2xl shadow-xl">
+              <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-1">
+                Declined
+              </p>
+              <p className="font-heading text-2xl font-bold text-on-surface">
+                {totalDatesDeclined}
+              </p>
+            </div>
+            <div className="bg-surface-container-low p-4 rounded-2xl shadow-xl">
+              <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-1">
+                Approval Rate
+              </p>
+              <p className="font-heading text-2xl font-bold text-gold">
+                {approvalRate}%
+              </p>
+            </div>
+            <div className="bg-surface-container-low p-4 rounded-2xl shadow-xl">
+              <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-1">
+                Avg / Client
+              </p>
+              <p className="font-heading text-2xl font-bold text-on-surface">
+                {avgDatesPerClient}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Response Time */}
+        <div className="bg-surface-container-low p-5 rounded-2xl shadow-xl flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-gold/10 flex items-center justify-center">
+            <span
+              className="material-symbols-outlined text-2xl text-gold"
+              style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
+            >
+              timer
+            </span>
+          </div>
+          <div>
+            <p className="text-on-surface-variant text-[10px] uppercase tracking-widest">
+              Avg Response Time
+            </p>
+            <p className="font-heading text-2xl font-bold text-on-surface">
+              {avgResponseHours}{typeof avgResponseHours === "string" && avgResponseHours !== "N/A" ? "h" : avgResponseHours !== "N/A" ? "h" : ""}
+            </p>
+            <p className="text-on-surface-variant text-[10px]">
+              From opportunity created to client decision
+            </p>
+          </div>
+        </div>
+
+        {/* Matchmaker Utilization */}
+        {matchmakerUtilization.length > 0 && (
+          <div>
+            <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-3">
+              Matchmaker Utilization
+            </p>
+            <div className="bg-surface-container-low rounded-2xl shadow-xl overflow-hidden">
+              <div className="grid grid-cols-4 gap-4 px-5 py-3 border-b border-outline-variant/10">
+                <p className="text-gold text-[10px] uppercase tracking-widest font-medium">
+                  Matchmaker
+                </p>
+                <p className="text-gold text-[10px] uppercase tracking-widest font-medium text-center">
+                  Clients
+                </p>
+                <p className="text-gold text-[10px] uppercase tracking-widest font-medium text-center">
+                  Dates This Mo.
+                </p>
+                <p className="text-gold text-[10px] uppercase tracking-widest font-medium text-center">
+                  Avg Response
+                </p>
+              </div>
+              {matchmakerUtilization.map(
+                (mm: {
+                  id: string;
+                  name: string;
+                  clientCount: number;
+                  datesThisMonth: number;
+                  avgResponse: string;
+                }) => (
+                  <div
+                    key={mm.id}
+                    className="grid grid-cols-4 gap-4 px-5 py-4 border-b border-outline-variant/10 last:border-b-0 hover:bg-surface-container-high/50 transition-colors"
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center">
+                        <span
+                          className="material-symbols-outlined text-sm text-gold"
+                          style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
+                        >
+                          person
+                        </span>
+                      </div>
+                      <span className="text-on-surface text-sm font-medium truncate">
+                        {mm.name}
+                      </span>
+                    </div>
+                    <p className="text-on-surface text-sm font-heading font-bold text-center self-center">
+                      {mm.clientCount}
+                    </p>
+                    <p className="text-on-surface text-sm font-heading font-bold text-center self-center">
+                      {mm.datesThisMonth}
+                    </p>
+                    <p className="text-on-surface-variant text-sm text-center self-center">
+                      {mm.avgResponse !== "N/A" ? `${mm.avgResponse}h` : "--"}
+                    </p>
+                  </div>
+                )
+              )}
+            </div>
+          </div>
+        )}
+      </section>
 
       {/* Quick Nav */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

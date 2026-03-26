@@ -2,8 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
+import { MatchmakerClientsSearch } from "@/components/matchmaker/clients-search";
 
 export default async function MatchmakerClientsPage() {
   const supabase = await createClient();
@@ -30,29 +29,7 @@ export default async function MatchmakerClientsPage() {
       {!clients || clients.length === 0 ? (
         <p className="text-on-surface-variant">No clients assigned yet.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {clients.map((client) => {
-            const name = (client.profiles as any)?.full_name ?? "Unknown";
-            return (
-              <Link
-                key={client.id}
-                href={`/clients/${client.id}`}
-                className="bg-surface-container-low p-6 rounded-2xl shadow-xl relative overflow-hidden group hover:bg-surface-container-high transition-colors duration-300"
-              >
-                <div className="absolute top-0 left-0 w-1 h-full bg-gold opacity-30 group-hover:opacity-100 transition-opacity duration-500" />
-                <h3 className="font-heading text-lg font-bold text-on-surface">{name}</h3>
-                <div className="flex items-center gap-2 mt-2">
-                  <Badge variant="outline" className="text-[9px] uppercase tracking-widest border-outline-variant/30 text-outline">
-                    {client.onboarding_status.replace(/_/g, " ")}
-                  </Badge>
-                </div>
-                <p className="text-outline text-[10px] mt-3">
-                  Since {new Date(client.created_at).toLocaleDateString()}
-                </p>
-              </Link>
-            );
-          })}
-        </div>
+        <MatchmakerClientsSearch clients={clients as any} />
       )}
     </div>
   );

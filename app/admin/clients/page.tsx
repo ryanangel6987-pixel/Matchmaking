@@ -1,8 +1,8 @@
 export const dynamic = "force-dynamic";
 
 import { createClient } from "@/lib/supabase/server";
-import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { ClientsList } from "@/components/admin/clients-list";
 
 export default async function AdminClientsPage() {
   const supabase = await createClient();
@@ -24,24 +24,7 @@ export default async function AdminClientsPage() {
       {!clients || clients.length === 0 ? (
         <p className="text-on-surface-variant">No clients in the system.</p>
       ) : (
-        <div className="space-y-3">
-          {clients.map((client) => (
-            <Link key={client.id} href={`/admin/clients/${client.id}`} className="bg-surface-container-low p-4 rounded-xl flex items-center justify-between hover:bg-surface-container-high transition-colors duration-300">
-              <div>
-                <p className="text-on-surface font-medium font-heading">{(client.profiles as any)?.full_name ?? "Unknown"}</p>
-                <p className="text-on-surface-variant text-xs mt-0.5">
-                  Matchmaker: {(client.matchmaker as any)?.full_name ?? "Unassigned"}
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                <Badge variant="outline" className="text-[9px] uppercase tracking-widest border-outline-variant/30 text-outline">
-                  {client.onboarding_status.replace(/_/g, " ")}
-                </Badge>
-                <span className="text-outline text-[10px]">{new Date(client.created_at).toLocaleDateString()}</span>
-              </div>
-            </Link>
-          ))}
-        </div>
+        <ClientsList clients={clients as any} />
       )}
     </div>
   );

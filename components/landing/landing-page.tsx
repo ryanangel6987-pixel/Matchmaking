@@ -301,26 +301,63 @@ export function LandingPage() {
             </h2>
           </div>
 
+          {/* Foundation Setup — standalone card */}
+          <div className="max-w-2xl mx-auto mb-10">
+            <div className="bg-surface-container-low rounded-2xl p-8 space-y-6 relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-gold/40 via-gold to-gold/40" />
+              <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="material-symbols-outlined text-gold text-xl" style={ICON_STYLE}>build</span>
+                    <p className="text-gold text-xs uppercase tracking-widest font-bold">Required First</p>
+                  </div>
+                  <h3 className="font-heading text-2xl font-bold text-on-surface">Foundation Setup</h3>
+                </div>
+                <div className="flex items-end gap-1">
+                  <span className="font-heading text-4xl font-bold text-on-surface">$5,000</span>
+                  <span className="text-on-surface-variant text-sm mb-1">one-time</span>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {[
+                  "Identity rebuild",
+                  "Profile architecture",
+                  "Photo optimization",
+                  "Manager onboarding",
+                  "Playbook calibration",
+                  "4-layer preference filter",
+                  "Manager training",
+                  "Proven playbooks",
+                  "Weekly KPIs",
+                ].map((item) => (
+                  <div key={item} className="flex items-start gap-2 text-on-surface-variant text-sm">
+                    <span className="material-symbols-outlined text-gold text-sm mt-0.5" style={ICON_FILLED}>check_circle</span>
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Monthly + 3-Month plans */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {/* Monthly */}
+            {/* Month-to-Month */}
             <div className="bg-surface-container-low rounded-2xl p-8 space-y-6 relative overflow-hidden">
               <div className="absolute top-0 left-0 w-1 h-full bg-gold/30" />
               <div>
-                <p className="text-on-surface-variant text-xs uppercase tracking-widest">Monthly</p>
+                <p className="text-on-surface-variant text-xs uppercase tracking-widest">Month-to-Month</p>
                 <div className="flex items-end gap-1 mt-2">
-                  <span className="font-heading text-4xl font-bold text-on-surface">$997</span>
+                  <span className="font-heading text-4xl font-bold text-on-surface">$2,000</span>
                   <span className="text-on-surface-variant text-sm mb-1">/month</span>
                 </div>
               </div>
               <ul className="space-y-3">
                 {[
-                  "1 dating app managed",
-                  "Fresh profile built & optimized",
-                  "Daily swiping & conversations",
-                  "Date coordination & venue booking",
-                  "KPI dashboard access",
-                  "WhatsApp support",
-                  "Weekly strategy call",
+                  "Cancel anytime",
+                  "Zero commitment",
+                  "Full flexibility",
+                  "All core features",
+                  "24/7 manager access",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-2 text-on-surface-variant text-sm">
                     <span className="material-symbols-outlined text-gold text-sm mt-0.5" style={ICON_FILLED}>check_circle</span>
@@ -333,30 +370,26 @@ export function LandingPage() {
               </Link>
             </div>
 
-            {/* 3-Month */}
+            {/* 3-Month Package */}
             <div className="bg-surface-container-low rounded-2xl p-8 space-y-6 relative overflow-hidden ring-2 ring-gold/30">
               <div className="absolute top-0 left-0 w-1 h-full bg-gold" />
               <div className="absolute top-4 right-4">
                 <span className="bg-gold/15 text-gold text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full border border-gold/30">Most Popular</span>
               </div>
               <div>
-                <p className="text-on-surface-variant text-xs uppercase tracking-widest">3-Month Commitment</p>
+                <p className="text-on-surface-variant text-xs uppercase tracking-widest">3-Month Package</p>
                 <div className="flex items-end gap-1 mt-2">
-                  <span className="font-heading text-4xl font-bold text-gold">$2,497</span>
-                  <span className="text-on-surface-variant text-sm mb-1">/month</span>
+                  <span className="font-heading text-4xl font-bold text-gold">$5,000</span>
+                  <span className="text-on-surface-variant text-sm mb-1">/3 months</span>
                 </div>
+                <p className="text-gold/80 text-xs mt-1">Save $1,000 vs. monthly</p>
               </div>
               <ul className="space-y-3">
                 {[
-                  "2-3 dating apps managed",
-                  "Professional photo shoot included",
-                  "Fresh profiles built across all apps",
-                  "Priority daily management",
-                  "Full KPI dashboard + analytics",
-                  "WhatsApp 24/7 priority support",
-                  "Bi-weekly strategy sessions",
-                  "Curated image creation",
-                  "Date coaching & post-date review",
+                  "Save $1,000 vs. monthly",
+                  "Instagram rebrand included",
+                  "Date classes + class library",
+                  "Most clients choose this",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-2 text-on-surface text-sm">
                     <span className="material-symbols-outlined text-gold text-sm mt-0.5" style={ICON_FILLED}>check_circle</span>

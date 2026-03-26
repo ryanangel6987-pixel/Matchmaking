@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { FeedbackModal } from "./feedback-modal";
+import { PostDateFeedback } from "./post-date-feedback";
 import { AlertDismissButton } from "@/components/alert-dismiss-button";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -161,7 +162,7 @@ function MobileApprovedCard({
             )}
 
             {dateInPast && (
-              <FeedbackModal opportunity={opp} clientId={clientId} />
+              <PostDateFeedback opportunity={opp} clientId={clientId} />
             )}
 
             {/* Edit day/time/venue */}
