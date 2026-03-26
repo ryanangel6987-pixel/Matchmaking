@@ -157,8 +157,25 @@ export function ClientPortal(props: ClientPortalProps) {
     );
   }
 
+  // Show consultation banner if no matchmaker assigned
+  const noMatchmaker = !props.overviewData.kpiSummary && !props.accessData.matchmakerName;
+
   return (
     <>
+      {noMatchmaker && (
+        <div className="bg-gold/5 border border-gold/20 rounded-2xl p-6 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <span className="material-symbols-outlined text-gold text-2xl" style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}>calendar_month</span>
+            <div>
+              <p className="text-on-surface text-sm font-medium font-heading">Book Your Consultation</p>
+              <p className="text-on-surface-variant text-xs">Your application is in — book a free 30-min call to get matched with your dedicated concierge.</p>
+            </div>
+          </div>
+          <a href="/apply/book" className="gold-gradient text-on-gold font-semibold rounded-full px-6 py-2.5 text-sm hover:opacity-90 transition-opacity shrink-0">
+            Book Now
+          </a>
+        </div>
+      )}
       <div className={activeTab === "dashboard" ? "" : "hidden"}>
         <DashboardResponsive {...props.dashboardData} />
       </div>

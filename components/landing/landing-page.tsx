@@ -29,7 +29,7 @@ export function LandingPage() {
             <Link href="/login" className="text-on-surface-variant text-sm hover:text-gold transition-colors hidden sm:block">
               Sign In
             </Link>
-            <Link href="/signup" className="gold-gradient text-on-gold font-semibold rounded-full px-5 py-2 text-sm hover:opacity-90 transition-opacity">
+            <Link href="/apply" className="gold-gradient text-on-gold font-semibold rounded-full px-5 py-2 text-sm hover:opacity-90 transition-opacity">
               Apply Now
             </Link>
           </div>
@@ -57,7 +57,7 @@ export function LandingPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-10">
-            <Link href="/signup" className="gold-gradient text-on-gold font-semibold rounded-full px-8 py-4 text-base hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+            <Link href="/apply" className="gold-gradient text-on-gold font-semibold rounded-full px-8 py-4 text-base hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
               <span className="material-symbols-outlined text-xl" style={ICON_STYLE}>arrow_forward</span>
               Start Your Application
             </Link>
@@ -328,7 +328,7 @@ export function LandingPage() {
                   </li>
                 ))}
               </ul>
-              <Link href="/signup" className="block w-full border border-gold/30 text-gold font-semibold rounded-full py-3 text-center hover:bg-gold/10 transition-colors">
+              <Link href="/apply" className="block w-full border border-gold/30 text-gold font-semibold rounded-full py-3 text-center hover:bg-gold/10 transition-colors">
                 Get Started
               </Link>
             </div>
@@ -364,7 +364,7 @@ export function LandingPage() {
                   </li>
                 ))}
               </ul>
-              <Link href="/signup" className="block w-full gold-gradient text-on-gold font-semibold rounded-full py-3 text-center hover:opacity-90 transition-opacity">
+              <Link href="/apply" className="block w-full gold-gradient text-on-gold font-semibold rounded-full py-3 text-center hover:opacity-90 transition-opacity">
                 Apply Now
               </Link>
             </div>
@@ -457,7 +457,7 @@ export function LandingPage() {
           <p className="text-on-surface-variant text-lg mt-4 max-w-xl mx-auto">
             Limited spots available. Apply now and your dedicated matchmaker can start within 48 hours.
           </p>
-          <Link href="/signup" className="inline-flex items-center gap-2 gold-gradient text-on-gold font-semibold rounded-full px-10 py-4 text-lg mt-8 hover:opacity-90 transition-opacity">
+          <Link href="/apply" className="inline-flex items-center gap-2 gold-gradient text-on-gold font-semibold rounded-full px-10 py-4 text-lg mt-8 hover:opacity-90 transition-opacity">
             <span className="material-symbols-outlined text-xl" style={ICON_STYLE}>arrow_forward</span>
             Start Your Application
           </Link>
