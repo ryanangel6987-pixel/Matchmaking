@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface SupportNotesManagerProps {
@@ -36,8 +37,10 @@ export function SupportNotesManager({ clientId, authorId, notes }: SupportNotesM
 
     if (insertError) {
       setError(insertError.message);
+      toast.error("Failed to add note");
     } else {
       setNoteText("");
+      toast.success("Note added");
       router.refresh();
     }
     setLoading(false);

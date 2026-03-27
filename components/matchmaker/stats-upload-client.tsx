@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { CustomSelect } from "@/components/ui/custom-select";
+import { toast } from "sonner";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface StatsUploadClientProps {
@@ -89,8 +90,10 @@ export function StatsUploadClient({ clientId, clientName, matchmakerProfileId, d
 
     if (upsertError) {
       setError(upsertError.message);
+      toast.error("Failed to save stats", { description: upsertError.message });
     } else {
       setSuccess(true);
+      toast.success("Stats uploaded");
       setSwipes("0");
       setNewMatches("0");
       setConversations("0");
@@ -112,7 +115,7 @@ export function StatsUploadClient({ clientId, clientName, matchmakerProfileId, d
       </div>
 
       {/* Upload Form */}
-      <form onSubmit={handleSubmit} className="bg-surface-container-low p-8 rounded-2xl shadow-xl space-y-6 max-w-lg">
+      <form onSubmit={handleSubmit} className="bg-surface-container-low p-8 rounded-2xl shadow-xl space-y-6">
         <div className="space-y-2">
           <Label className="text-gold text-xs uppercase tracking-wider">App</Label>
           <CustomSelect
@@ -177,10 +180,10 @@ export function StatsUploadClient({ clientId, clientName, matchmakerProfileId, d
                   <span className="text-gold text-xs">{stat.dating_apps?.app_name}</span>
                 </div>
                 <div className="flex gap-3 text-xs text-on-surface-variant">
-                  <span>S:{stat.swipes}</span>
-                  <span>M:{stat.new_matches}</span>
-                  <span>C:{stat.conversations}</span>
-                  <span>D:{stat.dates_closed}</span>
+                  <span>{stat.swipes} swipes</span>
+                  <span>{stat.new_matches} matches</span>
+                  <span>{stat.conversations} convos</span>
+                  <span>{stat.dates_closed} dates</span>
                 </div>
               </div>
             ))}

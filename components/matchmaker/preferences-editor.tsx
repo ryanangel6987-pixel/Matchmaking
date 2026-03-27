@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface PreferencesEditorProps {
@@ -70,9 +71,14 @@ export function PreferencesEditor({ clientId, preferences }: PreferencesEditorPr
   const [ageMin, setAgeMin] = useState(String(preferences?.target_age_min ?? ""));
   const [ageMax, setAgeMax] = useState(String(preferences?.target_age_max ?? ""));
   const [maxDistance, setMaxDistance] = useState(String(preferences?.max_distance_miles ?? ""));
-  const [physicalPreferences, setPhysicalPreferences] = useState(
-    preferences?.physical_preferences ? JSON.stringify(preferences.physical_preferences, null, 2) : ""
+  const [physParsed, setPhysParsed] = useState<Record<string, any>>(
+    preferences?.physical_preferences && typeof preferences.physical_preferences === "object"
+      ? (preferences.physical_preferences as Record<string, any>)
+      : {}
   );
+  const updatePhysPref = (key: string, value: any) => {
+    setPhysParsed((prev) => ({ ...prev, [key]: value }));
+  };
   const [education, setEducation] = useState(preferences?.education_preference ?? "");
   const [professions, setProfessions] = useState<string[]>(preferences?.profession_preferences ?? []);
   const [dealBreakers, setDealBreakers] = useState<string[]>(preferences?.deal_breakers ?? []);
@@ -100,13 +106,6 @@ export function PreferencesEditor({ clientId, preferences }: PreferencesEditorPr
     if (dist !== null && (dist <= 0 || dist > 500)) {
       errors.maxDistance = "Max distance must be between 1 and 500";
     }
-    if (physicalPreferences) {
-      try {
-        JSON.parse(physicalPreferences);
-      } catch {
-        errors.physicalPreferences = "Invalid JSON format";
-      }
-    }
     return errors;
   };
 
@@ -119,21 +118,17 @@ export function PreferencesEditor({ clientId, preferences }: PreferencesEditorPr
     setError("");
     setSuccess(false);
 
-    let parsedPhysical = null;
-    if (physicalPreferences) {
-      try {
-        parsedPhysical = JSON.parse(physicalPreferences);
-      } catch {
-        // validated above
-      }
-    }
+    // Clean up physParsed — remove empty arrays and null values
+    const cleanPhys = Object.fromEntries(
+      Object.entries(physParsed).filter(([, v]) => v !== null && v !== "" && !(Array.isArray(v) && v.length === 0))
+    );
 
     const payload = {
       client_id: clientId,
       target_age_min: ageMin ? parseInt(ageMin) : null,
       target_age_max: ageMax ? parseInt(ageMax) : null,
       max_distance_miles: maxDistance ? parseInt(maxDistance) : null,
-      physical_preferences: parsedPhysical,
+      physical_preferences: Object.keys(cleanPhys).length > 0 ? cleanPhys : null,
       education_preference: education || null,
       profession_preferences: professions.length > 0 ? professions : null,
       deal_breakers: dealBreakers.length > 0 ? dealBreakers : null,
@@ -149,8 +144,10 @@ export function PreferencesEditor({ clientId, preferences }: PreferencesEditorPr
 
     if (upsertError) {
       setError(upsertError.message);
+      toast.error("Failed to save preferences", { description: upsertError.message });
     } else {
       setSuccess(true);
+      toast.success("Preferences saved");
       router.refresh();
     }
     setLoading(false);
@@ -208,18 +205,32 @@ export function PreferencesEditor({ clientId, preferences }: PreferencesEditorPr
       <TagInput label="Profession Preferences" tags={professions} onChange={setProfessions} />
       <TagInput label="Deal Breakers" tags={dealBreakers} onChange={setDealBreakers} />
 
-      {/* Physical Preferences (JSONB) */}
-      <div className="space-y-2">
-        <Label className="text-gold text-xs uppercase tracking-wider">Physical Preferences (JSON)</Label>
-        <Textarea
-          value={physicalPreferences}
-          onChange={(e) => setPhysicalPreferences(e.target.value)}
-          placeholder='e.g. {"height_min": 60, "height_max": 72, "body_types": ["athletic", "slim"], "ethnicities": ["any"]}'
-          rows={4}
-          className="bg-surface-container border-outline-variant/20 text-on-surface placeholder:text-outline font-mono text-sm"
-        />
-        {fieldErrors.physicalPreferences && <p className="text-error-red text-xs mt-1">{fieldErrors.physicalPreferences}</p>}
-        <p className="text-on-surface-variant text-[10px]">Stored as JSONB. Use valid JSON format for height, body types, ethnicities, etc.</p>
+      {/* Physical Preferences (structured form instead of raw JSON) */}
+      <div className="space-y-4 border-t border-outline-variant/15 pt-6">
+        <div className="flex items-center gap-3 mb-2">
+          <span className="material-symbols-outlined text-lg text-gold" style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}>accessibility_new</span>
+          <h3 className="font-heading text-base font-semibold text-on-surface">Physical Preferences</h3>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label className="text-gold text-xs uppercase tracking-wider">Height Min (inches)</Label>
+            <Input type="number" min="48" max="84" value={physParsed.height_min ?? ""} onChange={(e) => updatePhysPref("height_min", e.target.value ? parseInt(e.target.value) : null)} placeholder="e.g. 60 (5'0&quot;)" className="bg-surface-container border-outline-variant/20 text-on-surface placeholder:text-outline" />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-gold text-xs uppercase tracking-wider">Height Max (inches)</Label>
+            <Input type="number" min="48" max="84" value={physParsed.height_max ?? ""} onChange={(e) => updatePhysPref("height_max", e.target.value ? parseInt(e.target.value) : null)} placeholder="e.g. 72 (6'0&quot;)" className="bg-surface-container border-outline-variant/20 text-on-surface placeholder:text-outline" />
+          </div>
+        </div>
+
+        <TagInput label="Body Types" tags={physParsed.body_types ?? []} onChange={(tags) => updatePhysPref("body_types", tags)} />
+        <TagInput label="Ethnicities" tags={physParsed.ethnicities ?? []} onChange={(tags) => updatePhysPref("ethnicities", tags)} />
+        <TagInput label="Hair Colors" tags={physParsed.hair_colors ?? []} onChange={(tags) => updatePhysPref("hair_colors", tags)} />
+
+        <div className="space-y-2">
+          <Label className="text-gold text-xs uppercase tracking-wider">Additional Physical Notes</Label>
+          <Textarea value={physParsed.notes ?? ""} onChange={(e) => updatePhysPref("notes", e.target.value || null)} placeholder="Any other physical preference details..." rows={2} className="bg-surface-container border-outline-variant/20 text-on-surface placeholder:text-outline" />
+        </div>
       </div>
 
       {/* Target Notes */}
