@@ -20,7 +20,7 @@ interface PhotoReviewCardProps {
     review_notes?: string | null;
     feedback?: string | null;
     reviewed_by?: string | null;
-    reviewed_at?: string | null;
+    approved_at?: string | null;
     created_at: string;
     updated_at: string;
   };
@@ -57,7 +57,8 @@ export function PhotoReviewCard({ photo, matchmakerProfileId }: PhotoReviewCardP
     const updateData: Record<string, unknown> = {
       status: newStatus,
       reviewed_by: matchmakerProfileId,
-      reviewed_at: new Date().toISOString(),
+      ...(newStatus === "approved" ? { approved_at: new Date().toISOString() } : {}),
+      ...(newStatus === "live" ? { live_at: new Date().toISOString() } : {}),
     };
     if (notes !== undefined) {
       updateData.review_notes = notes;
@@ -138,9 +139,9 @@ export function PhotoReviewCard({ photo, matchmakerProfileId }: PhotoReviewCardP
       <div className="p-4 flex flex-col gap-3 flex-1">
         {/* Metadata */}
         <div className="text-on-surface-variant text-[10px] uppercase tracking-widest">
-          Uploaded {new Date(photo.created_at).toLocaleDateString()}
-          {photo.reviewed_at && (
-            <span> &middot; Reviewed {new Date(photo.reviewed_at).toLocaleDateString()}</span>
+          Uploaded {new Date(photo.created_at).toLocaleDateString("en-US")}
+          {photo.approved_at && (
+            <span> &middot; Reviewed {new Date(photo.approved_at).toLocaleDateString("en-US")}</span>
           )}
         </div>
 

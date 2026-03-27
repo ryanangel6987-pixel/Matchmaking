@@ -20,8 +20,9 @@ export function ClientSubNav({ clientId }: { clientId: string }) {
   const base = `/clients/${clientId}`;
 
   return (
-    <nav className="bg-surface-container-low rounded-xl overflow-x-auto md:overflow-visible">
-      <div className="flex md:flex-wrap gap-1 px-2 py-2 min-w-max md:min-w-0">
+    <nav className="bg-surface-container-low rounded-xl overflow-x-auto md:overflow-visible scrollbar-hide relative">
+      <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-surface-container-low to-transparent pointer-events-none md:hidden z-10" />
+      <div className="flex md:flex-wrap gap-1 px-2 py-2 min-w-max md:min-w-0 pr-8 md:pr-2">
         {tabs.map((tab) => {
           const href = tab.segment ? `${base}/${tab.segment}` : base;
           const isActive =

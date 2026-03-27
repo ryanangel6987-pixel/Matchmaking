@@ -76,7 +76,7 @@ export function MatchmakerClientsSearch({
                   </Badge>
                 </div>
                 <p className="text-outline text-[10px] mt-3">
-                  Since {new Date(client.created_at).toLocaleDateString()}
+                  Since {new Date(client.created_at).toLocaleDateString("en-US")}
                 </p>
               </Link>
             );

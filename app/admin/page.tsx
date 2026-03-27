@@ -63,7 +63,7 @@ export default async function AdminDashboardPage() {
     // Task 2: All clients with profiles for kanban + applications
     supabase
       .from("clients")
-      .select("id, profile_id, assigned_matchmaker_id, onboarding_status, created_at, profiles!inner(full_name, setup_complete)"),
+      .select("id, profile_id, assigned_matchmaker_id, onboarding_status, created_at, updated_at, admin_pipeline_stage, profiles!inner(full_name, setup_complete)"),
     // Task 5: Consultation bookings
     supabase
       .from("clients")
@@ -87,28 +87,30 @@ export default async function AdminDashboardPage() {
     .select("profile_id")
     .is("logout_at", null);
 
-  // Task 2: Fetch photo counts and recent approved dates for kanban
-  const { data: photoCounts } = await supabase
+  // Task 2: Fetch live photos and all date opportunities for kanban
+  const { data: livePhotos } = await supabase
     .from("photos")
     .select("client_id")
     .eq("status", "live");
 
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-  const { data: recentApprovedDates } = await supabase
-    .from("date_opportunities")
-    .select("client_id")
-    .eq("client_decision", "approved")
-    .gte("client_decision_at", thirtyDaysAgo.toISOString());
+  // Build maps for kanban stages
+  const livePhotoSet = new Set(
+    (livePhotos ?? []).map((p: { client_id: string }) => p.client_id)
+  );
 
-  // Build photo count and recent approved maps
-  const photoCountMap: Record<string, number> = {};
-  (photoCounts ?? []).forEach((p: { client_id: string }) => {
-    photoCountMap[p.client_id] = (photoCountMap[p.client_id] || 0) + 1;
+  const dateScheduledSet = new Set(
+    (allDateOpps ?? []).map((d: any) => d.client_id)
+  );
+
+  const approvedCountMap: Record<string, number> = {};
+  (allDateOpps ?? []).forEach((d: any) => {
+    if (d.client_decision === "approved") {
+      approvedCountMap[d.client_id] = (approvedCountMap[d.client_id] || 0) + 1;
+    }
   });
 
-  const recentApprovedSet = new Set(
-    (recentApprovedDates ?? []).map((d: { client_id: string }) => d.client_id)
+  const consultationBookedSet = new Set(
+    (consultationClients ?? []).map((c: any) => c.id)
   );
 
   // Build matchmaker name lookup
@@ -117,7 +119,7 @@ export default async function AdminDashboardPage() {
     if (mm.full_name) matchmakerNameMap[mm.id] = mm.full_name;
   });
 
-  // Build kanban clients
+  // Build kanban clients with progressive pipeline data
   const kanbanClients = (allClientsRaw ?? []).map((c: any) => ({
     id: c.id,
     profile_id: c.profile_id,
@@ -126,8 +128,12 @@ export default async function AdminDashboardPage() {
     created_at: c.created_at,
     profile_name: c.profiles?.full_name ?? null,
     setup_complete: c.profiles?.setup_complete ?? false,
-    photo_count: photoCountMap[c.id] ?? 0,
-    has_recent_approved_date: recentApprovedSet.has(c.id),
+    consultation_booked: consultationBookedSet.has(c.id),
+    has_live_photos: livePhotoSet.has(c.id),
+    has_date_scheduled: dateScheduledSet.has(c.id),
+    approved_dates: approvedCountMap[c.id] ?? 0,
+    updated_at: c.updated_at,
+    admin_pipeline_stage: c.admin_pipeline_stage ?? "new_signup",
     matchmaker_name: c.assigned_matchmaker_id
       ? matchmakerNameMap[c.assigned_matchmaker_id] ?? null
       : null,

@@ -55,12 +55,13 @@ export function MatchmakerPhotoUpload({ clientId, matchmakerProfileId }: Matchma
         .from("photos")
         .insert({
           client_id: clientId,
-          storage_path: `photos/${storagePath}`,
+          file_path: storagePath,
           storage_url: urlData.publicUrl,
           status: "approved",
           photo_category: category,
+          uploader_id: matchmakerProfileId,
           reviewed_by: matchmakerProfileId,
-          reviewed_at: new Date().toISOString(),
+          approved_at: new Date().toISOString(),
         });
 
       if (insertErr) {

@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { ClientSubNav } from "@/components/matchmaker/client-sub-nav";
 
 export default async function ClientDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: clientId } = await params;
@@ -36,12 +37,12 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
     { data: onboarding },
     { data: accountHealth },
   ] = await Promise.all([
-    supabase.from("client_kpi_summary").select("*").eq("client_id", clientId).single(),
+    supabase.from("client_kpi_summary").select("*").eq("client_id", clientId).maybeSingle(),
     supabase.from("daily_app_stats").select("*").eq("client_id", clientId).order("stat_date", { ascending: false }).limit(5),
     supabase.from("date_opportunities").select("*").eq("client_id", clientId).neq("status", "archived").order("created_at", { ascending: false }).limit(10),
     supabase.from("photos").select("*").eq("client_id", clientId).order("created_at", { ascending: false }).limit(6),
-    supabase.from("onboarding_data").select("*").eq("client_id", clientId).single(),
-    supabase.from("account_health").select("*, dating_apps(name)").eq("client_id", clientId),
+    supabase.from("onboarding_data").select("*").eq("client_id", clientId).maybeSingle(),
+    supabase.from("account_health").select("*, dating_apps(app_name)").eq("client_id", clientId),
   ]);
 
   return (
@@ -58,6 +59,8 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
           </Badge>
         </div>
       </div>
+
+      <ClientSubNav clientId={clientId} />
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -252,7 +255,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                   <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-2">Blackout Dates</p>
                   <div className="flex flex-wrap gap-1.5">
                     {onboarding.blackout_dates?.length ? onboarding.blackout_dates.map((d: string) => (
-                      <span key={d} className="bg-red-400/10 text-red-400 text-xs px-2.5 py-1 rounded-full">{new Date(d).toLocaleDateString()}</span>
+                      <span key={d} className="bg-red-400/10 text-red-400 text-xs px-2.5 py-1 rounded-full">{new Date(d).toLocaleDateString("en-US")}</span>
                     )) : <span className="text-on-surface-variant text-sm">—</span>}
                   </div>
                 </div>
@@ -354,7 +357,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                   {ah.health_status === "green" ? "check_circle" : ah.health_status === "yellow" ? "warning" : "error"}
                 </span>
                 <span className="text-on-surface text-sm font-medium">
-                  {(ah.dating_apps as any)?.name ?? "Unknown App"}
+                  {(ah.dating_apps as any)?.app_name ?? "Unknown App"}
                 </span>
                 <Badge variant="outline" className="text-[9px] uppercase tracking-widest border-outline-variant/30 text-outline">
                   {ah.health_status}
@@ -395,7 +398,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
           <div className="space-y-2">
             {recentStats.map((stat) => (
               <div key={stat.id} className="bg-surface-container-low p-3 rounded-xl flex items-center justify-between text-sm">
-                <span className="text-on-surface">{new Date(stat.stat_date).toLocaleDateString()}</span>
+                <span className="text-on-surface">{new Date(stat.stat_date).toLocaleDateString("en-US")}</span>
                 <div className="flex gap-4 text-xs text-on-surface-variant">
                   <span>S:{stat.swipes}</span>
                   <span>M:{stat.new_matches}</span>

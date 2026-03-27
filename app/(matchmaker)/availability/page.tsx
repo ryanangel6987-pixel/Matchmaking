@@ -21,7 +21,7 @@ export default async function AvailabilityPage() {
     .from("matchmaker_availability")
     .select("*")
     .eq("profile_id", profile.id)
-    .single();
+    .maybeSingle();
 
   return (
     <div className="space-y-10">

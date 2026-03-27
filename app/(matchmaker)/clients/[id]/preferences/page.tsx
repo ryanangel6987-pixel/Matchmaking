@@ -40,13 +40,13 @@ export default async function PreferencesPage({ params }: { params: Promise<{ id
     { data: availability },
     { data: onboarding },
   ] = await Promise.all([
-    supabase.from("preferences").select("*").eq("client_id", clientId).single(),
-    supabase.from("approved_type").select("*").eq("client_id", clientId).single(),
+    supabase.from("preferences").select("*").eq("client_id", clientId).maybeSingle(),
+    supabase.from("approved_type").select("*").eq("client_id", clientId).maybeSingle(),
     supabase.from("preference_assets").select("*").eq("client_id", clientId).order("created_at", { ascending: false }),
     supabase.from("candidates").select("*").eq("client_id", clientId).order("created_at", { ascending: false }),
     supabase.from("client_search_areas").select("*").eq("client_id", clientId).order("sort_order"),
     supabase.from("client_availability").select("*").eq("client_id", clientId),
-    supabase.from("onboarding_data").select("*").eq("client_id", clientId).single(),
+    supabase.from("onboarding_data").select("*").eq("client_id", clientId).maybeSingle(),
   ]);
 
   return (
@@ -239,7 +239,7 @@ export default async function PreferencesPage({ params }: { params: Promise<{ id
                 <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-2">Blackout Dates</p>
                 <div className="flex flex-wrap gap-1.5">
                   {onboarding.blackout_dates.map((d: string) => (
-                    <span key={d} className="bg-red-400/10 text-red-400 text-xs px-2.5 py-1 rounded-full">{new Date(d).toLocaleDateString()}</span>
+                    <span key={d} className="bg-red-400/10 text-red-400 text-xs px-2.5 py-1 rounded-full">{new Date(d).toLocaleDateString("en-US")}</span>
                   ))}
                 </div>
               </div>

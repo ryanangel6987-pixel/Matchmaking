@@ -1,164 +1,287 @@
 "use client";
 
+import { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 import { Badge } from "@/components/ui/badge";
 
 interface KanbanClient {
   id: string;
   onboarding_status: string;
   created_at: string;
+  updated_at: string;
+  mm_pipeline_stage: string | null;
   profiles: { full_name: string | null; avatar_url: string | null } | null;
-  has_live_photos: boolean;
-  has_date_opportunity: boolean;
-  has_pending_or_approved: boolean;
+  has_credentials: boolean;
+  has_swipes: boolean;
+  has_date_scheduled: boolean;
+  approved_dates: number;
 }
 
-interface Column {
-  key: string;
-  title: string;
-  icon: string;
-  clients: KanbanClient[];
-  color: string;
+const STALL_DAYS = 7;
+
+const STAGES = [
+  { key: "date_assigned", title: "Date Assigned", icon: "assignment_ind", color: "text-blue-400" },
+  { key: "account_live", title: "Account Live & Setup", icon: "phonelink_setup", color: "text-orange-400" },
+  { key: "first_swipes", title: "First Swipes Logged", icon: "swipe", color: "text-purple-400" },
+  { key: "first_date", title: "First Date Scheduled", icon: "event_available", color: "text-green-400" },
+  { key: "five_dates", title: "First 5 Dates Delivered", icon: "verified", color: "text-gold" },
+] as const;
+
+const STAGE_KEYS = STAGES.map((s) => s.key);
+
+function daysSince(dateStr: string): number {
+  const d = new Date(dateStr);
+  const now = new Date();
+  return Math.floor((now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
 }
 
-function getNextAction(client: KanbanClient, columnKey: string): string {
-  switch (columnKey) {
-    case "onboarding":
-      return client.onboarding_status === "not_started"
-        ? "Start onboarding intake"
-        : "Complete onboarding form";
-    case "profile_build":
-      return "Upload and approve photos";
-    case "active":
-      return "Create date opportunity";
-    case "date_scheduled":
-      return "Follow up on scheduled date";
-    default:
-      return "";
+function getNextAction(key: string): string {
+  switch (key) {
+    case "date_assigned": return "Set up dating app credentials";
+    case "account_live": return "Begin swiping & log first stats";
+    case "first_swipes": return "Schedule the first date";
+    case "first_date": return "Deliver 5 approved dates";
+    case "five_dates": return "System proven — ongoing delivery";
+    case "stalled": return "Client needs follow-up";
+    default: return "";
   }
 }
 
-function daysSince(dateStr: string): number {
-  const created = new Date(dateStr);
-  const now = new Date();
-  return Math.floor((now.getTime() - created.getTime()) / (1000 * 60 * 60 * 24));
+function isStalled(c: KanbanClient): boolean {
+  const stage = c.mm_pipeline_stage ?? "date_assigned";
+  if (stage === "five_dates") return false;
+  return daysSince(c.updated_at) >= STALL_DAYS;
 }
 
 export function ClientKanban({ clients }: { clients: KanbanClient[] }) {
-  const columns: Column[] = [
+  const router = useRouter();
+  const supabase = createClient();
+  const [draggingId, setDraggingId] = useState<string | null>(null);
+  const [dragOverCol, setDragOverCol] = useState<string | null>(null);
+  const [moving, setMoving] = useState<string | null>(null);
+  const dragCounter = useRef<Record<string, number>>({});
+
+  const stalledClients = clients.filter((c) => isStalled(c));
+  const activeClients = clients.filter((c) => !isStalled(c));
+
+  const moveClient = async (clientId: string, newStage: string) => {
+    setMoving(clientId);
+    const { error } = await supabase
+      .from("clients")
+      .update({
+        mm_pipeline_stage: newStage,
+        mm_stage_changed_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", clientId);
+
+    if (!error) {
+      // Log the stage change in audit_logs
+      await supabase.from("audit_logs").insert({
+        action: "mm_stage_change",
+        entity_type: "client",
+        entity_id: clientId,
+        details: { new_stage: newStage },
+      });
+    }
+    setMoving(null);
+    router.refresh();
+  };
+
+  const handleDragStart = (e: React.DragEvent, clientId: string) => {
+    setDraggingId(clientId);
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", clientId);
+  };
+
+  const handleDragEnd = () => {
+    setDraggingId(null);
+    setDragOverCol(null);
+    dragCounter.current = {};
+  };
+
+  const handleDragEnter = (e: React.DragEvent, colKey: string) => {
+    e.preventDefault();
+    dragCounter.current[colKey] = (dragCounter.current[colKey] || 0) + 1;
+    setDragOverCol(colKey);
+  };
+
+  const handleDragLeave = (colKey: string) => {
+    dragCounter.current[colKey] = (dragCounter.current[colKey] || 0) - 1;
+    if (dragCounter.current[colKey] <= 0) {
+      dragCounter.current[colKey] = 0;
+      if (dragOverCol === colKey) setDragOverCol(null);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  };
+
+  const handleDrop = (e: React.DragEvent, colKey: string) => {
+    e.preventDefault();
+    const clientId = e.dataTransfer.getData("text/plain");
+    if (clientId && colKey !== "stalled") {
+      moveClient(clientId, colKey);
+    }
+    setDraggingId(null);
+    setDragOverCol(null);
+    dragCounter.current = {};
+  };
+
+  const allColumns = [
+    ...STAGES.map((s) => ({
+      ...s,
+      clients: activeClients.filter((c) => (c.mm_pipeline_stage ?? "date_assigned") === s.key),
+    })),
     {
-      key: "onboarding",
-      title: "Onboarding",
-      icon: "person_add",
-      color: "text-blue-400",
-      clients: clients.filter(
-        (c) =>
-          c.onboarding_status === "not_started" ||
-          c.onboarding_status === "in_progress"
-      ),
-    },
-    {
-      key: "profile_build",
-      title: "Profile Build",
-      icon: "construction",
-      color: "text-orange-400",
-      clients: clients.filter(
-        (c) => c.onboarding_status === "completed" && !c.has_live_photos
-      ),
-    },
-    {
-      key: "active",
-      title: "Active",
-      icon: "play_circle",
-      color: "text-green-400",
-      clients: clients.filter(
-        (c) =>
-          c.has_live_photos &&
-          c.has_date_opportunity &&
-          !c.has_pending_or_approved
-      ),
-    },
-    {
-      key: "date_scheduled",
-      title: "Date Scheduled",
-      icon: "event_available",
-      color: "text-gold",
-      clients: clients.filter((c) => c.has_pending_or_approved),
+      key: "stalled",
+      title: "Stalled / Blocked",
+      icon: "warning",
+      color: "text-red-400",
+      clients: stalledClients,
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-      {columns.map((col) => (
-        <div key={col.key} className="space-y-3">
-          {/* Column header */}
-          <div className="flex items-center gap-2 px-1">
-            <span
-              className={`material-symbols-outlined text-lg ${col.color}`}
-              style={{
-                fontVariationSettings: "'FILL' 0, 'wght' 300",
-              }}
+    <div className="overflow-x-auto -mx-4 px-4 pb-4">
+      <div className="grid grid-cols-6 gap-3 min-w-[1050px]">
+        {allColumns.map((col) => {
+          const isDropTarget = dragOverCol === col.key && col.key !== "stalled";
+          return (
+            <div
+              key={col.key}
+              className="space-y-3"
+              onDragEnter={(e) => handleDragEnter(e, col.key)}
+              onDragLeave={() => handleDragLeave(col.key)}
+              onDragOver={handleDragOver}
+              onDrop={(e) => handleDrop(e, col.key)}
             >
-              {col.icon}
-            </span>
-            <h3 className="text-on-surface text-sm font-medium">
-              {col.title}
-            </h3>
-            <span className="ml-auto text-outline text-xs bg-surface-container-high px-2 py-0.5 rounded-full">
-              {col.clients.length}
-            </span>
-          </div>
-
-          {/* Column cards */}
-          <div className="space-y-2 min-h-[120px]">
-            {col.clients.length === 0 ? (
-              <div className="bg-surface-container-low rounded-2xl p-4 border border-outline-variant/10">
-                <p className="text-outline text-xs text-center">No clients</p>
+              {/* Column header */}
+              <div className="flex items-center gap-2 px-1">
+                <span
+                  className={`material-symbols-outlined text-lg ${col.color}`}
+                  style={{
+                    fontVariationSettings: col.key === "stalled"
+                      ? "'FILL' 1, 'wght' 400"
+                      : "'FILL' 0, 'wght' 300",
+                  }}
+                >
+                  {col.icon}
+                </span>
+                <h3 className="text-on-surface text-xs font-medium leading-tight">
+                  {col.title}
+                </h3>
+                <span className={`ml-auto text-xs px-2 py-0.5 rounded-full ${
+                  col.key === "stalled" && col.clients.length > 0
+                    ? "bg-red-500/20 text-red-400"
+                    : "bg-surface-container-high text-outline"
+                }`}>
+                  {col.clients.length}
+                </span>
               </div>
-            ) : (
-              col.clients.map((client) => {
-                const name =
-                  (client.profiles as any)?.full_name ?? "Unknown";
-                const days = daysSince(client.created_at);
-                const action = getNextAction(client, col.key);
-                return (
-                  <Link
-                    key={client.id}
-                    href={`/clients/${client.id}`}
-                    className="block bg-surface-container-low p-4 rounded-2xl shadow-xl relative overflow-hidden group hover:bg-surface-container-high transition-colors duration-300"
-                  >
-                    <div className="absolute top-0 left-0 w-1 h-full bg-gold opacity-30 group-hover:opacity-100 transition-opacity duration-500" />
-                    <h4 className="font-heading text-sm font-bold text-on-surface">
-                      {name}
-                    </h4>
-                    <div className="flex items-center gap-2 mt-1.5">
-                      <Badge
-                        variant="outline"
-                        className="text-[8px] uppercase tracking-widest border-outline-variant/30 text-outline"
+
+              {/* Drop zone */}
+              <div className={`space-y-2 min-h-[120px] rounded-2xl transition-all duration-200 p-1 ${
+                isDropTarget
+                  ? "bg-gold/10 ring-2 ring-gold/30 ring-dashed"
+                  : ""
+              }`}>
+                {col.clients.length === 0 && !isDropTarget ? (
+                  <div className="bg-surface-container-low rounded-2xl p-4 border border-outline-variant/10">
+                    <p className="text-outline text-xs text-center">
+                      {col.key === "stalled" ? "All clear" : "No clients"}
+                    </p>
+                  </div>
+                ) : col.clients.length === 0 && isDropTarget ? (
+                  <div className="bg-gold/5 rounded-2xl p-4 border-2 border-dashed border-gold/30">
+                    <p className="text-gold text-xs text-center">Drop here</p>
+                  </div>
+                ) : (
+                  col.clients.map((client) => {
+                    const name = (client.profiles as any)?.full_name ?? "Unknown";
+                    const days = daysSince(client.created_at);
+                    const staleDays = daysSince(client.updated_at);
+                    const action = getNextAction(col.key);
+                    const isStalledCard = col.key === "stalled";
+                    const isDragging = draggingId === client.id;
+                    const isMoving = moving === client.id;
+
+                    return (
+                      <div
+                        key={client.id}
+                        draggable={!isMoving}
+                        onDragStart={(e) => handleDragStart(e, client.id)}
+                        onDragEnd={handleDragEnd}
+                        className={`relative overflow-hidden group transition-all duration-300 rounded-2xl ${
+                          isDragging ? "opacity-40 scale-95" : ""
+                        } ${isMoving ? "opacity-60 animate-pulse" : ""}`}
                       >
-                        {days}d since onboarding
-                      </Badge>
-                    </div>
-                    {action && (
-                      <p className="text-on-surface-variant text-[10px] mt-2 flex items-center gap-1">
-                        <span
-                          className="material-symbols-outlined text-gold text-xs"
-                          style={{
-                            fontVariationSettings: "'FILL' 0, 'wght' 300",
-                          }}
+                        <Link
+                          href={`/clients/${client.id}`}
+                          className={`block p-4 rounded-2xl shadow-xl cursor-grab active:cursor-grabbing ${
+                            isStalledCard
+                              ? "bg-red-500/5 hover:bg-red-500/10 border border-red-500/20"
+                              : "bg-surface-container-low hover:bg-surface-container-high"
+                          }`}
+                          draggable={false}
                         >
-                          arrow_forward
-                        </span>
-                        {action}
-                      </p>
-                    )}
-                  </Link>
-                );
-              })
-            )}
-          </div>
-        </div>
-      ))}
+                          <div className={`absolute top-0 left-0 w-1 h-full opacity-30 group-hover:opacity-100 transition-opacity duration-500 ${
+                            isStalledCard ? "bg-red-400" : "bg-gold"
+                          }`} />
+                          <h4 className="font-heading text-sm font-bold text-on-surface">
+                            {name}
+                          </h4>
+                          <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                            <Badge
+                              variant="outline"
+                              className="text-[8px] uppercase tracking-widest border-outline-variant/30 text-outline"
+                            >
+                              {days}d since assigned
+                            </Badge>
+                            {isStalledCard && (
+                              <Badge
+                                variant="outline"
+                                className="text-[8px] uppercase tracking-widest border-red-500/30 text-red-400"
+                              >
+                                {staleDays}d idle
+                              </Badge>
+                            )}
+                            {col.key === "first_date" && (
+                              <Badge
+                                variant="outline"
+                                className="text-[8px] uppercase tracking-widest border-gold/30 text-gold"
+                              >
+                                {client.approved_dates}/5 approved
+                              </Badge>
+                            )}
+                          </div>
+                          {action && (
+                            <p className="text-on-surface-variant text-[10px] mt-2 flex items-center gap-1">
+                              <span
+                                className={`material-symbols-outlined text-xs ${
+                                  isStalledCard ? "text-red-400" : "text-gold"
+                                }`}
+                                style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
+                              >
+                                {isStalledCard ? "priority_high" : "arrow_forward"}
+                              </span>
+                              {action}
+                            </p>
+                          )}
+                        </Link>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

@@ -173,7 +173,7 @@ export function StatsUploadClient({ clientId, clientName, matchmakerProfileId, d
             {history.map((stat) => (
               <div key={stat.id} className="bg-surface-container-low p-3 rounded-xl flex items-center justify-between text-sm">
                 <div className="flex items-center gap-3">
-                  <span className="text-on-surface">{new Date(stat.stat_date).toLocaleDateString()}</span>
+                  <span className="text-on-surface">{new Date(stat.stat_date).toLocaleDateString("en-US")}</span>
                   <span className="text-gold text-xs">{stat.dating_apps?.app_name}</span>
                 </div>
                 <div className="flex gap-3 text-xs text-on-surface-variant">

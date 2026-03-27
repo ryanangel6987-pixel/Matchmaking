@@ -24,7 +24,7 @@ export default async function MatchmakerClientsPage({
 
   const { data: clients } = await supabase
     .from("clients")
-    .select("id, onboarding_status, created_at, profiles!clients_profile_id_fkey(full_name, avatar_url)")
+    .select("id, onboarding_status, created_at, updated_at, mm_pipeline_stage, profiles!clients_profile_id_fkey(full_name, avatar_url)")
     .eq("assigned_matchmaker_id", profile.id)
     .order("created_at", { ascending: false });
 
@@ -33,38 +33,49 @@ export default async function MatchmakerClientsPage({
   if (isKanban && clients && clients.length > 0) {
     const clientIds = clients.map((c) => c.id);
 
-    const [{ data: livePhotos }, { data: dateOpps }] = await Promise.all([
+    const [
+      { data: creds },
+      { data: stats },
+      { data: dateOpps },
+    ] = await Promise.all([
       supabase
-        .from("photos")
+        .from("credentials")
         .select("client_id")
-        .in("client_id", clientIds)
-        .eq("status", "live"),
+        .in("client_id", clientIds),
+      supabase
+        .from("daily_app_stats")
+        .select("client_id")
+        .in("client_id", clientIds),
       supabase
         .from("date_opportunities")
-        .select("client_id, status")
+        .select("client_id, client_decision")
         .in("client_id", clientIds),
     ]);
 
-    const livePhotoClients = new Set(
-      (livePhotos ?? []).map((p: any) => p.client_id)
+    const hasCredentials = new Set(
+      (creds ?? []).map((c: any) => c.client_id)
     );
-    const dateOppClients = new Set(
+    const hasSwipes = new Set(
+      (stats ?? []).map((s: any) => s.client_id)
+    );
+    const hasDateScheduled = new Set(
       (dateOpps ?? []).map((o: any) => o.client_id)
     );
-    const pendingOrApprovedClients = new Set(
-      (dateOpps ?? [])
-        .filter(
-          (o: any) =>
-            o.status === "pending_client_approval" || o.status === "approved"
-        )
-        .map((o: any) => o.client_id)
-    );
+    // Count approved dates per client
+    const approvedCount: Record<string, number> = {};
+    (dateOpps ?? []).forEach((o: any) => {
+      if (o.client_decision === "approved") {
+        approvedCount[o.client_id] = (approvedCount[o.client_id] || 0) + 1;
+      }
+    });
 
-    kanbanClients = clients.map((c) => ({
+    kanbanClients = clients.map((c: any) => ({
       ...c,
-      has_live_photos: livePhotoClients.has(c.id),
-      has_date_opportunity: dateOppClients.has(c.id),
-      has_pending_or_approved: pendingOrApprovedClients.has(c.id),
+      mm_pipeline_stage: c.mm_pipeline_stage ?? "date_assigned",
+      has_credentials: hasCredentials.has(c.id),
+      has_swipes: hasSwipes.has(c.id),
+      has_date_scheduled: hasDateScheduled.has(c.id),
+      approved_dates: approvedCount[c.id] ?? 0,
     }));
   }
 
