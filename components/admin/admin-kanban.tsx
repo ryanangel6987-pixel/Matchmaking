@@ -59,6 +59,7 @@ export function AdminKanban({ clients }: AdminKanbanProps) {
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [dragOverCol, setDragOverCol] = useState<string | null>(null);
   const [moving, setMoving] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const dragCounter = useRef<Record<string, number>>({});
 
   const stalledClients = clients.filter((c) => isStalled(c));
@@ -66,7 +67,8 @@ export function AdminKanban({ clients }: AdminKanbanProps) {
 
   const moveClient = async (clientId: string, newStage: string) => {
     setMoving(clientId);
-    const { error } = await supabase
+    setError(null);
+    const { error: updateError } = await supabase
       .from("clients")
       .update({
         admin_pipeline_stage: newStage,
@@ -75,14 +77,19 @@ export function AdminKanban({ clients }: AdminKanbanProps) {
       })
       .eq("id", clientId);
 
-    if (!error) {
-      await supabase.from("audit_logs").insert({
-        action: "admin_stage_change",
-        entity_type: "client",
-        entity_id: clientId,
-        details: { new_stage: newStage },
-      });
+    if (updateError) {
+      setError(`Failed to move client: ${updateError.message}`);
+      setMoving(null);
+      return;
     }
+
+    await supabase.from("audit_logs").insert({
+      action: "admin_stage_change",
+      entity_type: "client",
+      entity_id: clientId,
+      details: { new_stage: newStage },
+    });
+
     setMoving(null);
     router.refresh();
   };
@@ -91,6 +98,9 @@ export function AdminKanban({ clients }: AdminKanbanProps) {
     setDraggingId(clientId);
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.setData("text/plain", clientId);
+    if (e.currentTarget instanceof HTMLElement) {
+      e.dataTransfer.setDragImage(e.currentTarget, 20, 20);
+    }
   };
 
   const handleDragEnd = () => {
@@ -138,6 +148,16 @@ export function AdminKanban({ clients }: AdminKanbanProps) {
   }));
 
   return (
+    <div className="space-y-3">
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3 flex items-center gap-2">
+          <span className="material-symbols-outlined text-red-400 text-sm">error</span>
+          <p className="text-red-400 text-xs flex-1">{error}</p>
+          <button onClick={() => setError(null)} className="text-red-400/60 hover:text-red-400">
+            <span className="material-symbols-outlined text-sm">close</span>
+          </button>
+        </div>
+      )}
     <div className="overflow-x-auto -mx-4 px-4 pb-4">
       <div className="grid grid-cols-10 gap-2 min-w-[1600px]">
         {columns.map((col) => {
@@ -261,6 +281,7 @@ export function AdminKanban({ clients }: AdminKanbanProps) {
           );
         })}
       </div>
+    </div>
     </div>
   );
 }

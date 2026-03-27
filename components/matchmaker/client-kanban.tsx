@@ -2,7 +2,6 @@
 
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Badge } from "@/components/ui/badge";
 
@@ -28,8 +27,6 @@ const STAGES = [
   { key: "first_date", title: "First Date Scheduled", icon: "event_available", color: "text-green-400" },
   { key: "five_dates", title: "First 5 Dates Delivered", icon: "verified", color: "text-gold" },
 ] as const;
-
-const STAGE_KEYS = STAGES.map((s) => s.key);
 
 function daysSince(dateStr: string): number {
   const d = new Date(dateStr);
@@ -61,14 +58,17 @@ export function ClientKanban({ clients }: { clients: KanbanClient[] }) {
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [dragOverCol, setDragOverCol] = useState<string | null>(null);
   const [moving, setMoving] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const dragCounter = useRef<Record<string, number>>({});
+  const didDrag = useRef(false);
 
   const stalledClients = clients.filter((c) => isStalled(c));
   const activeClients = clients.filter((c) => !isStalled(c));
 
   const moveClient = async (clientId: string, newStage: string) => {
     setMoving(clientId);
-    const { error } = await supabase
+    setError(null);
+    const { error: updateError } = await supabase
       .from("clients")
       .update({
         mm_pipeline_stage: newStage,
@@ -77,23 +77,32 @@ export function ClientKanban({ clients }: { clients: KanbanClient[] }) {
       })
       .eq("id", clientId);
 
-    if (!error) {
-      // Log the stage change in audit_logs
-      await supabase.from("audit_logs").insert({
-        action: "mm_stage_change",
-        entity_type: "client",
-        entity_id: clientId,
-        details: { new_stage: newStage },
-      });
+    if (updateError) {
+      setError(`Failed to move client: ${updateError.message}`);
+      setMoving(null);
+      return;
     }
+
+    await supabase.from("audit_logs").insert({
+      action: "mm_stage_change",
+      entity_type: "client",
+      entity_id: clientId,
+      details: { new_stage: newStage },
+    });
+
     setMoving(null);
     router.refresh();
   };
 
   const handleDragStart = (e: React.DragEvent, clientId: string) => {
+    didDrag.current = false;
     setDraggingId(clientId);
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.setData("text/plain", clientId);
+    // Set a drag image
+    if (e.currentTarget instanceof HTMLElement) {
+      e.dataTransfer.setDragImage(e.currentTarget, 20, 20);
+    }
   };
 
   const handleDragEnd = () => {
@@ -104,6 +113,7 @@ export function ClientKanban({ clients }: { clients: KanbanClient[] }) {
 
   const handleDragEnter = (e: React.DragEvent, colKey: string) => {
     e.preventDefault();
+    didDrag.current = true;
     dragCounter.current[colKey] = (dragCounter.current[colKey] || 0) + 1;
     setDragOverCol(colKey);
   };
@@ -132,6 +142,14 @@ export function ClientKanban({ clients }: { clients: KanbanClient[] }) {
     dragCounter.current = {};
   };
 
+  // Navigate to client on click (not drag)
+  const handleCardClick = (clientId: string) => {
+    if (!didDrag.current) {
+      router.push(`/clients/${clientId}`);
+    }
+    didDrag.current = false;
+  };
+
   const allColumns = [
     ...STAGES.map((s) => ({
       ...s,
@@ -147,87 +165,91 @@ export function ClientKanban({ clients }: { clients: KanbanClient[] }) {
   ];
 
   return (
-    <div className="overflow-x-auto -mx-4 px-4 pb-4">
-      <div className="grid grid-cols-6 gap-3 min-w-[1050px]">
-        {allColumns.map((col) => {
-          const isDropTarget = dragOverCol === col.key && col.key !== "stalled";
-          return (
-            <div
-              key={col.key}
-              className="space-y-3"
-              onDragEnter={(e) => handleDragEnter(e, col.key)}
-              onDragLeave={() => handleDragLeave(col.key)}
-              onDragOver={handleDragOver}
-              onDrop={(e) => handleDrop(e, col.key)}
-            >
-              {/* Column header */}
-              <div className="flex items-center gap-2 px-1">
-                <span
-                  className={`material-symbols-outlined text-lg ${col.color}`}
-                  style={{
-                    fontVariationSettings: col.key === "stalled"
-                      ? "'FILL' 1, 'wght' 400"
-                      : "'FILL' 0, 'wght' 300",
-                  }}
-                >
-                  {col.icon}
-                </span>
-                <h3 className="text-on-surface text-xs font-medium leading-tight">
-                  {col.title}
-                </h3>
-                <span className={`ml-auto text-xs px-2 py-0.5 rounded-full ${
-                  col.key === "stalled" && col.clients.length > 0
-                    ? "bg-red-500/20 text-red-400"
-                    : "bg-surface-container-high text-outline"
+    <div className="space-y-3">
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3 flex items-center gap-2">
+          <span className="material-symbols-outlined text-red-400 text-sm">error</span>
+          <p className="text-red-400 text-xs flex-1">{error}</p>
+          <button onClick={() => setError(null)} className="text-red-400/60 hover:text-red-400">
+            <span className="material-symbols-outlined text-sm">close</span>
+          </button>
+        </div>
+      )}
+      <div className="overflow-x-auto -mx-4 px-4 pb-4">
+        <div className="grid grid-cols-6 gap-3 min-w-[1050px]">
+          {allColumns.map((col) => {
+            const isDropTarget = dragOverCol === col.key && col.key !== "stalled";
+            return (
+              <div
+                key={col.key}
+                className="space-y-3"
+                onDragEnter={(e) => handleDragEnter(e, col.key)}
+                onDragLeave={() => handleDragLeave(col.key)}
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, col.key)}
+              >
+                {/* Column header */}
+                <div className="flex items-center gap-2 px-1">
+                  <span
+                    className={`material-symbols-outlined text-lg ${col.color}`}
+                    style={{
+                      fontVariationSettings: col.key === "stalled"
+                        ? "'FILL' 1, 'wght' 400"
+                        : "'FILL' 0, 'wght' 300",
+                    }}
+                  >
+                    {col.icon}
+                  </span>
+                  <h3 className="text-on-surface text-xs font-medium leading-tight">
+                    {col.title}
+                  </h3>
+                  <span className={`ml-auto text-xs px-2 py-0.5 rounded-full ${
+                    col.key === "stalled" && col.clients.length > 0
+                      ? "bg-red-500/20 text-red-400"
+                      : "bg-surface-container-high text-outline"
+                  }`}>
+                    {col.clients.length}
+                  </span>
+                </div>
+
+                {/* Drop zone */}
+                <div className={`space-y-2 min-h-[120px] rounded-2xl transition-all duration-200 p-1 ${
+                  isDropTarget ? "bg-gold/10 ring-2 ring-gold/30" : ""
                 }`}>
-                  {col.clients.length}
-                </span>
-              </div>
+                  {col.clients.length === 0 && !isDropTarget ? (
+                    <div className="bg-surface-container-low rounded-2xl p-4 border border-outline-variant/10">
+                      <p className="text-outline text-xs text-center">
+                        {col.key === "stalled" ? "All clear" : "No clients"}
+                      </p>
+                    </div>
+                  ) : col.clients.length === 0 && isDropTarget ? (
+                    <div className="bg-gold/5 rounded-2xl p-4 border-2 border-dashed border-gold/30">
+                      <p className="text-gold text-xs text-center">Drop here</p>
+                    </div>
+                  ) : (
+                    col.clients.map((client) => {
+                      const name = (client.profiles as any)?.full_name ?? "Unknown";
+                      const days = daysSince(client.created_at);
+                      const staleDays = daysSince(client.updated_at);
+                      const action = getNextAction(col.key);
+                      const isStalledCard = col.key === "stalled";
+                      const isDragging = draggingId === client.id;
+                      const isMoving = moving === client.id;
 
-              {/* Drop zone */}
-              <div className={`space-y-2 min-h-[120px] rounded-2xl transition-all duration-200 p-1 ${
-                isDropTarget
-                  ? "bg-gold/10 ring-2 ring-gold/30 ring-dashed"
-                  : ""
-              }`}>
-                {col.clients.length === 0 && !isDropTarget ? (
-                  <div className="bg-surface-container-low rounded-2xl p-4 border border-outline-variant/10">
-                    <p className="text-outline text-xs text-center">
-                      {col.key === "stalled" ? "All clear" : "No clients"}
-                    </p>
-                  </div>
-                ) : col.clients.length === 0 && isDropTarget ? (
-                  <div className="bg-gold/5 rounded-2xl p-4 border-2 border-dashed border-gold/30">
-                    <p className="text-gold text-xs text-center">Drop here</p>
-                  </div>
-                ) : (
-                  col.clients.map((client) => {
-                    const name = (client.profiles as any)?.full_name ?? "Unknown";
-                    const days = daysSince(client.created_at);
-                    const staleDays = daysSince(client.updated_at);
-                    const action = getNextAction(col.key);
-                    const isStalledCard = col.key === "stalled";
-                    const isDragging = draggingId === client.id;
-                    const isMoving = moving === client.id;
-
-                    return (
-                      <div
-                        key={client.id}
-                        draggable={!isMoving}
-                        onDragStart={(e) => handleDragStart(e, client.id)}
-                        onDragEnd={handleDragEnd}
-                        className={`relative overflow-hidden group transition-all duration-300 rounded-2xl ${
-                          isDragging ? "opacity-40 scale-95" : ""
-                        } ${isMoving ? "opacity-60 animate-pulse" : ""}`}
-                      >
-                        <Link
-                          href={`/clients/${client.id}`}
-                          className={`block p-4 rounded-2xl shadow-xl cursor-grab active:cursor-grabbing ${
+                      return (
+                        <div
+                          key={client.id}
+                          draggable={!isMoving}
+                          onDragStart={(e) => handleDragStart(e, client.id)}
+                          onDragEnd={handleDragEnd}
+                          onClick={() => handleCardClick(client.id)}
+                          className={`p-4 rounded-2xl shadow-xl relative overflow-hidden group transition-all duration-300 select-none ${
+                            isDragging ? "opacity-40 scale-95" : "cursor-grab active:cursor-grabbing"
+                          } ${isMoving ? "opacity-60 animate-pulse" : ""} ${
                             isStalledCard
                               ? "bg-red-500/5 hover:bg-red-500/10 border border-red-500/20"
                               : "bg-surface-container-low hover:bg-surface-container-high"
                           }`}
-                          draggable={false}
                         >
                           <div className={`absolute top-0 left-0 w-1 h-full opacity-30 group-hover:opacity-100 transition-opacity duration-500 ${
                             isStalledCard ? "bg-red-400" : "bg-gold"
@@ -272,15 +294,15 @@ export function ClientKanban({ clients }: { clients: KanbanClient[] }) {
                               {action}
                             </p>
                           )}
-                        </Link>
-                      </div>
-                    );
-                  })
-                )}
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );
