@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const tabs = [
   { label: "My Clients", href: "/clients", icon: "group" },
+  { label: "Status", href: "/status", icon: "view_kanban" },
   { label: "Availability", href: "/availability", icon: "event_available" },
   { label: "Profile", href: "/my-profile", icon: "account_circle" },
 ];
