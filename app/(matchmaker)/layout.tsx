@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { MatchmakerNav } from "@/components/matchmaker-nav";
 import { SessionTracker } from "@/components/matchmaker/session-tracker";
+import { Toaster } from "@/components/ui/sonner";
 
 export default async function MatchmakerLayout({
   children,
@@ -33,6 +34,7 @@ export default async function MatchmakerLayout({
           {children}
         </div>
       </main>
+      <Toaster position="top-right" richColors closeButton />
     </div>
   );
 }
