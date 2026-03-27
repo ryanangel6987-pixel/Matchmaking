@@ -11,11 +11,20 @@ export default async function ProfilePage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, role, full_name, avatar_url, whatsapp_number, bio")
+    .select("*")
     .eq("auth_user_id", user.id)
     .single();
 
   if (!profile || profile.role !== "matchmaker") redirect("/login");
+
+  // Ensure optional fields have fallbacks
+  const profileData = {
+    id: profile.id,
+    full_name: profile.full_name,
+    avatar_url: profile.avatar_url ?? null,
+    whatsapp_number: profile.whatsapp_number ?? null,
+    bio: profile.bio ?? null,
+  };
 
   const { data: availability } = await supabase
     .from("matchmaker_availability")
@@ -31,7 +40,7 @@ export default async function ProfilePage() {
       </div>
 
       <MatchmakerProfile
-        profile={profile}
+        profile={profileData}
         authUserId={user.id}
         availability={availability}
       />
