@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { ActionsManager } from "@/components/matchmaker/actions-manager";
 import { AlertsManager } from "@/components/matchmaker/alerts-manager";
+import { CredentialsManager } from "@/components/matchmaker/credentials-manager";
 import { ClientSubNav } from "@/components/matchmaker/client-sub-nav";
 
 export default async function ActionsPage({ params }: { params: Promise<{ id: string }> }) {
@@ -32,7 +33,7 @@ export default async function ActionsPage({ params }: { params: Promise<{ id: st
   const clientName = (client.profiles as any)?.full_name ?? "Client";
 
   // Fetch actions (joined with assignee name) and alerts in parallel
-  const [{ data: actions }, { data: alerts }, { data: matchmakers }] = await Promise.all([
+  const [{ data: actions }, { data: alerts }, { data: matchmakers }, { data: credentials }, { data: datingApps }] = await Promise.all([
     supabase
       .from("actions")
       .select("*, assignee:profiles!actions_assigned_to_fkey(full_name)")
@@ -48,6 +49,16 @@ export default async function ActionsPage({ params }: { params: Promise<{ id: st
       .select("id, full_name")
       .eq("role", "matchmaker")
       .order("full_name"),
+    supabase
+      .from("credentials")
+      .select("*, dating_apps(app_name)")
+      .eq("client_id", clientId)
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("dating_apps")
+      .select("id, app_name")
+      .eq("is_active", true)
+      .order("app_name"),
   ]);
 
   return (
@@ -74,6 +85,13 @@ export default async function ActionsPage({ params }: { params: Promise<{ id: st
         clientId={clientId}
         actions={actions ?? []}
         matchmakers={matchmakers ?? []}
+      />
+
+      {/* Credential Vault (merged from /credentials tab) */}
+      <CredentialsManager
+        clientId={clientId}
+        credentials={credentials ?? []}
+        datingApps={datingApps ?? []}
       />
     </div>
   );

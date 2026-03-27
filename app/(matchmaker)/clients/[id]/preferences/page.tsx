@@ -7,6 +7,7 @@ import Link from "next/link";
 import { PreferencesEditor } from "@/components/matchmaker/preferences-editor";
 import { ApprovedTypeEditor } from "@/components/matchmaker/approved-type-editor";
 import { CandidatesManager } from "@/components/matchmaker/candidates-manager";
+import { VenuesManager } from "@/components/matchmaker/venues-manager";
 import { ClientSubNav } from "@/components/matchmaker/client-sub-nav";
 
 export default async function PreferencesPage({ params }: { params: Promise<{ id: string }> }) {
@@ -40,6 +41,7 @@ export default async function PreferencesPage({ params }: { params: Promise<{ id
     { data: searchAreas },
     { data: availability },
     { data: onboarding },
+    { data: venues },
   ] = await Promise.all([
     supabase.from("preferences").select("*").eq("client_id", clientId).maybeSingle(),
     supabase.from("approved_type").select("*").eq("client_id", clientId).maybeSingle(),
@@ -48,6 +50,7 @@ export default async function PreferencesPage({ params }: { params: Promise<{ id
     supabase.from("client_search_areas").select("*").eq("client_id", clientId).order("sort_order"),
     supabase.from("client_availability").select("*").eq("client_id", clientId),
     supabase.from("onboarding_data").select("*").eq("client_id", clientId).maybeSingle(),
+    supabase.from("venues").select("*").eq("client_id", clientId).order("created_at", { ascending: false }),
   ]);
 
   return (
@@ -71,6 +74,9 @@ export default async function PreferencesPage({ params }: { params: Promise<{ id
 
       {/* Candidates Manager */}
       <CandidatesManager clientId={clientId} candidates={candidates ?? []} />
+
+      {/* Venues Manager (merged from /venues tab) */}
+      <VenuesManager clientId={clientId} venues={venues ?? []} />
 
       {/* Client Search Areas (read-only for matchmaker) */}
       {searchAreas && searchAreas.length > 0 && (
