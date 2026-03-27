@@ -289,7 +289,7 @@ export function OpportunitiesClient({ clientId, clientName, matchmakerProfileId,
             {opportunities.map((opp) => {
               const photoUrl = opp.candidate_photo_url || (opp.candidate_photos && opp.candidate_photos[0]);
               return (
-                <OppCard key={opp.id} opp={opp} photoUrl={photoUrl} onStatusChange={handleStatusChange} />
+                <OppCard key={opp.id} opp={opp} photoUrl={photoUrl} onStatusChange={handleStatusChange} datingApps={datingApps} venues={venues} />
               );
             })}
           </div>
@@ -300,8 +300,85 @@ export function OpportunitiesClient({ clientId, clientName, matchmakerProfileId,
 }
 
 // ── Expandable Opportunity Card ─────────────────────────────────────
-function OppCard({ opp, photoUrl, onStatusChange }: { opp: any; photoUrl: string | null; onStatusChange: (id: string, status: string) => void }) {
+function OppCard({ opp, photoUrl, onStatusChange, datingApps, venues }: { opp: any; photoUrl: string | null; onStatusChange: (id: string, status: string) => void; datingApps: any[]; venues: any[] }) {
+  const router = useRouter();
+  const supabase = createClient();
   const [expanded, setExpanded] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [editError, setEditError] = useState("");
+
+  // Edit form state
+  const [eCandidateName, setECandidateName] = useState(opp.candidate_name ?? "");
+  const [eCandidateAge, setECandidateAge] = useState(opp.candidate_age?.toString() ?? "");
+  const [eCandidateProfession, setECandidateProfession] = useState(opp.candidate_profession ?? "");
+  const [eCandidateLocation, setECandidateLocation] = useState(opp.candidate_location ?? "");
+  const [eCandidateEducation, setECandidateEducation] = useState(opp.candidate_education ?? "");
+  const [ePhoneNumber, setEPhoneNumber] = useState(opp.phone_number ?? "");
+  const [eMemorableDetail, setEMemorableDetail] = useState(opp.memorable_detail ?? "");
+  const [eDayDetermined, setEDayDetermined] = useState(opp.day_determined ?? false);
+  const [eProposedDay, setEProposedDay] = useState(opp.proposed_day ?? "");
+  const [eProposedTime, setEProposedTime] = useState(opp.proposed_time ?? "");
+  const [eVenueId, setEVenueId] = useState(opp.venue_id ?? "");
+  const [ePrewrittenText, setEPrewrittenText] = useState(opp.prewritten_text ?? "");
+  const [eNotes, setENotes] = useState(opp.notes ?? "");
+  const [eCandidatePhotoUrl, setECandidatePhotoUrl] = useState(opp.candidate_photo_url ?? "");
+
+  const handleEditSave = async () => {
+    if (!eCandidateName || eCandidateName.trim().length < 2) {
+      setEditError("Candidate name is required (min 2 characters)");
+      return;
+    }
+    setSaving(true);
+    setEditError("");
+    const { error } = await supabase
+      .from("date_opportunities")
+      .update({
+        candidate_name: eCandidateName,
+        candidate_age: eCandidateAge ? parseInt(eCandidateAge) : null,
+        candidate_profession: eCandidateProfession || null,
+        candidate_location: eCandidateLocation || null,
+        candidate_education: eCandidateEducation || null,
+        phone_number: ePhoneNumber || null,
+        memorable_detail: eMemorableDetail || null,
+        day_determined: eDayDetermined,
+        proposed_day: eDayDetermined && eProposedDay ? eProposedDay : null,
+        proposed_time: eDayDetermined && eProposedTime ? eProposedTime : null,
+        venue_id: eVenueId || null,
+        prewritten_text: ePrewrittenText || null,
+        notes: eNotes || null,
+        candidate_photo_url: eCandidatePhotoUrl || null,
+      })
+      .eq("id", opp.id);
+
+    if (error) {
+      setEditError(error.message);
+    } else {
+      setEditing(false);
+      router.refresh();
+    }
+    setSaving(false);
+  };
+
+  const handleEditCancel = () => {
+    setEditing(false);
+    setEditError("");
+    // Reset to original values
+    setECandidateName(opp.candidate_name ?? "");
+    setECandidateAge(opp.candidate_age?.toString() ?? "");
+    setECandidateProfession(opp.candidate_profession ?? "");
+    setECandidateLocation(opp.candidate_location ?? "");
+    setECandidateEducation(opp.candidate_education ?? "");
+    setEPhoneNumber(opp.phone_number ?? "");
+    setEMemorableDetail(opp.memorable_detail ?? "");
+    setEDayDetermined(opp.day_determined ?? false);
+    setEProposedDay(opp.proposed_day ?? "");
+    setEProposedTime(opp.proposed_time ?? "");
+    setEVenueId(opp.venue_id ?? "");
+    setEPrewrittenText(opp.prewritten_text ?? "");
+    setENotes(opp.notes ?? "");
+    setECandidatePhotoUrl(opp.candidate_photo_url ?? "");
+  };
 
   const dateStr = opp.proposed_day
     ? new Date(opp.proposed_day + "T12:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })
@@ -342,61 +419,167 @@ function OppCard({ opp, photoUrl, onStatusChange }: { opp: any; photoUrl: string
       <div className={`grid transition-all duration-300 ease-in-out ${expanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
         <div className="overflow-hidden">
           <div className="px-4 pb-4 border-t border-outline-variant/10 space-y-4">
-            {/* Photo */}
-            {photoUrl && (
-              <div className="mt-3 rounded-xl overflow-hidden">
-                <img src={photoUrl} alt={opp.candidate_name} className="w-full h-[250px] object-cover" />
-              </div>
-            )}
 
-            {/* Details grid */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              {opp.candidate_profession && <div><p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-0.5">Profession</p><p className="text-on-surface text-sm font-medium">{opp.candidate_profession}</p></div>}
-              {opp.candidate_location && <div><p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-0.5">Location</p><p className="text-on-surface text-sm font-medium">{opp.candidate_location}</p></div>}
-              {opp.candidate_education && <div><p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-0.5">Education</p><p className="text-on-surface text-sm font-medium">{opp.candidate_education}</p></div>}
-              {opp.phone_number && <div><p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-0.5">Phone</p><p className="text-on-surface text-sm font-medium">{opp.phone_number}</p></div>}
-              {opp.venues?.venue_name && <div><p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-0.5">Venue</p><p className="text-on-surface text-sm font-medium">{opp.venues.venue_name}</p></div>}
-              <div><p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-0.5">Status</p><p className="text-on-surface text-sm font-medium">{opp.status.replace(/_/g, " ")}</p></div>
-            </div>
+            {/* ── EDIT MODE ── */}
+            {editing ? (
+              <div className="mt-3 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-gold text-xs uppercase tracking-wider">Candidate Name *</Label>
+                    <Input value={eCandidateName} onChange={(e) => setECandidateName(e.target.value)} className="bg-surface-container border-outline-variant/20 text-on-surface" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-gold text-xs uppercase tracking-wider">Age</Label>
+                    <Input type="number" value={eCandidateAge} onChange={(e) => setECandidateAge(e.target.value)} className="bg-surface-container border-outline-variant/20 text-on-surface" />
+                  </div>
+                </div>
 
-            {opp.memorable_detail && (
-              <div><p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-1">About Her</p><p className="text-on-surface text-sm leading-relaxed">{opp.memorable_detail}</p></div>
-            )}
-            {opp.prewritten_text && (
-              <div className="bg-surface-container p-3 rounded-xl">
-                <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-1">Suggested Opening</p>
-                <p className="text-on-surface text-sm italic">&ldquo;{opp.prewritten_text}&rdquo;</p>
-              </div>
-            )}
-            {opp.notes && (
-              <div><p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-1">Notes</p><p className="text-on-surface text-sm leading-relaxed">{opp.notes}</p></div>
-            )}
-            {opp.decline_reason && (
-              <div className="bg-error-red/5 border border-error-red/15 rounded-xl p-3">
-                <p className="text-error-red text-[10px] uppercase tracking-widest mb-1">Decline Reason</p>
-                <p className="text-on-surface text-sm">{opp.decline_reason}</p>
-              </div>
-            )}
-            {opp.client_texted_at && (
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-gold/40 text-sm" style={{ fontVariationSettings: "'FILL' 1, 'wght' 300" }}>check_circle</span>
-                <p className="text-on-surface-variant text-xs">Client texted {new Date(opp.client_texted_at).toLocaleDateString("en-US")}</p>
-              </div>
-            )}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-gold text-xs uppercase tracking-wider">Profession</Label>
+                    <Input value={eCandidateProfession} onChange={(e) => setECandidateProfession(e.target.value)} className="bg-surface-container border-outline-variant/20 text-on-surface" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-gold text-xs uppercase tracking-wider">Location</Label>
+                    <Input value={eCandidateLocation} onChange={(e) => setECandidateLocation(e.target.value)} className="bg-surface-container border-outline-variant/20 text-on-surface" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-gold text-xs uppercase tracking-wider">Education</Label>
+                    <Input value={eCandidateEducation} onChange={(e) => setECandidateEducation(e.target.value)} className="bg-surface-container border-outline-variant/20 text-on-surface" />
+                  </div>
+                </div>
 
-            {/* Status advancement */}
-            <div className="flex gap-2 pt-2">
-              {opp.status === "lead" && (
-                <Button onClick={() => onStatusChange(opp.id, "date_closed")} variant="outline" size="sm" className="text-xs rounded-full border-outline-variant/20 text-on-surface-variant">
-                  Advance to Date Closed
-                </Button>
-              )}
-              {opp.status === "date_closed" && (
-                <Button onClick={() => onStatusChange(opp.id, "pending_client_approval")} variant="outline" size="sm" className="text-xs rounded-full border-gold/30 text-gold">
-                  Send to Client for Approval
-                </Button>
-              )}
-            </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-gold text-xs uppercase tracking-wider">Phone Number</Label>
+                    <Input value={ePhoneNumber} onChange={(e) => setEPhoneNumber(e.target.value)} className="bg-surface-container border-outline-variant/20 text-on-surface" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-gold text-xs uppercase tracking-wider">Candidate Photo URL</Label>
+                    <Input value={eCandidatePhotoUrl} onChange={(e) => setECandidatePhotoUrl(e.target.value)} placeholder="https://..." className="bg-surface-container border-outline-variant/20 text-on-surface" />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-gold text-xs uppercase tracking-wider">Memorable Detail</Label>
+                  <Textarea value={eMemorableDetail} onChange={(e) => setEMemorableDetail(e.target.value)} rows={2} className="bg-surface-container border-outline-variant/20 text-on-surface" />
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" checked={eDayDetermined} onChange={(e) => setEDayDetermined(e.target.checked)} className="accent-[#e6c487]" />
+                    <span className="text-on-surface text-sm">Day determined</span>
+                  </label>
+                </div>
+
+                {eDayDetermined && (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label className="text-gold text-xs uppercase tracking-wider">Proposed Day</Label>
+                      <Input type="date" value={eProposedDay} onChange={(e) => setEProposedDay(e.target.value)} className="bg-surface-container border-outline-variant/20 text-on-surface" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-gold text-xs uppercase tracking-wider">Proposed Time</Label>
+                      <Input type="time" value={eProposedTime} onChange={(e) => setEProposedTime(e.target.value)} className="bg-surface-container border-outline-variant/20 text-on-surface" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-gold text-xs uppercase tracking-wider">Venue</Label>
+                      <CustomSelect
+                        value={eVenueId}
+                        onChange={(v) => setEVenueId(v)}
+                        options={[{ value: "", label: "Select venue" }, ...venues.map((v) => ({ value: v.id, label: v.venue_name }))]}
+                        placeholder="Select venue"
+                        className="w-full bg-surface-container border border-outline-variant/20 text-on-surface rounded-xl px-4 py-3 text-sm"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <div className="space-y-2">
+                  <Label className="text-gold text-xs uppercase tracking-wider">Prewritten Text</Label>
+                  <Textarea value={ePrewrittenText} onChange={(e) => setEPrewrittenText(e.target.value)} rows={2} className="bg-surface-container border-outline-variant/20 text-on-surface" />
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-gold text-xs uppercase tracking-wider">Notes</Label>
+                  <Textarea value={eNotes} onChange={(e) => setENotes(e.target.value)} rows={2} className="bg-surface-container border-outline-variant/20 text-on-surface" />
+                </div>
+
+                {editError && <p className="text-error-red text-sm">{editError}</p>}
+
+                <div className="flex gap-2 pt-2">
+                  <Button onClick={handleEditSave} disabled={saving} className="gold-gradient text-on-gold font-semibold rounded-full text-xs">
+                    {saving ? "Saving..." : "Save"}
+                  </Button>
+                  <Button onClick={handleEditCancel} variant="outline" size="sm" className="rounded-full text-xs border-outline-variant/20 text-on-surface-variant">
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              /* ── READ-ONLY MODE ── */
+              <>
+                {/* Photo */}
+                {photoUrl && (
+                  <div className="mt-3 rounded-xl overflow-hidden">
+                    <img src={photoUrl} alt={opp.candidate_name} className="w-full h-[250px] object-cover" />
+                  </div>
+                )}
+
+                {/* Details grid */}
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {opp.candidate_profession && <div><p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-0.5">Profession</p><p className="text-on-surface text-sm font-medium">{opp.candidate_profession}</p></div>}
+                  {opp.candidate_location && <div><p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-0.5">Location</p><p className="text-on-surface text-sm font-medium">{opp.candidate_location}</p></div>}
+                  {opp.candidate_education && <div><p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-0.5">Education</p><p className="text-on-surface text-sm font-medium">{opp.candidate_education}</p></div>}
+                  {opp.phone_number && <div><p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-0.5">Phone</p><p className="text-on-surface text-sm font-medium">{opp.phone_number}</p></div>}
+                  {opp.venues?.venue_name && <div><p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-0.5">Venue</p><p className="text-on-surface text-sm font-medium">{opp.venues.venue_name}</p></div>}
+                  <div><p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-0.5">Status</p><p className="text-on-surface text-sm font-medium">{opp.status.replace(/_/g, " ")}</p></div>
+                </div>
+
+                {opp.memorable_detail && (
+                  <div><p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-1">About Her</p><p className="text-on-surface text-sm leading-relaxed">{opp.memorable_detail}</p></div>
+                )}
+                {opp.prewritten_text && (
+                  <div className="bg-surface-container p-3 rounded-xl">
+                    <p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-1">Suggested Opening</p>
+                    <p className="text-on-surface text-sm italic">&ldquo;{opp.prewritten_text}&rdquo;</p>
+                  </div>
+                )}
+                {opp.notes && (
+                  <div><p className="text-on-surface-variant text-[10px] uppercase tracking-widest mb-1">Notes</p><p className="text-on-surface text-sm leading-relaxed">{opp.notes}</p></div>
+                )}
+                {opp.decline_reason && (
+                  <div className="bg-error-red/5 border border-error-red/15 rounded-xl p-3">
+                    <p className="text-error-red text-[10px] uppercase tracking-widest mb-1">Decline Reason</p>
+                    <p className="text-on-surface text-sm">{opp.decline_reason}</p>
+                  </div>
+                )}
+                {opp.client_texted_at && (
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-gold/40 text-sm" style={{ fontVariationSettings: "'FILL' 1, 'wght' 300" }}>check_circle</span>
+                    <p className="text-on-surface-variant text-xs">Client texted {new Date(opp.client_texted_at).toLocaleDateString("en-US")}</p>
+                  </div>
+                )}
+
+                {/* Status advancement + Edit */}
+                <div className="flex gap-2 pt-2">
+                  <Button onClick={() => setEditing(true)} variant="outline" size="sm" className="text-xs rounded-full border-gold/30 text-gold hover:bg-gold/10">
+                    <span className="material-symbols-outlined text-sm mr-1" style={{ fontVariationSettings: "'FILL' 0, 'wght' 400", fontSize: "14px" }}>edit</span>
+                    Edit
+                  </Button>
+                  {opp.status === "lead" && (
+                    <Button onClick={() => onStatusChange(opp.id, "date_closed")} variant="outline" size="sm" className="text-xs rounded-full border-outline-variant/20 text-on-surface-variant">
+                      Advance to Date Closed
+                    </Button>
+                  )}
+                  {opp.status === "date_closed" && (
+                    <Button onClick={() => onStatusChange(opp.id, "pending_client_approval")} variant="outline" size="sm" className="text-xs rounded-full border-gold/30 text-gold">
+                      Send to Client for Approval
+                    </Button>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

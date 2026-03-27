@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { PhotoReviewCard } from "@/components/matchmaker/photo-review-card";
 import { ClientSubNav } from "@/components/matchmaker/client-sub-nav";
+import { MatchmakerPhotoUpload } from "@/components/matchmaker/matchmaker-photo-upload";
 
 export default async function PhotosPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: clientId } = await params;
@@ -60,6 +61,9 @@ export default async function PhotosPage({ params }: { params: Promise<{ id: str
       </div>
 
       <ClientSubNav clientId={clientId} />
+
+      {/* Matchmaker Upload */}
+      <MatchmakerPhotoUpload clientId={clientId} matchmakerProfileId={profile.id} />
 
       {/* Status Legend */}
       <div className="flex flex-wrap gap-2">
