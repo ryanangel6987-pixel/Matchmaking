@@ -17,7 +17,7 @@ export async function sendEmail({ to, subject, html }: { to: string; subject: st
 
   try {
     await client.emails.send({
-      from: 'Private Dating Concierge <noreply@yourdomain.com>',
+      from: 'Private Dating Concierge <noreply@privatedatingconcierge.com>',
       to,
       subject,
       html,

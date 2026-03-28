@@ -103,20 +103,32 @@ export async function POST(request: Request) {
     }
   );
 
+  // Get profile name + auth_user_id
   const { data: profile } = await supabaseAdmin
     .from("profiles")
-    .select("full_name, email")
+    .select("full_name, auth_user_id")
     .eq("id", clientId)
     .single();
 
-  if (!profile?.email) {
+  if (!profile?.auth_user_id) {
     return NextResponse.json(
-      { error: "Client not found or no email" },
+      { error: "Client not found" },
+      { status: 404 }
+    );
+  }
+
+  // Get email from auth.users via admin API
+  const { data: { user: authUser } } = await supabaseAdmin.auth.admin.getUserById(profile.auth_user_id);
+
+  if (!authUser?.email) {
+    return NextResponse.json(
+      { error: "No email found for client" },
       { status: 404 }
     );
   }
 
   const clientName = profile.full_name || "Valued Client";
+  const clientEmail = authUser.email;
   let template: { subject: string; html: string };
 
   switch (type) {
@@ -153,7 +165,7 @@ export async function POST(request: Request) {
   }
 
   await sendEmail({
-    to: profile.email,
+    to: clientEmail,
     subject: template.subject,
     html: template.html,
   });
