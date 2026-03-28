@@ -1,244 +1,132 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
-import { CustomSelect } from "@/components/ui/custom-select";
 
 /* ------------------------------------------------------------------ */
-/*  Types                                                              */
+/*  Lead Scoring (from Ad Qualification Guide)                         */
 /* ------------------------------------------------------------------ */
 
-interface FormData {
-  // Step 1 — Tell Us About You
-  full_name: string;
-  age: string;
-  city: string;
-  profession: string;
-  relationship_goal: string;
-  dating_frustration: string;
-
-  // Step 2 — Your Standards
-  target_age_min: string;
-  target_age_max: string;
-  most_important: string;
-  deal_breakers: string;
-  dating_apps: string;
-  dates_per_month: string;
-
-  // Step 3 — Create Your Account
-  email: string;
-  password: string;
-  phone: string;
-  terms_agreed: boolean;
-}
-
-const INITIAL_DATA: FormData = {
-  full_name: "",
-  age: "",
-  city: "",
-  profession: "",
-  relationship_goal: "",
-  dating_frustration: "",
-
-  target_age_min: "",
-  target_age_max: "",
-  most_important: "",
-  deal_breakers: "",
-  dating_apps: "",
-  dates_per_month: "",
-
-  email: "",
-  password: "",
-  phone: "",
-  terms_agreed: false,
+const LIFE_WINDOW_SCORES: Record<string, number> = {
+  divorce: 30,
+  new_city: 25,
+  milestone: 20,
+  career: 20,
+  none: 5,
 };
 
-/* ------------------------------------------------------------------ */
-/*  Step Definitions                                                    */
-/* ------------------------------------------------------------------ */
+const TIME_SCORES: Record<string, number> = {
+  less_than_2: 5,
+  "2_5": 10,
+  "5_10": 20,
+  "10_plus": 30,
+  given_up: 25,
+};
 
-const STEPS = [
-  { label: "Tell Us About You", icon: "person", subheader: "Let\u2019s see if we\u2019re a fit" },
-  { label: "Your Standards", icon: "favorite", subheader: "Help us understand your type" },
-  { label: "Create Your Account", icon: "lock", subheader: "Secure your spot" },
-];
+const COMMITMENT_SCORES: Record<string, number> = {
+  immediately: 30,
+  within_month: 15,
+  exploring: 5,
+  curious: 0,
+};
 
-/* ------------------------------------------------------------------ */
-/*  Select Options                                                     */
-/* ------------------------------------------------------------------ */
-
-const RELATIONSHIP_GOALS = [
-  { value: "short-term", label: "Short-term" },
-  { value: "open-to-long-term", label: "Open to long-term" },
-  { value: "long-term", label: "Long-term" },
-  { value: "marriage", label: "Marriage" },
-  { value: "open-to-anything", label: "Open to anything" },
-];
-
-const DATING_FRUSTRATIONS = [
-  { value: "not-enough-time", label: "Not enough time" },
-  { value: "low-match-quality", label: "Low match quality" },
-  { value: "bad-photos-profile", label: "Bad photos/profile" },
-  { value: "conversations-die-out", label: "Conversations die out" },
-  { value: "all-of-the-above", label: "All of the above" },
-];
-
-const MOST_IMPORTANT = [
-  { value: "physical-attraction", label: "Physical attraction" },
-  { value: "personality", label: "Personality" },
-  { value: "career-ambition", label: "Career ambition" },
-  { value: "shared-values", label: "Shared values" },
-  { value: "all-equally", label: "All equally" },
-];
-
-const DATING_APPS = [
-  { value: "hinge", label: "Hinge" },
-  { value: "bumble", label: "Bumble" },
-  { value: "tinder", label: "Tinder" },
-  { value: "raya", label: "Raya" },
-  { value: "the-league", label: "The League" },
-  { value: "none", label: "None" },
-];
-
-const DATES_PER_MONTH = [
-  { value: "2-4", label: "2\u20134 dates" },
-  { value: "4-6", label: "4\u20136 dates" },
-  { value: "6-8", label: "6\u20138 dates" },
-  { value: "as-many-as-possible", label: "As many as possible" },
-];
-
-/* ------------------------------------------------------------------ */
-/*  Reusable Field Components                                          */
-/* ------------------------------------------------------------------ */
-
-function TextField({
-  label,
-  value,
-  onChange,
-  placeholder,
-  type = "text",
-  icon,
-  minLength,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  placeholder?: string;
-  type?: string;
-  icon?: string;
-  minLength?: number;
-}) {
-  return (
-    <div className="space-y-2">
-      <label className="text-gold text-xs uppercase tracking-wider font-medium flex items-center gap-1.5">
-        {icon && (
-          <span
-            className="material-symbols-outlined text-sm"
-            style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
-          >
-            {icon}
-          </span>
-        )}
-        {label}
-      </label>
-      <input
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        minLength={minLength}
-        className="w-full bg-surface-container border border-outline-variant/20 rounded-xl px-4 py-3.5 text-on-surface text-sm placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-1 focus:ring-gold/40 focus:border-gold transition"
-      />
-    </div>
-  );
-}
-
-function CheckboxField({
-  label,
-  checked,
-  onChange,
-  description,
-}: {
-  label: string;
-  checked: boolean;
-  onChange: (v: boolean) => void;
-  description?: string;
-}) {
-  return (
-    <div
-      className="flex items-start gap-3 cursor-pointer group"
-      onClick={() => onChange(!checked)}
-    >
-      <div
-        className={`mt-0.5 w-5 h-5 rounded-md border flex items-center justify-center transition flex-shrink-0 ${
-          checked
-            ? "bg-gold border-gold"
-            : "bg-surface-container border-outline-variant/30 group-hover:border-gold/50"
-        }`}
-      >
-        {checked && (
-          <span
-            className="material-symbols-outlined text-on-gold text-sm"
-            style={{ fontVariationSettings: "'FILL' 1, 'wght' 500" }}
-          >
-            check
-          </span>
-        )}
-      </div>
-      <div>
-        <span className="text-on-surface text-sm font-medium">{label}</span>
-        {description && (
-          <p className="text-on-surface-variant text-xs mt-1">{description}</p>
-        )}
-      </div>
-    </div>
-  );
+function getLeadTier(score: number): string {
+  if (score >= 70) return "green";
+  if (score >= 40) return "yellow";
+  if (score >= 15) return "red";
+  return "dead";
 }
 
 /* ------------------------------------------------------------------ */
-/*  Main Component                                                     */
+/*  Form Steps                                                         */
 /* ------------------------------------------------------------------ */
+
+const TOTAL_STEPS = 7;
 
 export function ApplicationForm() {
   const router = useRouter();
   const supabase = createClient();
-
   const [step, setStep] = useState(0);
-  const [form, setForm] = useState<FormData>(INITIAL_DATA);
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState("");
 
-  const updateField = <K extends keyof FormData>(key: K, value: FormData[K]) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
+  // Form state
+  const [lifeWindow, setLifeWindow] = useState("");
+  const [timeInvestment, setTimeInvestment] = useState("");
+  const [commitment, setCommitment] = useState("");
+  const [city, setCity] = useState("");
+  const [profession, setProfession] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [phone, setPhone] = useState("");
+  const [termsAgreed, setTermsAgreed] = useState(false);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter" && canAdvance() && !submitting) {
+        next();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  });
+
+  // Persist to sessionStorage
+  useEffect(() => {
+    const saved = sessionStorage.getItem("pdc_apply");
+    if (saved) {
+      try {
+        const d = JSON.parse(saved);
+        if (d.lifeWindow) setLifeWindow(d.lifeWindow);
+        if (d.timeInvestment) setTimeInvestment(d.timeInvestment);
+        if (d.commitment) setCommitment(d.commitment);
+        if (d.city) setCity(d.city);
+        if (d.profession) setProfession(d.profession);
+        if (d.fullName) setFullName(d.fullName);
+        if (d.phone) setPhone(d.phone);
+        if (d.step) setStep(d.step);
+      } catch {}
+    }
+  }, []);
+
+  useEffect(() => {
+    sessionStorage.setItem("pdc_apply", JSON.stringify({
+      lifeWindow, timeInvestment, commitment, city, profession, fullName, phone, step,
+    }));
+  }, [lifeWindow, timeInvestment, commitment, city, profession, fullName, phone, step]);
+
+  const canAdvance = (): boolean => {
+    switch (step) {
+      case 0: return !!lifeWindow;
+      case 1: return !!timeInvestment;
+      case 2: return !!commitment;
+      case 3: return city.trim().length >= 2;
+      case 4: return profession.trim().length >= 2;
+      case 5: return fullName.trim().length >= 2 && email.includes("@") && password.length >= 8;
+      case 6: return phone.trim().length >= 7 && termsAgreed;
+      default: return false;
+    }
   };
 
-  /* ---- Submit ---- */
   const handleSubmit = async () => {
-    if (!form.terms_agreed) {
-      setError("You must agree to the terms to continue.");
-      return;
-    }
-    if (form.password.length < 8) {
-      setError("Password must be at least 8 characters.");
-      return;
-    }
-    if (!form.email) {
-      setError("Email is required.");
-      return;
-    }
-
     setSubmitting(true);
-    setError(null);
+    setError("");
 
-    const { error: signUpError } = await supabase.auth.signUp({
-      email: form.email,
-      password: form.password,
+    const score = (LIFE_WINDOW_SCORES[lifeWindow] ?? 0) +
+      (TIME_SCORES[timeInvestment] ?? 0) +
+      (COMMITMENT_SCORES[commitment] ?? 0);
+    const tier = getLeadTier(score);
+
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
       options: {
         data: {
-          full_name: form.full_name,
-          phone: form.phone,
+          full_name: fullName.trim(),
+          phone: phone.trim(),
         },
       },
     });
@@ -249,431 +137,321 @@ export function ApplicationForm() {
       return;
     }
 
-    // Save application data to localStorage for later use
-    const applicationData = {
-      full_name: form.full_name,
-      age: form.age,
-      city: form.city,
-      profession: form.profession,
-      relationship_goal: form.relationship_goal,
-      dating_frustration: form.dating_frustration,
-      target_age_min: form.target_age_min,
-      target_age_max: form.target_age_max,
-      most_important: form.most_important,
-      deal_breakers: form.deal_breakers,
-      dating_apps: form.dating_apps,
-      dates_per_month: form.dates_per_month,
-      phone: form.phone,
+    // Save qualification data + light context to localStorage for booking page
+    const payload = {
+      full_name: fullName.trim(),
+      email,
+      phone: phone.trim(),
+      city: city.trim(),
+      profession: profession.trim(),
+      life_window: lifeWindow,
+      time_investment: timeInvestment,
+      commitment_level: commitment,
+      lead_score: score,
+      lead_tier: tier,
       submitted_at: new Date().toISOString(),
     };
 
-    try {
-      localStorage.setItem("pdc_application", JSON.stringify(applicationData));
-    } catch {
-      // localStorage may be unavailable
-    }
+    localStorage.setItem("pdc_application", JSON.stringify(payload));
+    sessionStorage.removeItem("pdc_apply");
 
     router.push("/apply/book");
   };
 
-  /* ---- Step Renderers ---- */
-  const renderStep0 = () => (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <TextField
-          label="Full Name"
-          value={form.full_name}
-          onChange={(v) => updateField("full_name", v)}
-          placeholder="James Richardson"
-          icon="badge"
-        />
-        <TextField
-          label="Age"
-          value={form.age}
-          onChange={(v) => updateField("age", v)}
-          placeholder="32"
-          type="number"
-          icon="cake"
-        />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <TextField
-          label="City"
-          value={form.city}
-          onChange={(v) => updateField("city", v)}
-          placeholder="New York"
-          icon="location_city"
-        />
-        <TextField
-          label="Profession / Industry"
-          value={form.profession}
-          onChange={(v) => updateField("profession", v)}
-          placeholder="Finance, Tech, Law..."
-          icon="work"
-        />
-      </div>
-      <div className="space-y-2">
-        <label className="text-gold text-xs uppercase tracking-wider font-medium flex items-center gap-1.5">
-          <span
-            className="material-symbols-outlined text-sm"
-            style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
-          >
-            favorite
-          </span>
-          Relationship Goal
-        </label>
-        <CustomSelect
-          value={form.relationship_goal}
-          onChange={(v) => updateField("relationship_goal", v)}
-          options={RELATIONSHIP_GOALS}
-          placeholder="What are you looking for?"
-        />
-      </div>
-      <div className="space-y-2">
-        <label className="text-gold text-xs uppercase tracking-wider font-medium flex items-center gap-1.5">
-          <span
-            className="material-symbols-outlined text-sm"
-            style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
-          >
-            sentiment_dissatisfied
-          </span>
-          Biggest Dating Frustration
-        </label>
-        <CustomSelect
-          value={form.dating_frustration}
-          onChange={(v) => updateField("dating_frustration", v)}
-          options={DATING_FRUSTRATIONS}
-          placeholder="What's holding you back?"
-        />
-      </div>
-    </div>
+  const next = () => {
+    if (step === TOTAL_STEPS - 1) {
+      handleSubmit();
+    } else {
+      setStep(step + 1);
+    }
+  };
+
+  const back = () => {
+    if (step > 0) setStep(step - 1);
+  };
+
+  // Pill button for single-select options
+  const Pill = ({ value, selected, onSelect, children }: {
+    value: string; selected: string; onSelect: (v: string) => void; children: React.ReactNode;
+  }) => (
+    <button
+      type="button"
+      onClick={() => onSelect(value)}
+      className={`w-full text-left px-5 py-4 rounded-2xl transition-all duration-200 ${
+        selected === value
+          ? "bg-gold/15 border-2 border-gold/40 text-on-surface"
+          : "bg-surface-container-low border-2 border-transparent text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface"
+      }`}
+    >
+      {children}
+    </button>
   );
 
-  const renderStep1 = () => (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <TextField
-          label="Target Age (Minimum)"
-          value={form.target_age_min}
-          onChange={(v) => updateField("target_age_min", v)}
-          placeholder="25"
-          type="number"
-          icon="arrow_downward"
-        />
-        <TextField
-          label="Target Age (Maximum)"
-          value={form.target_age_max}
-          onChange={(v) => updateField("target_age_max", v)}
-          placeholder="35"
-          type="number"
-          icon="arrow_upward"
-        />
-      </div>
-      <div className="space-y-2">
-        <label className="text-gold text-xs uppercase tracking-wider font-medium flex items-center gap-1.5">
-          <span
-            className="material-symbols-outlined text-sm"
-            style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
-          >
-            star
-          </span>
-          What&apos;s Most Important to You?
-        </label>
-        <CustomSelect
-          value={form.most_important}
-          onChange={(v) => updateField("most_important", v)}
-          options={MOST_IMPORTANT}
-          placeholder="Choose what matters most"
-        />
-      </div>
-      <TextField
-        label="Top 3 Deal-Breakers"
-        value={form.deal_breakers}
-        onChange={(v) => updateField("deal_breakers", v)}
-        placeholder="e.g. Smoking, no ambition, poor communication"
-        icon="block"
-      />
-      <div className="space-y-2">
-        <label className="text-gold text-xs uppercase tracking-wider font-medium flex items-center gap-1.5">
-          <span
-            className="material-symbols-outlined text-sm"
-            style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
-          >
-            apps
-          </span>
-          Dating Apps Currently On
-        </label>
-        <CustomSelect
-          value={form.dating_apps}
-          onChange={(v) => updateField("dating_apps", v)}
-          options={DATING_APPS}
-          placeholder="Select your current apps"
-        />
-      </div>
-      <div className="space-y-2">
-        <label className="text-gold text-xs uppercase tracking-wider font-medium flex items-center gap-1.5">
-          <span
-            className="material-symbols-outlined text-sm"
-            style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
-          >
-            event
-          </span>
-          How Many Dates Per Month?
-        </label>
-        <CustomSelect
-          value={form.dates_per_month}
-          onChange={(v) => updateField("dates_per_month", v)}
-          options={DATES_PER_MONTH}
-          placeholder="Your ideal pace"
-        />
-      </div>
-    </div>
-  );
+  const progress = ((step + 1) / TOTAL_STEPS) * 100;
 
-  const renderStep2 = () => (
-    <div className="space-y-6">
-      <TextField
-        label="Email"
-        value={form.email}
-        onChange={(v) => updateField("email", v)}
-        placeholder="you@example.com"
-        type="email"
-        icon="mail"
-      />
-      <TextField
-        label="Password"
-        value={form.password}
-        onChange={(v) => updateField("password", v)}
-        placeholder="Minimum 8 characters"
-        type="password"
-        icon="lock"
-        minLength={8}
-      />
-      <TextField
-        label="Phone Number (WhatsApp)"
-        value={form.phone}
-        onChange={(v) => updateField("phone", v)}
-        placeholder="+1 (555) 000-0000"
-        type="tel"
-        icon="phone_iphone"
-      />
-
-      <div className="pt-2">
-        <CheckboxField
-          label="I agree to the terms and understand this is a premium service"
-          checked={form.terms_agreed}
-          onChange={(v) => updateField("terms_agreed", v)}
-          description="By submitting, you acknowledge that Private Dating Concierge is an exclusive, white-glove matchmaking service with limited availability."
-        />
-      </div>
-    </div>
-  );
-
-  const stepRenderers = [renderStep0, renderStep1, renderStep2];
-
-  /* ---- Render ---- */
   return (
     <div className="min-h-screen bg-surface flex flex-col">
-      {/* Full-width header area */}
-      <div className="w-full pt-10 pb-6 px-4">
-        <div className="max-w-2xl mx-auto text-center space-y-4">
-          {/* Logo */}
-          <div className="flex justify-center">
-            <Image src="/logo.png" alt="Private Dating Concierge" width={340} height={65} priority />
-          </div>
+      {/* Progress bar */}
+      <div className="fixed top-0 inset-x-0 z-50 h-1 bg-surface-container-high">
+        <div
+          className="h-full bg-gold transition-all duration-500 ease-out"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
 
-          {/* Subheader — changes per step */}
-          <p className="font-heading text-lg text-on-surface-variant/80 italic">
-            {STEPS[step].subheader}
-          </p>
+      {/* Back button */}
+      <div className="fixed top-4 left-4 z-50">
+        {step > 0 ? (
+          <button onClick={back} className="flex items-center gap-1 text-on-surface-variant text-sm hover:text-gold transition-colors">
+            <span className="material-symbols-outlined text-lg">arrow_back</span>
+            Back
+          </button>
+        ) : (
+          <a href="/" className="flex items-center gap-1 text-on-surface-variant text-sm hover:text-gold transition-colors">
+            <span className="material-symbols-outlined text-lg">arrow_back</span>
+            Home
+          </a>
+        )}
+      </div>
+
+      {/* Step counter */}
+      <div className="fixed top-4 right-4 z-50">
+        <span className="text-on-surface-variant text-xs">{step + 1} / {TOTAL_STEPS}</span>
+      </div>
+
+      {/* Content area — centered, mobile-first */}
+      <div className="flex-1 flex items-center justify-center px-6 py-20">
+        <div className="w-full max-w-md space-y-8">
+
+          {/* ═══ STEP 0: Life Window ═══ */}
+          {step === 0 && (
+            <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+              <div>
+                <p className="text-gold text-xs uppercase tracking-widest mb-2">Your Situation</p>
+                <h2 className="font-heading text-2xl md:text-3xl font-bold text-on-surface">
+                  What best describes your situation right now?
+                </h2>
+              </div>
+              <div className="space-y-3">
+                <Pill value="divorce" selected={lifeWindow} onSelect={setLifeWindow}>
+                  <p className="font-medium">Just came out of a relationship or divorce</p>
+                </Pill>
+                <Pill value="new_city" selected={lifeWindow} onSelect={setLifeWindow}>
+                  <p className="font-medium">Moved to a new city in the last 12 months</p>
+                </Pill>
+                <Pill value="milestone" selected={lifeWindow} onSelect={setLifeWindow}>
+                  <p className="font-medium">Hitting a milestone (turning 35, 40, 45, 50)</p>
+                </Pill>
+                <Pill value="career" selected={lifeWindow} onSelect={setLifeWindow}>
+                  <p className="font-medium">Just had a career change or big promotion</p>
+                </Pill>
+                <Pill value="none" selected={lifeWindow} onSelect={setLifeWindow}>
+                  <p className="font-medium">None of these — just want better results</p>
+                </Pill>
+              </div>
+            </div>
+          )}
+
+          {/* ═══ STEP 1: Time Investment ═══ */}
+          {step === 1 && (
+            <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+              <div>
+                <p className="text-gold text-xs uppercase tracking-widest mb-2">Time Investment</p>
+                <h2 className="font-heading text-2xl md:text-3xl font-bold text-on-surface">
+                  How many hours per week do you spend on dating apps?
+                </h2>
+              </div>
+              <div className="space-y-3">
+                <Pill value="less_than_2" selected={timeInvestment} onSelect={setTimeInvestment}>
+                  <p className="font-medium">Less than 2 hours</p>
+                </Pill>
+                <Pill value="2_5" selected={timeInvestment} onSelect={setTimeInvestment}>
+                  <p className="font-medium">2–5 hours</p>
+                </Pill>
+                <Pill value="5_10" selected={timeInvestment} onSelect={setTimeInvestment}>
+                  <p className="font-medium">5–10 hours</p>
+                </Pill>
+                <Pill value="10_plus" selected={timeInvestment} onSelect={setTimeInvestment}>
+                  <p className="font-medium">10+ hours</p>
+                </Pill>
+                <Pill value="given_up" selected={timeInvestment} onSelect={setTimeInvestment}>
+                  <p className="font-medium">I&apos;ve given up entirely</p>
+                </Pill>
+              </div>
+            </div>
+          )}
+
+          {/* ═══ STEP 2: Commitment Level ═══ */}
+          {step === 2 && (
+            <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+              <div>
+                <p className="text-gold text-xs uppercase tracking-widest mb-2">Commitment</p>
+                <h2 className="font-heading text-2xl md:text-3xl font-bold text-on-surface">
+                  If the right solution existed, how quickly would you move?
+                </h2>
+              </div>
+              <div className="space-y-3">
+                <Pill value="immediately" selected={commitment} onSelect={setCommitment}>
+                  <p className="font-medium">I&apos;d start immediately</p>
+                </Pill>
+                <Pill value="within_month" selected={commitment} onSelect={setCommitment}>
+                  <p className="font-medium">Within the next month</p>
+                </Pill>
+                <Pill value="exploring" selected={commitment} onSelect={setCommitment}>
+                  <p className="font-medium">I&apos;m exploring my options</p>
+                </Pill>
+                <Pill value="curious" selected={commitment} onSelect={setCommitment}>
+                  <p className="font-medium">Just curious</p>
+                </Pill>
+              </div>
+            </div>
+          )}
+
+          {/* ═══ STEP 3: City ═══ */}
+          {step === 3 && (
+            <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+              <div>
+                <p className="text-gold text-xs uppercase tracking-widest mb-2">Location</p>
+                <h2 className="font-heading text-2xl md:text-3xl font-bold text-on-surface">
+                  What city are you based in?
+                </h2>
+              </div>
+              <input
+                type="text"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                placeholder="e.g. New York"
+                autoFocus
+                className="w-full bg-surface-container-low border-2 border-outline-variant/20 rounded-2xl px-5 py-4 text-on-surface text-lg placeholder:text-outline focus:border-gold/40 outline-none transition-colors"
+              />
+            </div>
+          )}
+
+          {/* ═══ STEP 4: Profession ═══ */}
+          {step === 4 && (
+            <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+              <div>
+                <p className="text-gold text-xs uppercase tracking-widest mb-2">Career</p>
+                <h2 className="font-heading text-2xl md:text-3xl font-bold text-on-surface">
+                  What do you do professionally?
+                </h2>
+              </div>
+              <input
+                type="text"
+                value={profession}
+                onChange={(e) => setProfession(e.target.value)}
+                placeholder="e.g. Tech Executive"
+                autoFocus
+                className="w-full bg-surface-container-low border-2 border-outline-variant/20 rounded-2xl px-5 py-4 text-on-surface text-lg placeholder:text-outline focus:border-gold/40 outline-none transition-colors"
+              />
+            </div>
+          )}
+
+          {/* ═══ STEP 5: Account (Name + Email + Password) ═══ */}
+          {step === 5 && (
+            <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+              <div>
+                <p className="text-gold text-xs uppercase tracking-widest mb-2">Create Account</p>
+                <h2 className="font-heading text-2xl md:text-3xl font-bold text-on-surface">
+                  Secure your spot
+                </h2>
+                <p className="text-on-surface-variant text-sm mt-2">We&apos;ll use this to set up your private portal.</p>
+              </div>
+              <div className="space-y-4">
+                <input
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="Full Name"
+                  autoFocus
+                  className="w-full bg-surface-container-low border-2 border-outline-variant/20 rounded-2xl px-5 py-4 text-on-surface text-base placeholder:text-outline focus:border-gold/40 outline-none transition-colors"
+                />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email"
+                  className="w-full bg-surface-container-low border-2 border-outline-variant/20 rounded-2xl px-5 py-4 text-on-surface text-base placeholder:text-outline focus:border-gold/40 outline-none transition-colors"
+                />
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password (8+ characters)"
+                  className="w-full bg-surface-container-low border-2 border-outline-variant/20 rounded-2xl px-5 py-4 text-on-surface text-base placeholder:text-outline focus:border-gold/40 outline-none transition-colors"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* ═══ STEP 6: Phone + Terms ═══ */}
+          {step === 6 && (
+            <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+              <div>
+                <p className="text-gold text-xs uppercase tracking-widest mb-2">Final Step</p>
+                <h2 className="font-heading text-2xl md:text-3xl font-bold text-on-surface">
+                  How should we reach you?
+                </h2>
+                <p className="text-on-surface-variant text-sm mt-2">Your dedicated manager will contact you via WhatsApp.</p>
+              </div>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="Phone / WhatsApp"
+                autoFocus
+                className="w-full bg-surface-container-low border-2 border-outline-variant/20 rounded-2xl px-5 py-4 text-on-surface text-lg placeholder:text-outline focus:border-gold/40 outline-none transition-colors"
+              />
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={termsAgreed}
+                  onChange={(e) => setTermsAgreed(e.target.checked)}
+                  className="accent-[#e6c487] mt-1"
+                />
+                <span className="text-on-surface-variant text-xs leading-relaxed">
+                  I agree to the Terms of Service and Privacy Policy. I understand that a dedicated manager will reach out to schedule my consultation.
+                </span>
+              </label>
+            </div>
+          )}
+
+          {/* ═══ Error ═══ */}
+          {error && (
+            <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3">
+              <p className="text-red-400 text-sm">{error}</p>
+            </div>
+          )}
+
+          {/* ═══ Continue Button ═══ */}
+          <button
+            onClick={next}
+            disabled={!canAdvance() || submitting}
+            className={`w-full py-4 rounded-full font-semibold text-base transition-all duration-300 ${
+              canAdvance() && !submitting
+                ? "gold-gradient text-on-gold hover:opacity-90 shadow-lg"
+                : "bg-surface-container-high text-outline cursor-not-allowed"
+            }`}
+          >
+            {submitting
+              ? "Creating your account..."
+              : step === TOTAL_STEPS - 1
+              ? "Submit Application"
+              : "Continue"}
+          </button>
+
+          {/* Enter hint for desktop */}
+          {canAdvance() && !submitting && step < TOTAL_STEPS - 1 && (
+            <p className="text-center text-outline text-xs hidden md:block">
+              or press <kbd className="bg-surface-container-high px-1.5 py-0.5 rounded text-on-surface-variant">Enter</kbd>
+            </p>
+          )}
         </div>
       </div>
 
-      {/* Content area */}
-      <div className="flex-1 flex items-start justify-center px-4 pb-12">
-        <div className="w-full max-w-2xl space-y-8">
-          {/* Step Indicators */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-center gap-0">
-              {STEPS.map((s, i) => (
-                <div key={s.label} className="flex items-center">
-                  <button
-                    type="button"
-                    onClick={() => i <= step && setStep(i)}
-                    className={`flex flex-col items-center gap-2 transition ${
-                      i <= step ? "cursor-pointer" : "cursor-default"
-                    }`}
-                  >
-                    <div
-                      className={`w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300 ${
-                        i < step
-                          ? "gold-gradient text-on-gold shadow-lg shadow-gold/20"
-                          : i === step
-                          ? "bg-gold/15 text-gold border-2 border-gold shadow-lg shadow-gold/10"
-                          : "bg-surface-container border border-outline-variant/30 text-on-surface-variant"
-                      }`}
-                    >
-                      {i < step ? (
-                        <span
-                          className="material-symbols-outlined text-lg"
-                          style={{ fontVariationSettings: "'FILL' 1, 'wght' 500" }}
-                        >
-                          check
-                        </span>
-                      ) : (
-                        <span
-                          className="material-symbols-outlined text-lg"
-                          style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
-                        >
-                          {s.icon}
-                        </span>
-                      )}
-                    </div>
-                    <span
-                      className={`text-xs font-medium whitespace-nowrap ${
-                        i <= step ? "text-gold" : "text-on-surface-variant/50"
-                      }`}
-                    >
-                      {s.label}
-                    </span>
-                  </button>
-                  {i < STEPS.length - 1 && (
-                    <div className="w-16 sm:w-24 mx-2 -mt-6">
-                      <div
-                        className={`h-px transition-all duration-500 ${
-                          i < step ? "bg-gold/50" : "bg-outline-variant/20"
-                        }`}
-                      />
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* Progress Bar */}
-            <div className="h-1 bg-surface-container-high rounded-full overflow-hidden">
-              <div
-                className="h-full gold-gradient rounded-full transition-all duration-500 ease-out"
-                style={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
-              />
-            </div>
-          </div>
-
-          {/* Form Card */}
-          <div className="bg-surface-container-low rounded-2xl p-6 sm:p-10 space-y-8 border border-outline-variant/10">
-            {/* Step header inside card */}
-            <div className="space-y-1">
-              <div className="flex items-center gap-2.5">
-                <span
-                  className="material-symbols-outlined text-gold text-xl"
-                  style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
-                >
-                  {STEPS[step].icon}
-                </span>
-                <h2 className="font-heading text-2xl font-semibold text-on-surface">
-                  {STEPS[step].label}
-                </h2>
-              </div>
-              <p className="text-on-surface-variant text-sm pl-8">
-                Step {step + 1} of {STEPS.length}
-              </p>
-            </div>
-
-            {/* Step Content */}
-            {stepRenderers[step]()}
-
-            {/* Error Display */}
-            {error && (
-              <div className="bg-error-container/20 border border-error-red/30 rounded-xl p-4 flex items-center gap-3">
-                <span
-                  className="material-symbols-outlined text-error-red"
-                  style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
-                >
-                  error
-                </span>
-                <p className="text-error-red text-sm">{error}</p>
-              </div>
-            )}
-
-            {/* Navigation */}
-            <div className="flex items-center justify-between pt-6 border-t border-outline-variant/10">
-              <button
-                type="button"
-                onClick={() => {
-                  setError(null);
-                  setStep((s) => Math.max(0, s - 1));
-                }}
-                disabled={step === 0}
-                className={`flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium transition ${
-                  step === 0
-                    ? "text-on-surface-variant/30 cursor-not-allowed"
-                    : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high"
-                }`}
-              >
-                <span
-                  className="material-symbols-outlined text-lg"
-                  style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
-                >
-                  arrow_back
-                </span>
-                Back
-              </button>
-
-              {step < STEPS.length - 1 ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setError(null);
-                    setStep((s) => Math.min(STEPS.length - 1, s + 1));
-                  }}
-                  className="flex items-center gap-2 gold-gradient text-on-gold font-semibold rounded-full px-8 py-3.5 text-sm hover:opacity-90 transition shadow-lg shadow-gold/20"
-                >
-                  Continue
-                  <span
-                    className="material-symbols-outlined text-lg"
-                    style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
-                  >
-                    arrow_forward
-                  </span>
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={handleSubmit}
-                  disabled={submitting || !form.terms_agreed}
-                  className="flex items-center gap-2 gold-gradient text-on-gold font-semibold rounded-full px-10 py-4 text-base hover:opacity-90 transition shadow-lg shadow-gold/20 disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none"
-                >
-                  {submitting ? (
-                    <>
-                      <span
-                        className="material-symbols-outlined text-lg animate-spin"
-                        style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
-                      >
-                        progress_activity
-                      </span>
-                      Submitting...
-                    </>
-                  ) : (
-                    <>
-                      Submit Application
-                      <span
-                        className="material-symbols-outlined text-lg"
-                        style={{ fontVariationSettings: "'FILL' 1, 'wght' 500" }}
-                      >
-                        send
-                      </span>
-                    </>
-                  )}
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Footer text */}
-          <p className="text-center text-on-surface-variant/40 text-xs">
-            Applications are reviewed within 24 hours. Limited spots available each month.
-          </p>
-        </div>
+      {/* Brand footer */}
+      <div className="text-center pb-6">
+        <img src="/logo.png" alt="Private Dating Concierge" className="h-4 w-auto mx-auto opacity-30" />
       </div>
     </div>
   );
