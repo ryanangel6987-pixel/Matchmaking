@@ -153,8 +153,12 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                   <Field label="Neighborhood" value={onboarding.neighborhood} />
                   <Field label="Profession" value={onboarding.profession} />
                   <Field label="Title" value={onboarding.title} />
+                  <Field label="Ethnicity" value={onboarding.own_ethnicity} />
+                  <Field label="Body Type" value={onboarding.own_body_type} />
                   <Field label="Has Kids" value={onboarding.has_kids} />
+                  {onboarding.kids_details && <Field label="Kids Details" value={onboarding.kids_details} />}
                   <Field label="Drinks" value={onboarding.drinks_alcohol} />
+                  <Field label="Preferred Date Type" value={onboarding.preferred_date_type} />
                   <Field label="Education" value={Array.isArray(onboarding.education) ? onboarding.education.join(", ") : onboarding.education} />
                   <Field label="Relationship Goal" value={onboarding.target_relationship_intent?.replace(/_/g, " ")} />
                   <Field label="Date Frequency" value={onboarding.target_date_frequency} />
@@ -166,6 +170,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                   <Tags label="Hobbies & Interests" items={onboarding.hobbies_and_interests} />
                   <Tags label="Dating Apps Used" items={onboarding.dating_apps_used} />
                   <Tags label="Open to Apps" items={onboarding.dating_apps_open_to} />
+                  <Tags label="Previous Apps" items={onboarding.previous_apps} />
                   <Tags label="Previous Services" items={onboarding.previous_services} />
                 </div>
                 {(onboarding.personality_summary || onboarding.lifestyle_notes || onboarding.client_notes) && (

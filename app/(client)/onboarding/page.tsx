@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { MultiSelectPills, SingleSelectPills } from "@/components/ui/multi-select-pills";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -17,6 +18,8 @@ interface FormData {
   profession: string;
   title: string;
   height_inches: number | "";
+  own_ethnicity: string;
+  own_body_type: string;
   dating_apps_used: string[];
   dating_apps_open_to: string[];
   hobbies_and_interests: string[];
@@ -30,8 +33,8 @@ interface FormData {
   target_max_distance_miles: number | "";
   target_physical_preferences: {
     height: string;
-    body_type: string;
-    ethnicity: string;
+    body_types: string[];
+    ethnicities: string[];
   };
   target_education_preference: string;
   target_profession_preferences: string[];
@@ -61,6 +64,31 @@ interface FormData {
   previous_services: string[];
 }
 
+const ETHNICITY_OPTIONS = [
+  "White / Caucasian",
+  "Black / African American",
+  "East Asian (Chinese, Japanese, Korean)",
+  "South Asian (Indian, Pakistani, Bengali)",
+  "Southeast Asian (Filipino, Vietnamese, Thai)",
+  "Middle Eastern / North African",
+  "Hispanic / Latino",
+  "Pacific Islander",
+  "Mixed / Multiracial",
+  "Other",
+  "No Preference",
+];
+
+const BODY_TYPE_OPTIONS = [
+  "Slim",
+  "Athletic / Fit",
+  "Average",
+  "Curvy",
+  "Muscular",
+  "Plus Size",
+  "Petite",
+  "No Preference",
+];
+
 const INITIAL_DATA: FormData = {
   full_name: "",
   age: "",
@@ -69,6 +97,8 @@ const INITIAL_DATA: FormData = {
   profession: "",
   title: "",
   height_inches: "",
+  own_ethnicity: "",
+  own_body_type: "",
   dating_apps_used: [],
   dating_apps_open_to: [],
   hobbies_and_interests: [],
@@ -79,7 +109,7 @@ const INITIAL_DATA: FormData = {
   target_age_min: "",
   target_age_max: "",
   target_max_distance_miles: "",
-  target_physical_preferences: { height: "", body_type: "", ethnicity: "" },
+  target_physical_preferences: { height: "", body_types: [], ethnicities: [] },
   target_education_preference: "",
   target_profession_preferences: [],
   target_deal_breakers: [],
@@ -542,6 +572,8 @@ export default function OnboardingPage() {
           profession: existing.profession ?? prev.profession,
           title: existing.title ?? prev.title,
           height_inches: existing.height_inches ?? prev.height_inches,
+          own_ethnicity: existing.own_ethnicity ?? prev.own_ethnicity,
+          own_body_type: existing.own_body_type ?? prev.own_body_type,
           dating_apps_used: existing.dating_apps_used ?? prev.dating_apps_used,
           dating_apps_open_to:
             existing.dating_apps_open_to ?? prev.dating_apps_open_to,
@@ -556,9 +588,13 @@ export default function OnboardingPage() {
           target_max_distance_miles:
             existing.target_max_distance_miles ??
             prev.target_max_distance_miles,
-          target_physical_preferences:
-            existing.target_physical_preferences ??
-            prev.target_physical_preferences,
+          target_physical_preferences: {
+            height: existing.target_physical_preferences?.height ?? prev.target_physical_preferences.height,
+            body_types: existing.target_physical_preferences?.body_types ??
+              (existing.target_physical_preferences?.body_type ? [existing.target_physical_preferences.body_type] : prev.target_physical_preferences.body_types),
+            ethnicities: existing.target_physical_preferences?.ethnicities ??
+              (existing.target_physical_preferences?.ethnicity ? [existing.target_physical_preferences.ethnicity] : prev.target_physical_preferences.ethnicities),
+          },
           target_education_preference:
             existing.target_education_preference ??
             prev.target_education_preference,
@@ -627,7 +663,7 @@ export default function OnboardingPage() {
   );
 
   const updatePhysicalPref = useCallback(
-    (key: string, value: string) => {
+    (key: string, value: string | string[]) => {
       setForm((prev) => ({
         ...prev,
         target_physical_preferences: {
@@ -655,6 +691,8 @@ export default function OnboardingPage() {
       profession: form.profession || null,
       title: form.title || null,
       height_inches: form.height_inches === "" ? null : Number(form.height_inches),
+      own_ethnicity: form.own_ethnicity || null,
+      own_body_type: form.own_body_type || null,
       dating_apps_used: form.dating_apps_used,
       dating_apps_open_to: form.dating_apps_open_to,
       hobbies_and_interests: form.hobbies_and_interests,
@@ -848,6 +886,20 @@ export default function OnboardingPage() {
         type="number"
         icon="height"
       />
+      <SingleSelectPills
+        label="Your Ethnicity"
+        icon="diversity_3"
+        options={ETHNICITY_OPTIONS}
+        selected={form.own_ethnicity}
+        onChange={(v) => updateField("own_ethnicity", v)}
+      />
+      <SingleSelectPills
+        label="Your Body Type"
+        icon="accessibility_new"
+        options={BODY_TYPE_OPTIONS}
+        selected={form.own_body_type}
+        onChange={(v) => updateField("own_body_type", v)}
+      />
       <TagInput
         label="Dating Apps Used"
         values={form.dating_apps_used}
@@ -931,7 +983,7 @@ export default function OnboardingPage() {
         />
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-4 bg-surface-container-low rounded-2xl p-4">
         <p className="text-gold text-xs uppercase tracking-wider flex items-center gap-1.5">
           <span
             className="material-symbols-outlined text-sm"
@@ -941,26 +993,26 @@ export default function OnboardingPage() {
           </span>
           Physical Preferences
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-surface-container-low rounded-2xl p-4">
-          <TextField
-            label="Height Preference"
-            value={form.target_physical_preferences.height}
-            onChange={(v) => updatePhysicalPref("height", v)}
-            placeholder={"5'4\" - 5'8\""}
-          />
-          <TextField
-            label="Body Type"
-            value={form.target_physical_preferences.body_type}
-            onChange={(v) => updatePhysicalPref("body_type", v)}
-            placeholder="Athletic, slim..."
-          />
-          <TextField
-            label="Ethnicity"
-            value={form.target_physical_preferences.ethnicity}
-            onChange={(v) => updatePhysicalPref("ethnicity", v)}
-            placeholder="No preference..."
-          />
-        </div>
+        <TextField
+          label="Height Preference"
+          value={form.target_physical_preferences.height}
+          onChange={(v) => updatePhysicalPref("height", v)}
+          placeholder={"e.g. 5'4\" - 5'8\""}
+        />
+        <MultiSelectPills
+          label="Body Types You're Attracted To"
+          icon="accessibility_new"
+          options={BODY_TYPE_OPTIONS}
+          selected={form.target_physical_preferences.body_types}
+          onChange={(v) => updatePhysicalPref("body_types", v)}
+        />
+        <MultiSelectPills
+          label="Ethnicities You're Open To"
+          icon="diversity_3"
+          options={ETHNICITY_OPTIONS}
+          selected={form.target_physical_preferences.ethnicities}
+          onChange={(v) => updatePhysicalPref("ethnicities", v)}
+        />
       </div>
 
       <TextField

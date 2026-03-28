@@ -225,7 +225,6 @@ export function PreferencesEditor({ clientId, preferences }: PreferencesEditorPr
 
         <TagInput label="Body Types" tags={physParsed.body_types ?? []} onChange={(tags) => updatePhysPref("body_types", tags)} />
         <TagInput label="Ethnicities" tags={physParsed.ethnicities ?? []} onChange={(tags) => updatePhysPref("ethnicities", tags)} />
-        <TagInput label="Hair Colors" tags={physParsed.hair_colors ?? []} onChange={(tags) => updatePhysPref("hair_colors", tags)} />
 
         <div className="space-y-2">
           <Label className="text-gold text-xs uppercase tracking-wider">Additional Physical Notes</Label>
