@@ -158,7 +158,16 @@ export function ActionsManager({
   // Group actions by status, ordered
   const grouped = statusOrder.map((s) => ({
     status: s,
-    items: actions.filter((a) => a.status === s),
+    items: actions
+      .filter((a) => a.status === s)
+      .sort((a, b) => {
+        // Sort overdue items to the top within each group
+        const aOverdue = isOverdue(a.due_date) && s !== "completed" && s !== "cancelled";
+        const bOverdue = isOverdue(b.due_date) && s !== "completed" && s !== "cancelled";
+        if (aOverdue && !bOverdue) return -1;
+        if (!aOverdue && bOverdue) return 1;
+        return 0;
+      }),
   })).filter((g) => g.items.length > 0);
 
   return (
@@ -311,17 +320,29 @@ export function ActionsManager({
                 return (
                   <div
                     key={action.id}
-                    className="bg-surface-container-low p-5 rounded-2xl space-y-3 relative overflow-hidden group"
+                    className={`p-5 rounded-2xl space-y-3 relative overflow-hidden group ${
+                      overdue
+                        ? "bg-red-500/5 border border-red-500/20"
+                        : "bg-surface-container-low"
+                    }`}
                   >
                     <div
                       className={`absolute top-0 left-0 w-1 h-full transition-opacity duration-500 ${
-                        action.priority === "urgent"
+                        overdue
+                          ? "bg-error-red opacity-100"
+                          : action.priority === "urgent"
                           ? "bg-error-red opacity-80"
                           : action.priority === "high"
                             ? "bg-gold opacity-60"
                             : "bg-gold opacity-20 group-hover:opacity-60"
                       }`}
                     />
+                    {overdue && (
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <span className="material-symbols-outlined text-error-red text-sm" style={{ fontVariationSettings: "'FILL' 1, 'wght' 400" }}>warning</span>
+                        <span className="text-error-red text-[10px] uppercase tracking-widest font-bold">Overdue</span>
+                      </div>
+                    )}
 
                     {editingId === action.id ? (
                       /* Inline Edit Form */
