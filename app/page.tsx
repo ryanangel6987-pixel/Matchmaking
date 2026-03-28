@@ -1,6 +1,17 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+
+export const metadata: Metadata = {
+  title: "Private Dating Concierge — Your Dating Life, Discreetly Managed",
+  description: "We engineer your digital identity and deliver curated dates. Dedicated concierge manager, 4-layer preference filtering, and weekly KPI dashboard. 4-8 dates per month. Apply now.",
+  openGraph: {
+    title: "Private Dating Concierge",
+    description: "Your dating life, discreetly managed end-to-end. We engineer your digital identity and deliver curated dates — you only show up.",
+    type: "website",
+  },
+};
 import { createClient } from "@/lib/supabase/server";
 import { LandingPage } from "@/components/landing/landing-page";
 
