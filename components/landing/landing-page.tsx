@@ -158,14 +158,14 @@ export function LandingPage() {
                 ],
               },
               {
-                icon: "hourglass_disabled",
-                issue: "You Pay Thousands and Wait for Months",
-                stat: "9 months in. Zero dates. No refund.",
-                text: "You hand over $5,000\u2013$20,000 and then\u2026 nothing. No dashboard. No metrics. No proof anyone is working on your behalf. Weeks go by. Your matchmaker stops responding. You\u2019re told to \u201Ctrust the process.\u201D",
-                detail: "Clients report waiting 6\u20139 months with zero dates. One was paired with a single match who stood them up, then was ghosted by their own matchmaker. Hidden fees ($98/month on top of membership) and strict no-refund policies are common.",
+                icon: "visibility_off",
+                issue: "Zero Transparency",
+                stat: "No dashboard. No metrics. No proof.",
+                text: "You hand over $5,000\u2013$20,000 and have no way to see what\u2019s happening. No dashboard. No swipe data. No match rates. No proof anyone is actually working on your behalf. You\u2019re told to \u201Ctrust the process\u201D while weeks go by in silence.",
+                detail: "Most services provide zero reporting. No KPIs, no weekly updates, no conversion data. When clients ask for proof of activity, they\u2019re met with vague reassurances or silence. It\u2019s a black box you\u2019re paying thousands to sit inside.",
                 links: [
-                  { label: "Real client wait times and complaints", url: "https://lumasearch.com/blog/its-just-lunch-reviews-2025/" },
-                  { label: "Industry complaint patterns", url: "https://www.trustpilot.com/review/matchmakingservices.com" },
+                  { label: "Client transparency complaints", url: "https://lumasearch.com/blog/its-just-lunch-reviews-2025/" },
+                  { label: "Industry review patterns", url: "https://www.trustpilot.com/review/matchmakingservices.com" },
                 ],
               },
             ].map((comp) => (
