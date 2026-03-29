@@ -86,7 +86,25 @@ export default function BookingConfirmedPage() {
           </div>
         </div>
 
-        {/* ═══ 4. CLIENT TESTIMONIALS ═══ */}
+        {/* ═══ 4. PREPARE FOR YOUR CALL ═══ */}
+        <div className="bg-surface-container-low rounded-2xl p-5">
+          <p className="text-gold text-xs uppercase tracking-widest mb-3 font-bold">Prepare for Your Call</p>
+          <ul className="space-y-2.5">
+            {[
+              "Have 3\u20135 recent photos of yourself ready to share",
+              "Think about your top 3 deal-breakers",
+              "Know your preferred neighborhoods for dates",
+              "Have your dating app logins available (if you have accounts)",
+            ].map((item) => (
+              <li key={item} className="flex items-start gap-3 text-on-surface text-sm">
+                <span className="material-symbols-outlined text-gold text-sm mt-0.5" style={{ fontVariationSettings: "'FILL' 1, 'wght' 400" }}>check_circle</span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* ═══ 5. CLIENT TESTIMONIALS ═══ */}
         <div className="space-y-4">
           <h2 className="font-heading text-xl font-bold text-center text-on-surface">Clients Like You</h2>
           <p className="text-on-surface-variant text-xs text-center uppercase tracking-widest">Real results from real clients</p>
