@@ -69,7 +69,7 @@ const ETHNICITY_OPTIONS = [
 ];
 const BODY_TYPE_OPTIONS = ["Slim", "Athletic / Fit", "Average", "Curvy", "Muscular", "Plus Size", "Petite"];
 
-const TOTAL_STEPS = 10; // 0-9: qualification + contact
+const TOTAL_STEPS = 11; // 0-10: qualification + contact
 
 export function ApplicationForm() {
   const router = useRouter();
@@ -86,6 +86,7 @@ export function ApplicationForm() {
   const [height, setHeight] = useState("");
   const [ownEthnicity, setOwnEthnicity] = useState("");
   const [ownBodyType, setOwnBodyType] = useState("");
+  const [biggestChallenge, setBiggestChallenge] = useState("");
   const [duration, setDuration] = useState("");
   const [triedBefore, setTriedBefore] = useState("");
   const [currentResults, setCurrentResults] = useState("");
@@ -147,12 +148,13 @@ export function ApplicationForm() {
       case 1: return city.trim().length >= 2;
       case 2: return profession.trim().length >= 2;
       case 3: return !!age && !!ownEthnicity && !!ownBodyType; // About You
-      case 4: return !!duration;
-      case 5: return !!triedBefore;
-      case 6: return !!currentResults;
-      case 7: return priority >= 1;
-      case 8: return !!herAgeMin && !!herAgeMax && herEthnicities.length > 0; // Her Prefs
-      case 9: return fullName.trim().length >= 2 && email.includes("@") && phone.trim().length >= 7;
+      case 4: return !!biggestChallenge; // Problem
+      case 5: return !!duration;
+      case 6: return !!triedBefore;
+      case 7: return !!currentResults;
+      case 8: return priority >= 1;
+      case 9: return !!herAgeMin && !!herAgeMax && herEthnicities.length > 0; // Her Prefs
+      case 10: return fullName.trim().length >= 2 && email.includes("@") && phone.trim().length >= 7;
       default: return false;
     }
   };
@@ -175,6 +177,7 @@ export function ApplicationForm() {
       own_ethnicity: ownEthnicity,
       own_body_type: ownBodyType,
       life_window: lifeWindow,
+      biggest_challenge: biggestChallenge,
       duration,
       tried_before: triedBefore,
       current_results: currentResults,
@@ -347,8 +350,26 @@ export function ApplicationForm() {
             </div>
           )}
 
-          {/* ═══ SCREEN 4: Duration ═══ */}
+          {/* ═══ SCREEN 4: Biggest Challenge ═══ */}
           {step === 4 && (
+            <div className="space-y-6">
+              <div>
+                <p className="text-gold text-xs uppercase tracking-widest mb-2">The Problem</p>
+                <h2 className="font-heading text-2xl md:text-3xl font-bold text-on-surface">What&apos;s the biggest challenge you&apos;re facing with dating right now?</h2>
+              </div>
+              <div className="space-y-3">
+                <Pill value="no_time" selected={biggestChallenge} onSelect={setBiggestChallenge}><p className="font-medium">I don&apos;t have time to manage dating apps</p></Pill>
+                <Pill value="low_quality" selected={biggestChallenge} onSelect={setBiggestChallenge}><p className="font-medium">The quality of matches doesn&apos;t match my standards</p></Pill>
+                <Pill value="bad_profile" selected={biggestChallenge} onSelect={setBiggestChallenge}><p className="font-medium">My profile doesn&apos;t represent who I actually am</p></Pill>
+                <Pill value="no_dates" selected={biggestChallenge} onSelect={setBiggestChallenge}><p className="font-medium">I&apos;m not converting matches into actual dates</p></Pill>
+                <Pill value="starting_over" selected={biggestChallenge} onSelect={setBiggestChallenge}><p className="font-medium">I&apos;m starting over and don&apos;t know where to begin</p></Pill>
+                <Pill value="all_above" selected={biggestChallenge} onSelect={setBiggestChallenge}><p className="font-medium">All of the above</p></Pill>
+              </div>
+            </div>
+          )}
+
+          {/* ═══ SCREEN 5: Duration ═══ */}
+          {step === 5 && (
             <div className="space-y-6">
               <div>
                 <p className="text-gold text-xs uppercase tracking-widest mb-2">Duration</p>
@@ -364,8 +385,8 @@ export function ApplicationForm() {
             </div>
           )}
 
-          {/* ═══ SCREEN 5: Tried Before ═══ */}
-          {step === 5 && (
+          {/* ═══ SCREEN 6: Tried Before ═══ */}
+          {step === 6 && (
             <div className="space-y-6">
               <div>
                 <p className="text-gold text-xs uppercase tracking-widest mb-2">Prior Attempts</p>
@@ -381,8 +402,8 @@ export function ApplicationForm() {
             </div>
           )}
 
-          {/* ═══ SCREEN 6: Current Results ═══ */}
-          {step === 6 && (
+          {/* ═══ SCREEN 7: Current Results ═══ */}
+          {step === 7 && (
             <div className="space-y-6">
               <div>
                 <p className="text-gold text-xs uppercase tracking-widest mb-2">Current State</p>
@@ -397,8 +418,8 @@ export function ApplicationForm() {
             </div>
           )}
 
-          {/* ═══ SCREEN 7: Priority Level ═══ */}
-          {step === 7 && (
+          {/* ═══ SCREEN 8: Priority Level ═══ */}
+          {step === 8 && (
             <div className="space-y-6">
               <div>
                 <p className="text-gold text-xs uppercase tracking-widest mb-2">Priority</p>
@@ -427,8 +448,8 @@ export function ApplicationForm() {
             </div>
           )}
 
-          {/* ═══ SCREEN 8: Her Preferences ═══ */}
-          {step === 8 && (
+          {/* ═══ SCREEN 9: Her Preferences ═══ */}
+          {step === 9 && (
             <div className="space-y-6">
               <div>
                 <p className="text-gold text-xs uppercase tracking-widest mb-2">Your Type</p>
@@ -481,8 +502,8 @@ export function ApplicationForm() {
             </div>
           )}
 
-          {/* ═══ SCREEN 9: Contact Info (Final) ═══ */}
-          {step === 9 && (
+          {/* ═══ SCREEN 10: Contact Info (Final) ═══ */}
+          {step === 10 && (
             <div className="space-y-6">
               <div>
                 <p className="text-gold text-xs uppercase tracking-widest mb-2">Final Step</p>
@@ -492,7 +513,7 @@ export function ApplicationForm() {
               <div className="space-y-4">
                 <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Full Name" autoFocus className={inputClass.replace("text-lg", "text-base")} />
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" className={inputClass.replace("text-lg", "text-base")} />
-                <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone / WhatsApp" className={inputClass.replace("text-lg", "text-base")} />
+                <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone Number" className={inputClass.replace("text-lg", "text-base")} />
               </div>
             </div>
           )}
@@ -514,7 +535,7 @@ export function ApplicationForm() {
                 : "bg-surface-container-high text-outline cursor-not-allowed"
             }`}
           >
-            {submitting ? "Creating your account..." : step === TOTAL_STEPS - 1 ? "Submit Application" : "Continue"}
+            {submitting ? "Submitting..." : step === TOTAL_STEPS - 1 ? "Submit Application" : "Continue"}
           </button>
 
           {canAdvance() && !submitting && step < TOTAL_STEPS - 1 && (

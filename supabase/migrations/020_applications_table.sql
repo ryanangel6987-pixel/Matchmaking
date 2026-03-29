@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS applications (
   own_ethnicity TEXT,
   own_body_type TEXT,
   life_window TEXT,
+  biggest_challenge TEXT,
   duration TEXT,
   tried_before TEXT,
   current_results TEXT,
