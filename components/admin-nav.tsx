@@ -12,6 +12,11 @@ const tabs = [
     icon: "dashboard",
   },
   {
+    label: "Applications",
+    href: "/admin/applications",
+    icon: "assignment",
+  },
+  {
     label: "Clients",
     href: "/admin/clients",
     icon: "people",

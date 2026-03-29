@@ -43,3 +43,37 @@ export async function POST(request: Request) {
 
   return NextResponse.json({ success: true });
 }
+
+// PATCH: Update application status (admin only, uses RLS)
+export async function PATCH(request: Request) {
+  const { cookies } = await import("next/headers");
+  const cookieStore = await cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll: () => cookieStore.getAll(),
+        setAll: (c) => { try { c.forEach(({ name, value, options }) => cookieStore.set(name, value, options)); } catch {} },
+      },
+    }
+  );
+
+  const body = await request.json();
+  const { id, status } = body;
+
+  if (!id || !status) {
+    return NextResponse.json({ error: "Missing id or status" }, { status: 400 });
+  }
+
+  const { error } = await supabase
+    .from("applications")
+    .update({ status })
+    .eq("id", id);
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 400 });
+  }
+
+  return NextResponse.json({ success: true });
+}
