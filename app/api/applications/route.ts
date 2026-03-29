@@ -41,6 +41,41 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
 
+  // Fire webhook to GoHighLevel (non-blocking)
+  const ghlWebhookUrl = process.env.GHL_WEBHOOK_URL;
+  if (ghlWebhookUrl) {
+    fetch(ghlWebhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        event: "application_submitted",
+        email: body.email,
+        phone: body.phone,
+        first_name: body.full_name?.split(" ")[0] ?? "",
+        last_name: body.full_name?.split(" ").slice(1).join(" ") ?? "",
+        full_name: body.full_name,
+        city: body.city,
+        profession: body.profession,
+        age: body.age,
+        height: body.height,
+        ethnicity: body.own_ethnicity,
+        body_type: body.own_body_type,
+        life_window: body.life_window,
+        duration_unsatisfied: body.duration,
+        tried_before: body.tried_before,
+        current_results: body.current_results,
+        priority_level: body.priority_level,
+        ideal_partner: body.ideal_partner,
+        her_age_range: body.her_age_min && body.her_age_max ? `${body.her_age_min}-${body.her_age_max}` : "",
+        her_ethnicities: (body.her_ethnicities ?? []).join(", "),
+        her_body_types: (body.her_body_types ?? []).join(", "),
+        lead_score: body.lead_score,
+        lead_tier: body.lead_tier,
+        source: "privatedatingconcierge.com",
+      }),
+    }).catch(() => {}); // Fire and forget
+  }
+
   return NextResponse.json({ success: true });
 }
 
