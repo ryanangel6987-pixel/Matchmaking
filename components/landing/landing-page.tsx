@@ -113,59 +113,59 @@ export function LandingPage() {
       {/* ═══ COMPETITIVE ANALYSIS (Deck Slide 03) ═══ */}
       <section className="py-20 md:py-28 bg-surface-container-lowest">
         <div className="max-w-6xl mx-auto px-6">
-          <p className="text-gold text-xs uppercase tracking-widest mb-4">Market Failure</p>
+          <p className="text-gold text-xs uppercase tracking-widest mb-4">You Deserve Better</p>
           <h2 className="font-heading text-3xl md:text-5xl font-bold leading-tight">
-            Why every other option<br className="hidden md:block" />
-            <span className="text-gold">is structurally broken.</span>
+            What you&apos;re actually getting<br className="hidden md:block" />
+            <span className="text-gold">from &ldquo;premium&rdquo; dating services.</span>
           </h2>
           <p className="text-on-surface-variant text-base mt-6 max-w-2xl leading-relaxed">
-            Every traditional dating service operates on top of a broken digital identity &mdash; amplifying the problem instead of solving it. None of them fix the input layer. Here&apos;s what that looks like.
+            You&apos;re paying thousands for a premium experience. But behind the sales pitch, most services cut corners on the things that matter most &mdash; your time, your privacy, and who actually shows up on the other side of the table.
           </p>
 
           <div className="space-y-4 mt-12">
             {[
               {
-                icon: "gavel",
-                issue: "The Quota Machine",
+                icon: "visibility_off",
+                issue: "You Show Up Blind",
+                stat: "No photos. No names. No vetting.",
+                text: "You\u2019re paying $5,000+ to walk into a restaurant and meet a complete stranger. No photo beforehand. No name. No background. Some services even cold-call people from databases to fill the seat across from you \u2014 people who never signed up.",
+                detail: "Clients have reported their \u201Cmatch\u201D had never heard of the service until someone called asking them to go on a date. That\u2019s not matchmaking. That\u2019s filling a quota.",
+                links: [
+                  { label: "Real client experiences", url: "https://www.sitejabber.com/reviews/tawkify.com" },
+                  { label: "How blind matching actually works", url: "https://eddie-hernandez.com/tawkify-reviews-cost-what-is-tawkify/" },
+                ],
+              },
+              {
+                icon: "person_off",
+                issue: "Your Preferences Get Ignored",
                 stat: "$60M+ in class action settlements",
-                text: "Scripted sales calls. Matches made by untrained employees to hit monthly quotas. Clients reported being sent on dates with people who never signed up \u2014 including paid staff filling empty slots.",
-                detail: "One service settled a class action for $60M in date vouchers after clients proved matches ignored their stated preferences entirely. 115+ BBB complaints filed in 3 years.",
+                text: "You spend an hour on the phone describing exactly what you want. Then they send you on dates with people who match none of it. Why? Because matches are driven by who\u2019s available, not who\u2019s right for you.",
+                detail: "One major matchmaking service settled for $60M after clients proved their stated preferences were systematically ignored to hit monthly quotas. 115+ BBB complaints in 3 years.",
                 links: [
                   { label: "Class action settlement details", url: "https://topclassactions.com/lawsuit-settlements/lawsuit-news/its-just-lunch-matchmaking-site-settles-class-action-for-60m-in-dates/" },
                   { label: "BBB complaint history", url: "https://www.bbb.org/us/ca/san-francisco/profile/dating-services/tawkify-1116-874156/complaints" },
                 ],
               },
               {
-                icon: "person_cancel",
-                issue: "The Blind Date Trap",
-                stat: "Dates with people who never even signed up",
-                text: "Your \u201Cmatch\u201D might be someone who was cold-called from a database and recruited to show up \u2014 not a paying client who went through the same vetting process you did.",
-                detail: "Customers paid $5,000+ for \u201Chand-selected\u201D matches, only to discover their dates had never heard of the service until someone called asking them to show up. No photos. No names. You arrive blind.",
+                icon: "block",
+                issue: "You Pay Even When You Say No",
+                stat: "Declined matches still count against your contract",
+                text: "She wasn\u2019t your type? Doesn\u2019t matter. That \u201Cintroduction\u201D still counts as one of your 3\u20136 guaranteed matches. You\u2019re locked into a non-refundable contract paying $2,000\u2013$3,000 per date \u2014 whether you wanted it or not.",
+                detail: "One client was offered just $2,000 back on an $8,500 contract. The fine print says all presented matches count \u2014 even ones you decline \u2014 and no refunds are issued.",
                 links: [
-                  { label: "Client experiences and reviews", url: "https://www.sitejabber.com/reviews/tawkify.com" },
-                  { label: "How blind matching actually works", url: "https://eddie-hernandez.com/tawkify-reviews-cost-what-is-tawkify/" },
+                  { label: "Contract terms breakdown", url: "https://blog.photofeeler.com/three-day-rule/" },
+                  { label: "BBB refund complaints", url: "https://www.bbb.org/us/tx/colleyville/profile/online-dating-services/three-day-rule-matchmaking-0825-1000201568/complaints" },
                 ],
               },
               {
-                icon: "money_off",
-                issue: "The Declining Match Scam",
-                stat: "$5,900\u2013$19,500 for matches you decline",
-                text: "Declined a match because she wasn\u2019t your type? Doesn\u2019t matter. It still counts against your contract. You\u2019re paying per \u201Cpresentation,\u201D not per quality date.",
-                detail: "Contracts guarantee 3\u20136 matches over 3\u20136 months. If you decline any, they still count. Refund policy: none. One client was offered $2,000 back on an $8,500 contract.",
+                icon: "masks",
+                issue: "Someone Else Is Pretending to Be You",
+                stat: "You show up as a stranger to your own date",
+                text: "Ghostwriters handle every conversation \u2014 pretending to be you from the first message to the phone number exchange. When you finally sit down across from her, she\u2019s expecting someone else. Because she fell for someone else\u2019s words.",
+                detail: "One service\u2019s CEO publicly called it \u201Ca little bit of an ethical gray area.\u201D Clients are told to never reveal the service exists. Each ghostwriter juggles 10\u201320 accounts simultaneously.",
                 links: [
-                  { label: "Pricing and contract terms", url: "https://blog.photofeeler.com/three-day-rule/" },
-                  { label: "BBB complaints about refund policy", url: "https://www.bbb.org/us/tx/colleyville/profile/online-dating-services/three-day-rule-matchmaking-0825-1000201568/complaints" },
-                ],
-              },
-              {
-                icon: "smart_toy",
-                issue: "The Ghostwriter Problem",
-                stat: "Someone else is pretending to be you",
-                text: "Ghostwriters handle your conversations, impersonating you from first message to phone number exchange. When you show up on the date, you\u2019re a stranger \u2014 because she fell for someone else\u2019s words.",
-                detail: "The CEO of one major service publicly admitted it\u2019s \u201Ca little bit of an ethical gray area.\u201D Clients are advised to never tell their dates the service exists. 10\u201320 accounts managed per ghostwriter.",
-                links: [
-                  { label: "Ghostwriting practices exposed", url: "https://www.inquisitr.com/online-dating-company-vida-uses-ghostwriters-to-trick-people-into-falling-in-love" },
-                  { label: "Former employee account", url: "https://gcsimpsonwriter.medium.com/i-was-almost-a-paid-dating-impersonator-f81977f3dfad" },
+                  { label: "Ghostwriting investigation", url: "https://www.inquisitr.com/online-dating-company-vida-uses-ghostwriters-to-trick-people-into-falling-in-love" },
+                  { label: "Former ghostwriter\u2019s account", url: "https://gcsimpsonwriter.medium.com/i-was-almost-a-paid-dating-impersonator-f81977f3dfad" },
                 ],
               },
             ].map((comp) => (
@@ -193,9 +193,9 @@ export function LandingPage() {
             ))}
           </div>
 
-          <div className="bg-surface-container-low border-l-2 border-gold p-5 rounded-r-xl mt-8 max-w-2xl">
-            <p className="font-heading text-base text-on-surface">We don&apos;t do any of this.</p>
-            <p className="text-on-surface-variant text-sm mt-1">No blind dates. No ghostwriting. No quotas. No contracts. One dedicated manager. Your accounts. Full transparency.</p>
+          <div className="bg-surface-container-low border-l-2 border-gold p-6 rounded-r-xl mt-8 max-w-2xl">
+            <p className="font-heading text-lg text-on-surface">You deserve to know who you&apos;re meeting, approve every date, and never be impersonated.</p>
+            <p className="text-on-surface-variant text-sm mt-2">That&apos;s why we built something different. You see every match before you meet. You approve every date. Your manager is one real person &mdash; not a ghostwriter. And you can cancel any month, no contract, no questions.</p>
           </div>
         </div>
       </section>
