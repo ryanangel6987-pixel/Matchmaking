@@ -44,6 +44,7 @@ const STATUS_STYLES: Record<string, string> = {
   pending: "bg-outline-variant/20 text-on-surface-variant border-outline-variant/30",
   activated: "bg-green-400/15 text-green-400 border-green-400/30",
   rejected: "bg-red-400/15 text-red-400 border-red-400/30",
+  auto_disqualified: "bg-red-400/10 text-red-400/60 border-red-400/20",
 };
 
 const LIFE_WINDOW_LABELS: Record<string, string> = {
@@ -93,6 +94,7 @@ export function ApplicationsCRM({ applications, adminProfileId }: { applications
     activated: applications.filter((a) => a.status === "activated").length,
     high: applications.filter((a) => a.lead_tier === "high" && a.status === "pending").length,
     medium: applications.filter((a) => a.lead_tier === "medium" && a.status === "pending").length,
+    disqualified: applications.filter((a) => a.status === "auto_disqualified").length,
   };
 
   const handleActivate = async (appId: string) => {
@@ -128,6 +130,7 @@ export function ApplicationsCRM({ applications, adminProfileId }: { applications
           { key: "high", label: "High Priority", count: counts.high },
           { key: "medium", label: "Medium", count: counts.medium },
           { key: "activated", label: "Activated", count: counts.activated },
+          { key: "auto_disqualified", label: "Disqualified", count: counts.disqualified },
         ].map((tab) => (
           <button
             key={tab.key}
@@ -291,6 +294,12 @@ export function ApplicationsCRM({ applications, adminProfileId }: { applications
                         )}
                         {app.status === "rejected" && (
                           <p className="text-red-400 text-xs">Rejected</p>
+                        )}
+                        {app.status === "auto_disqualified" && (
+                          <p className="text-red-400/60 text-xs flex items-center gap-1">
+                            <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}>block</span>
+                            Auto-disqualified: {app.biggest_challenge === "income_under_100k" ? "Income under $100K" : app.biggest_challenge === "not_in_shape" ? "Not in shape" : app.biggest_challenge ?? "Unknown reason"}
+                          </p>
                         )}
                       </div>
                     </div>

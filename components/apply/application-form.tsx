@@ -156,10 +156,28 @@ export function ApplicationForm() {
     router.push("/apply/book");
   };
 
+  const logDisqualification = async (reason: string) => {
+    const payload = {
+      full_name: fullName.trim() || "Unknown",
+      email: email || `dq-${Date.now()}@unknown.com`,
+      phone: phone.trim() || null,
+      city: city.trim() || null,
+      profession: profession.trim() || null,
+      intent, life_window: lifeWindow,
+      income_qualified: income, shape_qualified: shape,
+      lead_score: 0, lead_tier: "likely_unqualified",
+      status: "auto_disqualified",
+      biggest_challenge: reason,
+    };
+    try {
+      await fetch("/api/applications", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+    } catch {}
+  };
+
   const next = () => {
-    // Disqualification gates
-    if (step === 4 && income === "no") { router.push("/?dq=income"); return; }
-    if (step === 5 && shape === "no") { router.push("/?dq=shape"); return; }
+    // Disqualification gates — log then redirect
+    if (step === 4 && income === "no") { logDisqualification("income_under_100k"); router.push("/?dq=income"); return; }
+    if (step === 5 && shape === "no") { logDisqualification("not_in_shape"); router.push("/?dq=shape"); return; }
     if (step === TOTAL_STEPS - 1) handleSubmit();
     else setStep(step + 1);
   };
