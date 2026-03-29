@@ -194,8 +194,77 @@ export function LandingPage() {
           </div>
 
           <div className="bg-surface-container-low border-l-2 border-gold p-6 rounded-r-xl mt-8 max-w-2xl">
-            <p className="font-heading text-lg text-on-surface">You deserve to know who you&apos;re meeting, approve every date, and never be impersonated.</p>
-            <p className="text-on-surface-variant text-sm mt-2">That&apos;s why we built something different. You see every match before you meet. You approve every date. Your manager is one real person &mdash; not a ghostwriter. And you can cancel any month, no contract, no questions.</p>
+            <p className="font-heading text-lg text-on-surface">You deserve to know who you&apos;re meeting, approve every date, and see exactly what&apos;s happening.</p>
+            <p className="text-on-surface-variant text-sm mt-2">That&apos;s why we built something that solves every one of these problems.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ HOW WE'RE DIFFERENT — JOBS TO BE DONE ═══ */}
+      <section className="py-20 md:py-28">
+        <div className="max-w-6xl mx-auto px-6">
+          <p className="text-gold text-xs uppercase tracking-widest mb-4">How We&apos;re Different</p>
+          <h2 className="font-heading text-3xl md:text-5xl font-bold leading-tight">
+            Built around what<br className="hidden md:block" />
+            <span className="text-gold">actually matters to you.</span>
+          </h2>
+          <p className="text-on-surface-variant text-base mt-6 max-w-2xl leading-relaxed">
+            Every part of our service was designed to solve a specific problem that existing services ignore. Here&apos;s what that looks like in practice.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+            {[
+              {
+                problem: "Blind dates with strangers",
+                icon: "how_to_reg",
+                title: "You See Every Match Before You Meet",
+                text: "Her name, photo, age, profession, and one memorable detail \u2014 delivered to your phone before you approve anything. You never walk in blind. You decide who you sit across from.",
+              },
+              {
+                problem: "Preferences get ignored",
+                icon: "tune",
+                title: "Your Type Is the Starting Point, Not an Afterthought",
+                text: "Physical attraction, ethnicity, body type, age range, lifestyle \u2014 your preferences aren\u2019t filed away. They\u2019re the first filter. Our 4-layer vetting system starts with what you\u2019re actually attracted to.",
+              },
+              {
+                problem: "Declined matches still count",
+                icon: "event_available",
+                title: "You Only Pay for What You Approve",
+                text: "Month-to-month. No contracts. No lock-ins. If a date doesn\u2019t meet your standard, decline it \u2014 no penalty, no wasted slot. Cancel any month, no questions asked.",
+              },
+              {
+                problem: "Zero transparency",
+                icon: "bar_chart",
+                title: "A Dashboard You Can Actually See",
+                text: "Weekly KPI reports: swipes, matches, conversations, dates closed, approval rate. You see every metric, every week. If something isn\u2019t working, the data tells us \u2014 not your frustration.",
+              },
+              {
+                problem: "Rotating staff, no continuity",
+                icon: "person",
+                title: "One Dedicated Manager. Your Accounts Only.",
+                text: "Not a rotating team. Not 20 accounts per person. One trained human who knows your type, your dealbreakers, and your schedule. Available 24/7 on WhatsApp.",
+              },
+              {
+                problem: "Identity never gets fixed",
+                icon: "auto_fix_high",
+                title: "We Fix the Root Cause First",
+                text: "Before a single swipe happens, we reconstruct your entire digital identity \u2014 profiles, photos, bios, Instagram. The gap between who you are and how you show up online is closed before matching begins.",
+              },
+            ].map((item) => (
+              <div key={item.title} className="bg-surface-container-low p-6 rounded-2xl space-y-3">
+                <div className="flex items-center gap-2 text-on-surface-variant text-[10px] uppercase tracking-widest">
+                  <span className="w-1.5 h-1.5 rounded-full bg-gold" />
+                  Their problem: {item.problem}
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="material-symbols-outlined text-2xl text-gold shrink-0 mt-0.5" style={I}>{item.icon}</span>
+                  <div>
+                    <h3 className="font-heading text-base font-semibold text-on-surface">{item.title}</h3>
+                    <p className="text-on-surface-variant text-sm leading-relaxed mt-1.5">{item.text}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
