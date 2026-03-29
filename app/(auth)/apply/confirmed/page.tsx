@@ -86,15 +86,18 @@ export default function BookingConfirmedPage() {
           </div>
         </div>
 
-        {/* ═══ 4. PREPARE FOR YOUR CALL ═══ */}
-        <div className="bg-surface-container-low rounded-2xl p-5">
-          <p className="text-gold text-xs uppercase tracking-widest mb-3 font-bold">Prepare for Your Call</p>
+        {/* ═══ 4. PREPARE FOR YOUR CALL + PORTAL CTA ═══ */}
+        <div className="bg-surface-container-low rounded-2xl p-6 space-y-5">
+          <p className="text-gold text-xs uppercase tracking-widest font-bold">Prepare for Your Call</p>
+          <p className="text-on-surface-variant text-sm leading-relaxed">
+            Your portal is ready. Upload your photos, add reference pictures of your type, and fill in your preferences before the call — the more your matchmaker knows going in, the faster you get results.
+          </p>
           <ul className="space-y-2.5">
             {[
-              "Have 3\u20135 recent photos of yourself ready to share",
-              "Think about your top 3 deal-breakers",
-              "Know your preferred neighborhoods for dates",
-              "Have your dating app logins available (if you have accounts)",
+              "Upload your best photos and photos of exes / your type",
+              "Fill in your preferences, deal-breakers, and lifestyle details",
+              "Add your preferred date neighborhoods and venues",
+              "Have your dating app logins ready (if you have accounts)",
             ].map((item) => (
               <li key={item} className="flex items-start gap-3 text-on-surface text-sm">
                 <span className="material-symbols-outlined text-gold text-sm mt-0.5" style={{ fontVariationSettings: "'FILL' 1, 'wght' 400" }}>check_circle</span>
@@ -102,6 +105,12 @@ export default function BookingConfirmedPage() {
               </li>
             ))}
           </ul>
+          <Link
+            href="/login"
+            className="block gold-gradient text-on-gold font-semibold rounded-full py-3.5 text-sm text-center hover:opacity-90 transition-opacity shadow-lg"
+          >
+            Open Your Portal
+          </Link>
         </div>
 
         {/* ═══ 5. CLIENT TESTIMONIALS ═══ */}
@@ -127,18 +136,10 @@ export default function BookingConfirmedPage() {
           </div>
         </div>
 
-        {/* ═══ 5. PORTAL CTA ═══ */}
-        <div className="text-center space-y-3 pt-2">
-          <Link
-            href="/login"
-            className="block gold-gradient text-on-gold font-semibold rounded-full py-3.5 text-sm hover:opacity-90 transition-opacity shadow-lg"
-          >
-            Go to Your Portal
-          </Link>
-          <p className="text-on-surface-variant/40 text-xs">
-            Explore your portal while you wait. Your matchmaker will be assigned after the call.
-          </p>
-        </div>
+        {/* Footer */}
+        <p className="text-center text-on-surface-variant/40 text-xs">
+          Your matchmaker will be assigned after the consultation call.
+        </p>
       </div>
     </div>
   );
