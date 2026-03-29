@@ -179,8 +179,8 @@ export function ApplicationForm() {
       onClick={() => onSelect(value)}
       className={`w-full text-left px-5 py-4 rounded-2xl transition-all duration-200 ${
         selected === value
-          ? "bg-gold/15 border-2 border-gold/40 text-on-surface"
-          : "bg-surface-container-low border-2 border-transparent text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface"
+          ? "bg-gold/15 border-2 border-gold text-on-surface shadow-lg shadow-gold/10"
+          : "bg-surface-container-low border-2 border-outline-variant/30 text-on-surface-variant hover:bg-surface-container-high hover:border-outline-variant/50 hover:text-on-surface"
       }`}
     >
       {children}
