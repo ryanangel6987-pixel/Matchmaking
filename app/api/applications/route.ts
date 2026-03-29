@@ -41,6 +41,7 @@ export async function POST(request: Request) {
     her_body_types: body.her_body_types ?? [],
     lead_score: body.lead_score,
     lead_tier: body.lead_tier,
+    status: body.status ?? "pending",
   });
 
   if (error) {
@@ -78,11 +79,14 @@ export async function POST(request: Request) {
         current_results: body.current_results,
         priority_level: body.priority_level,
         ideal_partner: body.ideal_partner,
+        her_age_min: body.her_age_min,
+        her_age_max: body.her_age_max,
         her_age_range: body.her_age_min && body.her_age_max ? `${body.her_age_min}-${body.her_age_max}` : "",
         her_ethnicities: (body.her_ethnicities ?? []).join(", "),
         her_body_types: (body.her_body_types ?? []).join(", "),
         lead_score: body.lead_score,
         lead_tier: body.lead_tier,
+        status: body.status ?? "pending",
         source: "privatedatingconcierge.com",
       }),
     }).catch(() => {}); // Fire and forget
