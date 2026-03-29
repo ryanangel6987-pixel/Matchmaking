@@ -165,8 +165,8 @@ export function ApplicationForm() {
 
     const { tier, score } = scoreLead({ lifeWindow, duration, triedBefore, priority, profession });
 
-    // No account creation — just save qualification data and book the call
-    localStorage.setItem("pdc_application", JSON.stringify({
+    // Save to database via API + localStorage
+    const payload = {
       full_name: fullName.trim(),
       email,
       phone: phone.trim(),
@@ -190,8 +190,29 @@ export function ApplicationForm() {
       lead_score: score,
       lead_tier: tier,
       submitted_at: new Date().toISOString(),
-    }));
+    };
 
+    // Save to database
+    try {
+      const res = await fetch("/api/applications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        // If duplicate email, still redirect (they already applied)
+        if (!data.error?.includes("duplicate")) {
+          setError(data.error || "Failed to submit. Please try again.");
+          setSubmitting(false);
+          return;
+        }
+      }
+    } catch {
+      // Network error — still save locally and redirect
+    }
+
+    localStorage.setItem("pdc_application", JSON.stringify(payload));
     sessionStorage.removeItem("pdc_apply");
     router.push("/apply/book");
   };
