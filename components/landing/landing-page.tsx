@@ -114,27 +114,88 @@ export function LandingPage() {
       <section className="py-20 md:py-28 bg-surface-container-lowest">
         <div className="max-w-6xl mx-auto px-6">
           <p className="text-gold text-xs uppercase tracking-widest mb-4">Market Failure</p>
-          <h2 className="font-heading text-3xl md:text-4xl font-bold">Why Other Options Fail at the Luxury Level</h2>
-          <p className="text-on-surface-variant text-base mt-4 max-w-2xl">Traditional services operate on top of a broken digital identity, amplifying the problem instead of solving it.</p>
+          <h2 className="font-heading text-3xl md:text-5xl font-bold leading-tight">
+            Why every other option<br className="hidden md:block" />
+            <span className="text-gold">is structurally broken.</span>
+          </h2>
+          <p className="text-on-surface-variant text-base mt-6 max-w-2xl leading-relaxed">
+            Every traditional dating service operates on top of a broken digital identity &mdash; amplifying the problem instead of solving it. None of them fix the input layer. Here&apos;s what that looks like.
+          </p>
 
           <div className="space-y-4 mt-12">
             {[
-              { name: "It\u2019s Just Lunch / Tawkify", issue: "Systemic Issue", stat: "$77M in fraud settlements", text: "Scripted sales calls and employees sent on dates just to fill quotas. They never touch your positioning, leaving the root cause unaddressed." },
-              { name: "Three Day Rule", issue: "Low ROI", stat: "1 date/mo for $5.9K\u2013$21K", text: "Declined matches count toward your total contract. They focus on volume of introductions, not the quality of your reception." },
-              { name: "VIDA Select", issue: "Impersonation Risk", stat: "10\u201320 accounts per manager", text: "You\u2019re one of dozens. Over 50% of staff replaced with AI bots. Ghostwriters impersonate you, creating a disconnect when you show up." },
-              { name: "Blind Matchmakers", issue: "Zero Control", stat: "115+ BBB Complaints", text: "No photos. No names. You show up blindly and hope for the best. Your digital identity stays broken, limiting your options outside their database." },
+              {
+                icon: "gavel",
+                issue: "The Quota Machine",
+                stat: "$60M+ in class action settlements",
+                text: "Scripted sales calls. Matches made by untrained employees to hit monthly quotas. Clients reported being sent on dates with people who never signed up \u2014 including paid staff filling empty slots.",
+                detail: "One service settled a class action for $60M in date vouchers after clients proved matches ignored their stated preferences entirely. 115+ BBB complaints filed in 3 years.",
+                links: [
+                  { label: "Class action settlement details", url: "https://topclassactions.com/lawsuit-settlements/lawsuit-news/its-just-lunch-matchmaking-site-settles-class-action-for-60m-in-dates/" },
+                  { label: "BBB complaint history", url: "https://www.bbb.org/us/ca/san-francisco/profile/dating-services/tawkify-1116-874156/complaints" },
+                ],
+              },
+              {
+                icon: "person_cancel",
+                issue: "The Blind Date Trap",
+                stat: "Dates with people who never even signed up",
+                text: "Your \u201Cmatch\u201D might be someone who was cold-called from a database and recruited to show up \u2014 not a paying client who went through the same vetting process you did.",
+                detail: "Customers paid $5,000+ for \u201Chand-selected\u201D matches, only to discover their dates had never heard of the service until someone called asking them to show up. No photos. No names. You arrive blind.",
+                links: [
+                  { label: "Client experiences and reviews", url: "https://www.sitejabber.com/reviews/tawkify.com" },
+                  { label: "How blind matching actually works", url: "https://eddie-hernandez.com/tawkify-reviews-cost-what-is-tawkify/" },
+                ],
+              },
+              {
+                icon: "money_off",
+                issue: "The Declining Match Scam",
+                stat: "$5,900\u2013$19,500 for matches you decline",
+                text: "Declined a match because she wasn\u2019t your type? Doesn\u2019t matter. It still counts against your contract. You\u2019re paying per \u201Cpresentation,\u201D not per quality date.",
+                detail: "Contracts guarantee 3\u20136 matches over 3\u20136 months. If you decline any, they still count. Refund policy: none. One client was offered $2,000 back on an $8,500 contract.",
+                links: [
+                  { label: "Pricing and contract terms", url: "https://blog.photofeeler.com/three-day-rule/" },
+                  { label: "BBB complaints about refund policy", url: "https://www.bbb.org/us/tx/colleyville/profile/online-dating-services/three-day-rule-matchmaking-0825-1000201568/complaints" },
+                ],
+              },
+              {
+                icon: "smart_toy",
+                issue: "The Ghostwriter Problem",
+                stat: "Someone else is pretending to be you",
+                text: "Ghostwriters handle your conversations, impersonating you from first message to phone number exchange. When you show up on the date, you\u2019re a stranger \u2014 because she fell for someone else\u2019s words.",
+                detail: "The CEO of one major service publicly admitted it\u2019s \u201Ca little bit of an ethical gray area.\u201D Clients are advised to never tell their dates the service exists. 10\u201320 accounts managed per ghostwriter.",
+                links: [
+                  { label: "Ghostwriting practices exposed", url: "https://www.inquisitr.com/online-dating-company-vida-uses-ghostwriters-to-trick-people-into-falling-in-love" },
+                  { label: "Former employee account", url: "https://gcsimpsonwriter.medium.com/i-was-almost-a-paid-dating-impersonator-f81977f3dfad" },
+                ],
+              },
             ].map((comp) => (
-              <div key={comp.name} className="bg-surface-container-low p-6 rounded-2xl flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
-                <div className="md:w-48 shrink-0">
-                  <p className="text-on-surface font-heading font-semibold">{comp.name}</p>
+              <div key={comp.issue} className="bg-surface-container-low p-6 rounded-2xl space-y-4">
+                <div className="flex items-start gap-4">
+                  <span className="material-symbols-outlined text-2xl text-gold shrink-0 mt-1" style={I}>{comp.icon}</span>
+                  <div className="flex-1">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                      <h3 className="font-heading text-lg font-semibold text-on-surface">{comp.issue}</h3>
+                      <span className="text-gold text-sm font-heading font-medium">{comp.stat}</span>
+                    </div>
+                    <p className="text-on-surface-variant text-sm leading-relaxed mt-2">{comp.text}</p>
+                    <p className="text-on-surface-variant/70 text-xs leading-relaxed mt-2">{comp.detail}</p>
+                    <div className="flex flex-wrap gap-3 mt-3">
+                      {comp.links.map((link) => (
+                        <a key={link.url} href={link.url} target="_blank" rel="noopener noreferrer" className="text-gold/60 text-[10px] uppercase tracking-widest hover:text-gold transition-colors flex items-center gap-1">
+                          <span className="material-symbols-outlined text-xs">open_in_new</span>
+                          {link.label}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-                <div className="md:w-48 shrink-0">
-                  <p className="text-gold text-xs uppercase tracking-widest">{comp.issue}</p>
-                  <p className="text-gold font-heading text-lg">{comp.stat}</p>
-                </div>
-                <p className="text-on-surface-variant text-sm leading-relaxed flex-1">{comp.text}</p>
               </div>
             ))}
+          </div>
+
+          <div className="bg-surface-container-low border-l-2 border-gold p-5 rounded-r-xl mt-8 max-w-2xl">
+            <p className="font-heading text-base text-on-surface">We don&apos;t do any of this.</p>
+            <p className="text-on-surface-variant text-sm mt-1">No blind dates. No ghostwriting. No quotas. No contracts. One dedicated manager. Your accounts. Full transparency.</p>
           </div>
         </div>
       </section>
