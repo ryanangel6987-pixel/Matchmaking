@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
 
 const TESTIMONIALS = [
@@ -86,18 +85,19 @@ export default function BookingConfirmedPage() {
           </div>
         </div>
 
-        {/* ═══ 4. PREPARE FOR YOUR CALL + PORTAL CTA ═══ */}
+        {/* ═══ 4. PREPARE FOR YOUR CALL ═══ */}
         <div className="bg-surface-container-low rounded-2xl p-6 space-y-5">
-          <p className="text-gold text-xs uppercase tracking-widest font-bold">Prepare for Your Call</p>
+          <p className="text-gold text-xs uppercase tracking-widest font-bold">Come Prepared</p>
           <p className="text-on-surface-variant text-sm leading-relaxed">
-            Your portal is ready. Upload your photos, add reference pictures of your type, and fill in your preferences before the call — the more your matchmaker knows going in, the faster you get results.
+            The more your matchmaker knows going in, the faster you get results. Have these ready for the call:
           </p>
           <ul className="space-y-2.5">
             {[
-              "Upload your best photos and photos of exes / your type",
-              "Fill in your preferences, deal-breakers, and lifestyle details",
-              "Add your preferred date neighborhoods and venues",
-              "Note any questions you want to ask on the call",
+              "3\u20135 recent photos of yourself (phone photos are fine)",
+              "Reference photos of your type — exes, celebrities, anyone who represents what you\u2019re attracted to",
+              "Your top 3 deal-breakers",
+              "Your preferred neighborhoods and venues for dates",
+              "Any questions you want to ask",
             ].map((item) => (
               <li key={item} className="flex items-start gap-3 text-on-surface text-sm">
                 <span className="material-symbols-outlined text-gold text-sm mt-0.5" style={{ fontVariationSettings: "'FILL' 1, 'wght' 400" }}>check_circle</span>
@@ -105,12 +105,6 @@ export default function BookingConfirmedPage() {
               </li>
             ))}
           </ul>
-          <Link
-            href="/login"
-            className="block gold-gradient text-on-gold font-semibold rounded-full py-3.5 text-sm text-center hover:opacity-90 transition-opacity shadow-lg"
-          >
-            Open Your Portal
-          </Link>
         </div>
 
         {/* ═══ 5. CLIENT TESTIMONIALS ═══ */}
@@ -138,7 +132,7 @@ export default function BookingConfirmedPage() {
 
         {/* Footer */}
         <p className="text-center text-on-surface-variant/40 text-xs">
-          Your matchmaker will be assigned after the consultation call.
+          We accept a limited number of new clients each month to ensure quality.
         </p>
       </div>
     </div>

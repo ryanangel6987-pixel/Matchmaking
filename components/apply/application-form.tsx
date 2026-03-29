@@ -69,7 +69,7 @@ const ETHNICITY_OPTIONS = [
 ];
 const BODY_TYPE_OPTIONS = ["Slim", "Athletic / Fit", "Average", "Curvy", "Muscular", "Plus Size", "Petite"];
 
-const TOTAL_STEPS = 12;
+const TOTAL_STEPS = 11; // No account creation — just qualification + contact
 
 export function ApplicationForm() {
   const router = useRouter();
@@ -154,7 +154,7 @@ export function ApplicationForm() {
       case 8: return idealPartner.trim().length >= 10;
       case 9: return !!herAgeMin && !!herAgeMax && herEthnicities.length > 0; // Her Prefs
       case 10: return !!timeline;
-      case 11: return fullName.trim().length >= 2 && email.includes("@") && password.length >= 8 && phone.trim().length >= 7 && termsAgreed;
+      case 10: return fullName.trim().length >= 2 && email.includes("@") && phone.trim().length >= 7;
       default: return false;
     }
   };
@@ -165,18 +165,7 @@ export function ApplicationForm() {
 
     const { tier, score } = scoreLead({ lifeWindow, duration, triedBefore, priority, profession });
 
-    const { error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { full_name: fullName.trim(), phone: phone.trim() } },
-    });
-
-    if (signUpError) {
-      setError(signUpError.message);
-      setSubmitting(false);
-      return;
-    }
-
+    // No account creation — just save qualification data and book the call
     localStorage.setItem("pdc_application", JSON.stringify({
       full_name: fullName.trim(),
       email,
@@ -492,39 +481,18 @@ export function ApplicationForm() {
             </div>
           )}
 
-          {/* ═══ SCREEN 10: Timeline ═══ */}
+          {/* ═══ SCREEN 10: Contact Info (Final) ═══ */}
           {step === 10 && (
             <div className="space-y-6">
               <div>
-                <p className="text-gold text-xs uppercase tracking-widest mb-2">Timeline</p>
-                <h2 className="font-heading text-2xl md:text-3xl font-bold text-on-surface">If you started today, when would you want to see your first dates?</h2>
-              </div>
-              <div className="space-y-3">
-                <Pill value="2_weeks" selected={timeline} onSelect={setTimeline}><p className="font-medium">Within 2 weeks</p></Pill>
-                <Pill value="1_month" selected={timeline} onSelect={setTimeline}><p className="font-medium">Within a month</p></Pill>
-                <Pill value="2_3_months" selected={timeline} onSelect={setTimeline}><p className="font-medium">Within 2–3 months</p></Pill>
-                <Pill value="no_rush" selected={timeline} onSelect={setTimeline}><p className="font-medium">No rush — I want it done right</p></Pill>
-              </div>
-            </div>
-          )}
-
-          {/* ═══ SCREEN 11: Account Creation ═══ */}
-          {step === 11 && (
-            <div className="space-y-6">
-              <div>
                 <p className="text-gold text-xs uppercase tracking-widest mb-2">Final Step</p>
-                <h2 className="font-heading text-2xl md:text-3xl font-bold text-on-surface">Secure your spot</h2>
-                <p className="text-on-surface-variant text-sm mt-2">We&apos;ll use this to set up your private portal and reach out to schedule your consultation.</p>
+                <h2 className="font-heading text-2xl md:text-3xl font-bold text-on-surface">Where should we reach you?</h2>
+                <p className="text-on-surface-variant text-sm mt-2">We&apos;ll text you to confirm your consultation time.</p>
               </div>
               <div className="space-y-4">
                 <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Full Name" autoFocus className={inputClass.replace("text-lg", "text-base")} />
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" className={inputClass.replace("text-lg", "text-base")} />
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password (8+ characters)" className={inputClass.replace("text-lg", "text-base")} />
                 <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone / WhatsApp" className={inputClass.replace("text-lg", "text-base")} />
-                <label className="flex items-start gap-3 cursor-pointer">
-                  <input type="checkbox" checked={termsAgreed} onChange={(e) => setTermsAgreed(e.target.checked)} className="accent-[#e6c487] mt-1" />
-                  <span className="text-on-surface-variant text-xs leading-relaxed">I agree to the Terms of Service and Privacy Policy. I understand that a dedicated manager will reach out to schedule my consultation.</span>
-                </label>
               </div>
             </div>
           )}
