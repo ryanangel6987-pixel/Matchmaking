@@ -69,7 +69,7 @@ const ETHNICITY_OPTIONS = [
 ];
 const BODY_TYPE_OPTIONS = ["Slim", "Athletic / Fit", "Average", "Curvy", "Muscular", "Plus Size", "Petite"];
 
-const TOTAL_STEPS = 11; // No account creation — just qualification + contact
+const TOTAL_STEPS = 10; // 0-9: qualification + contact
 
 export function ApplicationForm() {
   const router = useRouter();
@@ -151,10 +151,8 @@ export function ApplicationForm() {
       case 5: return !!triedBefore;
       case 6: return !!currentResults;
       case 7: return priority >= 1;
-      case 8: return idealPartner.trim().length >= 10;
-      case 9: return !!herAgeMin && !!herAgeMax && herEthnicities.length > 0; // Her Prefs
-      case 10: return !!timeline;
-      case 10: return fullName.trim().length >= 2 && email.includes("@") && phone.trim().length >= 7;
+      case 8: return !!herAgeMin && !!herAgeMax && herEthnicities.length > 0; // Her Prefs
+      case 9: return fullName.trim().length >= 2 && email.includes("@") && phone.trim().length >= 7;
       default: return false;
     }
   };
@@ -354,7 +352,7 @@ export function ApplicationForm() {
             <div className="space-y-6">
               <div>
                 <p className="text-gold text-xs uppercase tracking-widest mb-2">Duration</p>
-                <h2 className="font-heading text-2xl md:text-3xl font-bold text-on-surface">How long have you been unsatisfied with your dating life?</h2>
+                <h2 className="font-heading text-2xl md:text-3xl font-bold text-on-surface">How long has this been an issue?</h2>
               </div>
               <div className="space-y-3">
                 <Pill value="less_than_3" selected={duration} onSelect={setDuration}><p className="font-medium">Less than 3 months</p></Pill>
@@ -429,31 +427,12 @@ export function ApplicationForm() {
             </div>
           )}
 
-          {/* ═══ SCREEN 8: Ideal Partner ═══ */}
+          {/* ═══ SCREEN 8: Her Preferences ═══ */}
           {step === 8 && (
             <div className="space-y-6">
               <div>
                 <p className="text-gold text-xs uppercase tracking-widest mb-2">Your Type</p>
-                <h2 className="font-heading text-2xl md:text-3xl font-bold text-on-surface">Describe what you&apos;re looking for — age range, type, what matters most.</h2>
-              </div>
-              <textarea
-                value={idealPartner}
-                onChange={(e) => setIdealPartner(e.target.value)}
-                placeholder="e.g. Late 20s to mid 30s, professional, takes care of herself. Preferably into fitness and travel. Open to different backgrounds."
-                rows={4}
-                autoFocus
-                className="w-full bg-surface-container-low border-2 border-outline-variant/20 rounded-2xl px-5 py-4 text-on-surface text-base placeholder:text-outline focus:border-gold/40 outline-none transition-colors resize-none"
-              />
-              <p className="text-on-surface-variant text-xs">The more specific you are, the better we can calibrate before your call.</p>
-            </div>
-          )}
-
-          {/* ═══ SCREEN 9: Her Preferences ═══ */}
-          {step === 9 && (
-            <div className="space-y-6">
-              <div>
-                <p className="text-gold text-xs uppercase tracking-widest mb-2">Her Details</p>
-                <h2 className="font-heading text-2xl md:text-3xl font-bold text-on-surface">What are you looking for specifically?</h2>
+                <h2 className="font-heading text-2xl md:text-3xl font-bold text-on-surface">Tell us about your ideal partner</h2>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
@@ -502,8 +481,8 @@ export function ApplicationForm() {
             </div>
           )}
 
-          {/* ═══ SCREEN 10: Contact Info (Final) ═══ */}
-          {step === 10 && (
+          {/* ═══ SCREEN 9: Contact Info (Final) ═══ */}
+          {step === 9 && (
             <div className="space-y-6">
               <div>
                 <p className="text-gold text-xs uppercase tracking-widest mb-2">Final Step</p>
