@@ -21,6 +21,11 @@ export type PortalTab =
 interface ClientPortalProps {
   clientId: string;
   clientName: string;
+  consultation: {
+    status: string | null;
+    bookedAt: string | null;
+    meetingUrl: string | null;
+  } | null;
   dashboardData: {
     dailyStats: any[];
     kpiSummary: any;
@@ -158,22 +163,76 @@ export function ClientPortal(props: ClientPortalProps) {
   }
 
   // Show consultation banner if no matchmaker assigned
-  const noMatchmaker = !props.overviewData.kpiSummary && !props.accessData.matchmakerName;
+  const noMatchmaker = !props.accessData.matchmakerName;
+  const consultation = props.consultation;
+  const isBooked = consultation?.status === "booked" && consultation?.bookedAt;
+  const callDate = isBooked ? new Date(consultation.bookedAt!) : null;
+
+  const formatCallDate = (d: Date) => d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+  const formatCallTime = (d: Date) => d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+  const buildCalendarUrl = (d: Date, url: string | null) => {
+    const end = new Date(d.getTime() + 30 * 60000);
+    const fmt = (dt: Date) => dt.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent("Private Dating Concierge — Consultation")}&dates=${fmt(d)}/${fmt(end)}&details=${encodeURIComponent(url ? `Join: ${url}` : "Your matchmaker will call you.")}`;
+  };
 
   return (
     <>
       {noMatchmaker && (
-        <div className="bg-gold/5 border border-gold/20 rounded-2xl p-6 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-gold text-2xl" style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}>calendar_month</span>
-            <div>
-              <p className="text-on-surface text-sm font-medium font-heading">Book Your Consultation</p>
-              <p className="text-on-surface-variant text-xs">Your application is in — book a free 30-min call to get matched with your dedicated concierge.</p>
+        <div className="bg-gold/5 border border-gold/20 rounded-2xl p-6 mb-6">
+          {isBooked && callDate ? (
+            /* Booked — show date/time/join/calendar */
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-full bg-gold/15 flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-gold text-2xl" style={{ fontVariationSettings: "'FILL' 1, 'wght' 400" }}>event_available</span>
+                </div>
+                <div>
+                  <p className="text-on-surface font-heading font-semibold text-sm">Your Consultation Is Booked</p>
+                  <p className="text-gold text-base font-heading font-bold mt-0.5">
+                    {formatCallDate(callDate)} at {formatCallTime(callDate)}
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                {consultation.meetingUrl && (
+                  <a
+                    href={consultation.meetingUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="gold-gradient text-on-gold font-semibold rounded-full px-5 py-2 text-sm hover:opacity-90 transition-opacity inline-flex items-center gap-2"
+                  >
+                    <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}>videocam</span>
+                    Join Call
+                  </a>
+                )}
+                <a
+                  href={buildCalendarUrl(callDate, consultation.meetingUrl)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="border border-gold/30 text-gold font-medium rounded-full px-5 py-2 text-sm hover:bg-gold/10 transition-colors inline-flex items-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}>calendar_add_on</span>
+                  Add to Calendar
+                </a>
+              </div>
+              <p className="text-on-surface-variant text-xs">Prepare by uploading your photos and filling in your preferences below.</p>
             </div>
-          </div>
-          <a href="/apply/book" className="gold-gradient text-on-gold font-semibold rounded-full px-6 py-2.5 text-sm hover:opacity-90 transition-opacity shrink-0">
-            Book Now
-          </a>
+          ) : (
+            /* Not booked — show booking CTA */
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <span className="material-symbols-outlined text-gold text-2xl" style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}>calendar_month</span>
+                <div>
+                  <p className="text-on-surface text-sm font-medium font-heading">Book Your Consultation</p>
+                  <p className="text-on-surface-variant text-xs">Your application is in — book a free 30-min call to get matched with your dedicated concierge.</p>
+                </div>
+              </div>
+              <a href="/apply/book" className="gold-gradient text-on-gold font-semibold rounded-full px-6 py-2.5 text-sm hover:opacity-90 transition-opacity shrink-0">
+                Book Now
+              </a>
+            </div>
+          )}
         </div>
       )}
       <div className={activeTab === "dashboard" ? "" : "hidden"}>

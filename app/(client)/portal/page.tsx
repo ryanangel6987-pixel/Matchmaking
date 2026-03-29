@@ -22,7 +22,7 @@ export default async function PortalPage() {
 
   const { data: client } = await supabase
     .from("clients")
-    .select("id, assigned_matchmaker_id")
+    .select("id, assigned_matchmaker_id, consultation_status, consultation_booked_at, consultation_meeting_url")
     .eq("profile_id", profile.id)
     .single();
 
@@ -245,6 +245,11 @@ export default async function PortalPage() {
     <ClientPortal
       clientId={client.id}
       clientName={displayName}
+      consultation={{
+        status: (client as any).consultation_status ?? null,
+        bookedAt: (client as any).consultation_booked_at ?? null,
+        meetingUrl: (client as any).consultation_meeting_url ?? null,
+      }}
       // Dashboard props
       dashboardData={{
         dailyStats: dailyStats ?? [],

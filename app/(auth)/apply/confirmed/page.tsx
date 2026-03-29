@@ -97,7 +97,7 @@ export default function BookingConfirmedPage() {
               "Upload your best photos and photos of exes / your type",
               "Fill in your preferences, deal-breakers, and lifestyle details",
               "Add your preferred date neighborhoods and venues",
-              "Have your dating app logins ready (if you have accounts)",
+              "Note any questions you want to ask on the call",
             ].map((item) => (
               <li key={item} className="flex items-start gap-3 text-on-surface text-sm">
                 <span className="material-symbols-outlined text-gold text-sm mt-0.5" style={{ fontVariationSettings: "'FILL' 1, 'wght' 400" }}>check_circle</span>
