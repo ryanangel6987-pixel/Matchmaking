@@ -15,9 +15,15 @@ interface Application {
   profession: string | null;
   age: number | null;
   height: string | null;
+  weight: string | null;
   own_ethnicity: string | null;
   own_body_type: string | null;
+  intent: string | null;
   life_window: string | null;
+  income_qualified: string | null;
+  shape_qualified: string | null;
+  biggest_challenge: string | null;
+  challenge_notes: string | null;
   duration: string | null;
   tried_before: string | null;
   current_results: string | null;
