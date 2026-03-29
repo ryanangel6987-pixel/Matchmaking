@@ -158,14 +158,14 @@ export function LandingPage() {
                 ],
               },
               {
-                icon: "masks",
-                issue: "Someone Else Is Pretending to Be You",
-                stat: "You show up as a stranger to your own date",
-                text: "Ghostwriters handle every conversation \u2014 pretending to be you from the first message to the phone number exchange. When you finally sit down across from her, she\u2019s expecting someone else. Because she fell for someone else\u2019s words.",
-                detail: "One service\u2019s CEO publicly called it \u201Ca little bit of an ethical gray area.\u201D Clients are told to never reveal the service exists. Each ghostwriter juggles 10\u201320 accounts simultaneously.",
+                icon: "hourglass_disabled",
+                issue: "You Pay Thousands and Wait for Months",
+                stat: "9 months in. Zero dates. No refund.",
+                text: "You hand over $5,000\u2013$20,000 and then\u2026 nothing. No dashboard. No metrics. No proof anyone is working on your behalf. Weeks go by. Your matchmaker stops responding. You\u2019re told to \u201Ctrust the process.\u201D",
+                detail: "Clients report waiting 6\u20139 months with zero dates. One was paired with a single match who stood them up, then was ghosted by their own matchmaker. Hidden fees ($98/month on top of membership) and strict no-refund policies are common.",
                 links: [
-                  { label: "Ghostwriting investigation", url: "https://www.inquisitr.com/online-dating-company-vida-uses-ghostwriters-to-trick-people-into-falling-in-love" },
-                  { label: "Former ghostwriter\u2019s account", url: "https://gcsimpsonwriter.medium.com/i-was-almost-a-paid-dating-impersonator-f81977f3dfad" },
+                  { label: "Real client wait times and complaints", url: "https://lumasearch.com/blog/its-just-lunch-reviews-2025/" },
+                  { label: "Industry complaint patterns", url: "https://www.trustpilot.com/review/matchmakingservices.com" },
                 ],
               },
             ].map((comp) => (
