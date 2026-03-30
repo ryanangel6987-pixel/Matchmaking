@@ -42,7 +42,7 @@ export function LandingPage() {
             4&ndash;8 Quality Dates Monthly.{" "}<br className="hidden md:block" /><span className="text-gold">You Just Show Up.</span>
           </h1>
           <p className="text-on-surface-variant text-lg md:text-xl mt-6 max-w-2xl mx-auto leading-relaxed">
-            A dedicated concierge rebuilds your digital identity, runs your dating apps daily, vets every match to your exact standards, and delivers dates to your phone. ~15 seconds of your time per date.
+            A dedicated concierge rebuilds your digital identity, runs your dating apps daily, vets every match to your exact standards, and delivers dates to your phone. You do nothing except approve and show up.
           </p>
           <p className="text-gold font-heading text-lg md:text-xl italic mt-4">Copy. Send. Show up.</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
@@ -152,6 +152,23 @@ export function LandingPage() {
         </div>
       </section>
 
+      {/* ═══ AMPLIFY — EMOTIONAL COST OF INACTION ═══ */}
+      <section className="py-16 md:py-24">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h2 className="font-heading text-2xl md:text-4xl font-bold leading-tight text-on-surface">
+            What does another year of this look like?
+          </h2>
+          <div className="mt-8 space-y-4 text-on-surface-variant text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
+            <p>Your friends are getting engaged. You&apos;re still swiping.</p>
+            <p>Every month you wait, the pool gets smaller. The algorithm works against you harder. The gap between who you are and how you show up online gets wider.</p>
+            <p>Another year. Same apps. Same results. Same empty apartment on a Sunday night wondering why nothing changes.</p>
+          </div>
+          <div className="border-l-2 border-gold pl-6 mt-10 max-w-lg mx-auto text-left">
+            <p className="font-heading text-lg text-gold italic">&ldquo;The risk isn&apos;t trying something new. The risk is doing the same thing for another year.&rdquo;</p>
+          </div>
+        </div>
+      </section>
+
       {/* ═══ 6. HERE'S HOW WE SOLVE EACH ONE — 5 JOBS ═══ */}
       <section id="solution" className="py-20 md:py-28">
         <div className="max-w-6xl mx-auto px-6">
@@ -177,6 +194,37 @@ export function LandingPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ BEFORE / AFTER TRANSFORMATION ═══ */}
+      <section className="py-20 md:py-28 bg-surface-container-lowest">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* BEFORE */}
+            <div className="bg-surface-container-low p-6 rounded-2xl border-l-2 border-red-400/30 space-y-4">
+              <p className="text-red-400/60 text-xs uppercase tracking-widest font-bold">Your Sunday night right now</p>
+              <div className="space-y-3 text-on-surface-variant text-sm leading-relaxed">
+                <p>You open Hinge. Swipe for 45 minutes. 3 matches. One responds.</p>
+                <p>You spend 20 minutes crafting a message. She reads it. No reply.</p>
+                <p>You check your Bumble. 2 expired matches. Zero conversations.</p>
+                <p>You close the apps, open Instagram, and scroll. Another week. Same cycle.</p>
+                <p className="text-on-surface font-medium">Total time invested: 2 hours. Dates booked: 0.</p>
+              </div>
+            </div>
+            {/* AFTER */}
+            <div className="bg-surface-container-low p-6 rounded-2xl border-l-2 border-gold space-y-4">
+              <p className="text-gold text-xs uppercase tracking-widest font-bold">Your Thursday morning with us</p>
+              <div className="space-y-3 text-on-surface-variant text-sm leading-relaxed">
+                <p>Your phone buzzes. One notification.</p>
+                <p className="text-on-surface font-medium">Jessica, 28. Marketing Director at Deloitte.</p>
+                <p>Thursday evening, 7:30 PM. Julep.</p>
+                <p>Pre-written text: &ldquo;Hey Jessica! Drinks Thursday at Julep &mdash; 7:30 work?&rdquo;</p>
+                <p>You copy it. Send it. Go back to work.</p>
+                <p className="text-gold font-medium">Total time invested: 15 seconds. Date booked: done.</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -390,22 +438,26 @@ export function LandingPage() {
       <section id="results" className="py-20 md:py-28 bg-surface-container-lowest">
         <div className="max-w-5xl mx-auto px-6">
           <h2 className="font-heading text-3xl md:text-4xl font-bold text-center">Client Results</h2>
-          <p className="text-on-surface-variant text-sm text-center mt-2">Real clients. Real transformations.</p>
+          <p className="text-on-surface-variant text-sm text-center mt-2">Real clients. Specific numbers. Verifiable transformations.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-12">
             {[
-              { name: "TJ", role: "Tech Sales Manager", result: "Went from bad matches to 4/5 quality dates weekly" },
-              { name: "AJ", role: "Computer Scientist", result: "Zero prior success to unlimited quality dates in 30 days" },
-              { name: "Raj", role: "Consultant", result: "Bad matches to unlimited dates every week" },
-              { name: "Mike", role: "Data Scientist", result: "$1,500 wasted on photographers to unlimited weekly dates" },
-              { name: "Ryan", role: "Software Engineer", result: "A few bad likes to 10\u201320 quality matches weekly per app" },
-              { name: "Bhavesh", role: "Engineer", result: "Post-divorce to 2\u20135 dates weekly in 30 days" },
-              { name: "Alex T.", role: "Finance, 32", result: "Zero matches to 3 dates a week. The photos alone were a game-changer." },
-              { name: "Marcus D.", role: "Tech CEO, 38", result: "I literally just show up. They handle the apps, the conversations, the reservations." },
-              { name: "James R.", role: "Attorney, 29", result: "The transparency is what sold me. I can see every swipe, every match, every conversation." },
+              { name: "TJ", role: "Tech Sales Manager", before: "Bad matches, low quality dates", after: "4\u20135 quality dates weekly", time: "From profile launch" },
+              { name: "AJ", role: "Computer Scientist", before: "Zero matches, zero likes, zero dates", after: "Unlimited quality dates", time: "30 days" },
+              { name: "Mike B.", role: "Blockchain Co-founder", before: "3\u20135 likes per week", after: "120+ likes on Hinge, unlimited dates", time: "From profile launch" },
+              { name: "Bhavesh", role: "Engineer", before: "Post-divorce, starting from zero", after: "2\u20135 dates weekly", time: "30 days" },
+              { name: "Ryan", role: "Software Engineer", before: "A few bad likes a week", after: "10\u201320 quality matches weekly per app", time: "From profile launch" },
+              { name: "Tri", role: "Finance Data Analyst", before: "3 likes in 6 months", after: "10 likes per day per app", time: "From profile launch" },
+              { name: "Mike", role: "Data Scientist", before: "$1,500 wasted on photographers", after: "Unlimited weekly dates", time: "From profile launch" },
+              { name: "Marshall", role: "Software Engineer", before: "Low quality matches, quit apps", after: "Multiple weekly dates", time: "From profile launch" },
+              { name: "David", role: "PR Manager", before: "Bad matches across all apps", after: "Multiple quality dates weekly", time: "30 days" },
             ].map((t, i) => (
               <div key={i} className="bg-surface-container-low p-5 rounded-2xl space-y-3">
                 <div className="flex gap-1">{Array.from({ length: 5 }).map((_, j) => <span key={j} className="material-symbols-outlined text-gold text-sm" style={IF}>star</span>)}</div>
-                <p className="text-on-surface text-sm leading-relaxed">{t.result}</p>
+                <div className="space-y-1.5">
+                  <p className="text-red-400/60 text-xs"><span className="uppercase tracking-widest">Before:</span> {t.before}</p>
+                  <p className="text-gold text-xs font-medium"><span className="uppercase tracking-widest">After:</span> {t.after}</p>
+                  <p className="text-on-surface-variant text-[10px] uppercase tracking-widest">{t.time}</p>
+                </div>
                 <div>
                   <p className="text-on-surface font-heading font-semibold text-sm">{t.name}</p>
                   <p className="text-on-surface-variant text-xs">{t.role}</p>
