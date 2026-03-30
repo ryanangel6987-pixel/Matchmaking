@@ -206,11 +206,11 @@ export function LandingPage() {
             <div className="bg-surface-container-low p-6 rounded-2xl border-l-2 border-red-400/30 space-y-4">
               <p className="text-red-400/60 text-xs uppercase tracking-widest font-bold">Your Sunday night right now</p>
               <div className="space-y-3 text-on-surface-variant text-sm leading-relaxed">
-                <p>You open Hinge. Swipe for 45 minutes. 3 matches. One responds.</p>
-                <p>You spend 20 minutes crafting a message. She reads it. No reply.</p>
-                <p>You check your Bumble. 2 expired matches. Zero conversations.</p>
-                <p>You close the apps, open Instagram, and scroll. Another week. Same cycle.</p>
-                <p className="text-on-surface font-medium">Total time invested: 2 hours. Dates booked: 0.</p>
+                <p>You open Hinge. Swipe for 45 minutes. 3 matches &mdash; none of them are your type.</p>
+                <p>You lower your standards. Match with someone. Spend 20 minutes messaging. She ghosts after 4 replies.</p>
+                <p>You check Bumble. 2 expired matches. One looked promising but you already know &mdash; the quality won&apos;t match what you can pull in person.</p>
+                <p>You close the apps. Another week of settling for options that don&apos;t reflect your actual level.</p>
+                <p className="text-on-surface font-medium">Total time invested: 2 hours. Quality dates booked: 0.</p>
               </div>
             </div>
             {/* AFTER */}
