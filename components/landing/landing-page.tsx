@@ -169,108 +169,54 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ═══ 6. HERE'S HOW WE SOLVE EACH ONE — 5 JOBS ═══ */}
+      {/* ═══ 6. THE NEW CATEGORY ═══ */}
       <section id="solution" className="py-20 md:py-28">
-        <div className="max-w-6xl mx-auto px-6">
-          <p className="text-gold text-xs uppercase tracking-widest mb-4">A Different Approach</p>
+        <div className="max-w-5xl mx-auto px-6">
+          <p className="text-gold text-xs uppercase tracking-widest mb-4">A New Category</p>
           <h2 className="font-heading text-3xl md:text-5xl font-bold leading-tight">
-            Here&apos;s how we solve<br className="hidden md:block" />
-            <span className="text-gold">each one.</span>
+            Not apps. Not matchmakers. Not coaching.<br className="hidden md:block" />
+            <span className="text-gold">Private Dating Concierge.</span>
           </h2>
+          <p className="text-on-surface-variant text-base md:text-lg mt-6 max-w-2xl leading-relaxed">
+            We built a brand new service specifically for high-performing men. Here&apos;s what it is and how it works.
+          </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+          <div className="space-y-4 mt-12">
             {[
-              { icon: "how_to_reg", title: "You See Every Match Before You Meet", text: "Her name, photo, age, profession, and one memorable detail \u2014 delivered to your phone before you approve anything. You never walk in blind." },
-              { icon: "tune", title: "Your Type Is the Starting Point", text: "Physical attraction, ethnicity, body type, age range \u2014 your preferences are the first filter, not an afterthought. Our 4-layer vetting starts with what you\u2019re actually attracted to." },
-              { icon: "event_available", title: "You Only Pay for What You Approve", text: "Month-to-month. No contracts. No lock-ins. Decline any date \u2014 no penalty, no wasted slot. Cancel any month, no questions asked." },
-              { icon: "bar_chart", title: "Full Dashboard Visibility", text: "Weekly KPI reports: swipes, matches, conversations, dates closed, approval rate. You see every metric. If something isn\u2019t working, the data tells us." },
-              { icon: "person", title: "One Dedicated Manager, 24/7", text: "Not a rotating team. One trained human who knows your type, your dealbreakers, and your schedule. Direct WhatsApp line." },
+              { num: "01", icon: "auto_fix_high", title: "We Rebuild Your Digital Identity", text: "How you show up online finally matches real life. Profiles, photos, bios, Instagram \u2014 reconstructed so the women you deserve actually engage." },
+              { num: "02", icon: "support_agent", title: "We Manage Your Dating Life Daily", text: "Your own dedicated manager runs all your apps every day. Swiping, messaging, closing dates \u2014 handled. One person who knows your type, your schedule, your standards." },
+              { num: "03", icon: "tune", title: "Every Date Vetted to Your Exact Preferences", text: "Attraction, body type, ethnicity, age, lifestyle \u2014 non-negotiable. Your manager can\u2019t violate your preferences. You get full approval on every date." },
+              { num: "04", icon: "bar_chart", title: "Total Transparency and Reporting", text: "Your dashboard shows everything \u2014 daily swipes, weekly matches, monthly stats. You see what\u2019s working, what\u2019s not, and exactly what your manager is doing. 24/7." },
             ].map((item) => (
-              <div key={item.title} className="bg-surface-container-low p-6 rounded-2xl flex items-start gap-4">
-                <span className="material-symbols-outlined text-2xl text-gold shrink-0 mt-0.5" style={I}>{item.icon}</span>
-                <div>
-                  <h3 className="font-heading text-base font-semibold text-on-surface">{item.title}</h3>
+              <div key={item.num} className="bg-surface-container-low p-5 rounded-2xl flex items-start gap-4">
+                <span className="font-heading text-2xl font-bold text-gold/30 shrink-0 w-8">{item.num}</span>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-lg text-gold" style={I}>{item.icon}</span>
+                    <h3 className="font-heading text-base font-semibold text-on-surface">{item.title}</h3>
+                  </div>
                   <p className="text-on-surface-variant text-sm leading-relaxed mt-1.5">{item.text}</p>
                 </div>
               </div>
             ))}
           </div>
+
+          <p className="text-center text-gold font-heading text-lg mt-10 font-semibold">Your only job: approve dates and show up.</p>
         </div>
       </section>
 
-      {/* ═══ BEFORE / AFTER TRANSFORMATION ═══ */}
-      <section className="py-20 md:py-28 bg-surface-container-lowest">
+      {/* ═══ BEFORE / AFTER — TIGHT ═══ */}
+      <section className="py-16 md:py-20 bg-surface-container-lowest">
         <div className="max-w-5xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* BEFORE */}
-            <div className="bg-surface-container-low p-6 rounded-2xl border-l-2 border-red-400/30 space-y-4">
-              <p className="text-red-400/60 text-xs uppercase tracking-widest font-bold">Your Sunday night right now</p>
-              <div className="space-y-3 text-on-surface-variant text-sm leading-relaxed">
-                <p>You open Hinge. Swipe for 45 minutes. 3 matches &mdash; none of them are your type.</p>
-                <p>You lower your standards. Match with someone. Spend 20 minutes messaging. She ghosts after 4 replies.</p>
-                <p>You check Bumble. 2 expired matches. One looked promising but you already know &mdash; the quality won&apos;t match what you can pull in person.</p>
-                <p>You close the apps. Another week of settling for options that don&apos;t reflect your actual level.</p>
-                <p className="text-on-surface font-medium">Total time invested: 2 hours. Quality dates booked: 0.</p>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-surface-container-low p-5 rounded-2xl border-l-2 border-red-400/30">
+              <p className="text-red-400/60 text-[10px] uppercase tracking-widest font-bold mb-3">Without us</p>
+              <p className="text-on-surface-variant text-sm leading-relaxed">2 hours swiping. Matches below your level. Conversations that die. Quality dates: zero.</p>
             </div>
-            {/* AFTER */}
-            <div className="bg-surface-container-low p-6 rounded-2xl border-l-2 border-gold space-y-4">
-              <p className="text-gold text-xs uppercase tracking-widest font-bold">Your Thursday morning with us</p>
-              <div className="space-y-3 text-on-surface-variant text-sm leading-relaxed">
-                <p>Your phone buzzes. One notification.</p>
-                <p className="text-on-surface font-medium">Jessica, 28. Marketing Director at Deloitte.</p>
-                <p>Thursday evening, 7:30 PM. Julep.</p>
-                <p>Pre-written text: &ldquo;Hey Jessica! Drinks Thursday at Julep &mdash; 7:30 work?&rdquo;</p>
-                <p>You copy it. Send it. Go back to work.</p>
-                <p className="text-gold font-medium">Total time invested: 15 seconds. Date booked: done.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══ 7. WHAT IT ACTUALLY LOOKS LIKE — 5-ELEMENT NOTIFICATION ═══ */}
-      <section className="py-20 md:py-28 bg-surface-container-lowest">
-        <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div>
-            <p className="text-gold text-xs uppercase tracking-widest mb-4">What You Receive</p>
-            <h2 className="font-heading text-3xl md:text-4xl font-bold leading-tight">
-              The 5-Element<br /><span className="text-gold">Date Notification</span>
-            </h2>
-            <p className="text-on-surface-variant text-base mt-6 leading-relaxed">
-              We condense hours of logistics into a single executive briefing. One notification per date. Exactly what you need &mdash; nothing you don&apos;t.
-            </p>
-            <div className="mt-8">
-              <p className="font-heading text-4xl font-bold text-on-surface">~15 Seconds</p>
-              <p className="text-on-surface-variant text-sm mt-1">Of Your Time</p>
-            </div>
-            <div className="flex gap-6 mt-6 text-sm">
-              <span><span className="text-gold font-heading font-bold">01.</span> Copy</span>
-              <span><span className="text-gold font-heading font-bold">02.</span> Send</span>
-              <span><span className="text-gold font-heading font-bold">03.</span> Show Up</span>
-            </div>
-          </div>
-          <div className="bg-surface-container-low rounded-2xl p-6 space-y-0 border border-outline-variant/10">
-            <div className="flex items-center justify-between pb-4 border-b border-outline-variant/10">
-              <p className="text-on-surface-variant text-xs uppercase tracking-widest">Approved Match Brief</p>
-              <span className="material-symbols-outlined text-gold text-xl" style={I}>notifications</span>
-            </div>
-            {[
-              { label: "Her Name", value: "Jessica, 28" },
-              { label: "One Detail", value: "Marketing Director at Deloitte" },
-              { label: "The Day", value: "Thursday evening, 7:30 PM" },
-              { label: "Her Number", value: "(512) 555-0147" },
-            ].map((item) => (
-              <div key={item.label} className="py-4 border-b border-outline-variant/10">
-                <p className="text-on-surface-variant text-xs">{item.label}</p>
-                <p className="font-heading text-base font-semibold text-on-surface mt-0.5">{item.value}</p>
-              </div>
-            ))}
-            <div className="pt-4">
-              <p className="text-on-surface-variant text-xs">Pre-Written Text</p>
-              <div className="bg-surface-container p-3 rounded-xl mt-2">
-                <p className="text-on-surface text-sm italic">&ldquo;Hey Jessica! Drinks Thursday at Julep &mdash; 7:30 work?&rdquo;</p>
-              </div>
+            <div className="bg-surface-container-low p-5 rounded-2xl border-l-2 border-gold">
+              <p className="text-gold text-[10px] uppercase tracking-widest font-bold mb-3">With us</p>
+              <p className="text-on-surface-variant text-sm leading-relaxed">Phone buzzes. Jessica, 28. Marketing Director. Thursday 7:30. Copy. Send. Done.</p>
+              <p className="text-gold font-medium text-sm mt-2">15 seconds. Quality date booked.</p>
             </div>
           </div>
         </div>
