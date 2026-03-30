@@ -78,22 +78,25 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ═══ 4. THE PROBLEM — WHY YOU DON'T HAVE IT ═══ */}
+      {/* ═══ 4. THE PROBLEM — EVERYTHING YOU'VE TRIED HAS FAILED ═══ */}
       <section id="problem" className="py-20 md:py-28">
         <div className="max-w-6xl mx-auto px-6">
           <p className="text-gold text-xs uppercase tracking-widest mb-4">The Real Problem</p>
           <h2 className="font-heading text-3xl md:text-5xl font-bold leading-tight">
-            You&apos;re not getting rejected.{" "}<br className="hidden md:block" />
-            <span className="text-gold">You&apos;re being misrepresented.</span>
+            Dating apps failed you.<br className="hidden md:block" />
+            Matchmakers failed you.<br className="hidden md:block" />
+            <span className="text-gold">Here&apos;s why nothing has worked.</span>
           </h2>
           <p className="text-on-surface-variant text-base md:text-lg mt-6 max-w-2xl leading-relaxed">
-            There is a fundamental gap between who you are in real life and how you show up online. That gap is where your dating life breaks.
+            You&apos;ve tried the apps. Maybe you hired a photographer. Maybe you paid a matchmaker. And you&apos;re still here. The reason nothing worked isn&apos;t effort &mdash; it&apos;s that every service you&apos;ve used operates on top of the same broken foundation.
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
             {[
-              { icon: "person_off", title: "Silent Attrition", text: "She matches, checks your Instagram, and sees a version of you that doesn\u2019t align with reality. She disappears without a word." },
-              { icon: "schedule", title: "The Executive Time Tax", text: "10+ hours wasted every week on swiping, messaging, and planning \u2014 all built on top of positioning that is actively working against you." },
-              { icon: "filter_alt_off", title: "Wrong Pool Entirely", text: "Your current digital identity is filtering you into the wrong category. The high-caliber women you actually want never even see you." },
+              { icon: "smartphone", title: "Dating Apps Failed You", text: "10+ hours a week swiping, messaging, boosting. The algorithm doesn\u2019t know who you are. Your profile doesn\u2019t represent you. The matches don\u2019t match your standards. You\u2019re doing the work of a full-time job for zero results." },
+              { icon: "camera_alt", title: "Photographers Failed You", text: "You paid $500\u2013$1,500 for better photos. Your profile looks better. But the dates are still the same. Because photos are one piece \u2014 your bios, prompts, Instagram, and overall positioning are still broken." },
+              { icon: "handshake", title: "Matchmakers Failed You", text: "You paid $5,000\u2013$25,000 for blind dates with strangers. Your preferences got ignored. Declined matches counted against your contract. Zero transparency into what was happening with your money." },
+              { icon: "school", title: "Dating Coaches Failed You", text: "You learned frameworks, conversation tactics, and \u201Cmindset.\u201D But you still have to do all the work yourself. Knowledge doesn\u2019t solve the time problem or the positioning problem." },
             ].map((card) => (
               <div key={card.title} className="bg-surface-container-low p-6 rounded-2xl space-y-3">
                 <span className="material-symbols-outlined text-2xl text-gold" style={I}>{card.icon}</span>
@@ -102,26 +105,34 @@ export function LandingPage() {
               </div>
             ))}
           </div>
+
+          <div className="bg-surface-container-low border-l-2 border-gold p-6 rounded-r-xl mt-10 max-w-3xl">
+            <p className="font-heading text-lg text-on-surface">The common thread? None of them fix the root cause.</p>
+            <p className="text-on-surface-variant text-sm mt-2 leading-relaxed">
+              There is a fundamental gap between who you are in real life and how you show up online. Every service you\u2019ve tried operates on top of that broken foundation. They swipe for you, introduce you, or coach you \u2014 but your digital identity still misrepresents you. Until that\u2019s fixed, nothing else works.
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* ═══ 5. WHAT HAPPENS WHEN YOU TRY TO FIX IT ═══ */}
+      {/* ═══ 5. THE INDUSTRY FAILURES — CUSTOMER CARE ═══ */}
       <section className="py-20 md:py-28 bg-surface-container-lowest">
         <div className="max-w-6xl mx-auto px-6">
           <p className="text-gold text-xs uppercase tracking-widest mb-4">You Deserve Better</p>
           <h2 className="font-heading text-3xl md:text-5xl font-bold leading-tight">
-            What you&apos;re actually getting<br className="hidden md:block" />
-            <span className="text-gold">from &ldquo;premium&rdquo; dating services.</span>
+            What &ldquo;premium&rdquo; services<br className="hidden md:block" />
+            <span className="text-gold">are actually doing to you.</span>
           </h2>
           <p className="text-on-surface-variant text-base mt-6 max-w-2xl leading-relaxed">
-            You&apos;re paying thousands for a premium experience. But behind the sales pitch, most services cut corners on the things that matter most.
+            Beyond failing to fix the root cause, here&apos;s what the industry is specifically doing wrong &mdash; at your expense.
           </p>
           <div className="space-y-4 mt-12">
             {[
               { icon: "visibility_off", issue: "Blind Dates Only", stat: "No photos. No names. No vetting.", text: "You\u2019re paying $5,000+ to meet a complete stranger. Some services cold-call people from databases to fill the seat \u2014 people who never even signed up.", links: [{ label: "Real client experiences", url: "https://www.sitejabber.com/reviews/tawkify.com" }] },
-              { icon: "person_off", issue: "Your Preferences Get Ignored", stat: "$60M+ in class action settlements", text: "You describe exactly what you want. They send whoever\u2019s available. Matches driven by quotas, not compatibility.", links: [{ label: "Class action details", url: "https://topclassactions.com/lawsuit-settlements/lawsuit-news/its-just-lunch-matchmaking-site-settles-class-action-for-60m-in-dates/" }] },
-              { icon: "block", issue: "You Pay Even When You Say No", stat: "Declined matches still count", text: "She wasn\u2019t your type? Doesn\u2019t matter. That \u201Cintroduction\u201D still counts. You\u2019re locked into a non-refundable contract.", links: [{ label: "Contract terms", url: "https://blog.photofeeler.com/three-day-rule/" }] },
-              { icon: "visibility_off", issue: "Zero Process Transparency", stat: "No dashboard. No metrics. No proof.", text: "No way to see what\u2019s happening. Your physical preferences \u2014 attraction, body type, ethnicity \u2014 get filed away and ignored.", links: [{ label: "Client complaints", url: "https://lumasearch.com/blog/its-just-lunch-reviews-2025/" }] },
+              { icon: "person_off", issue: "Your Preferences Get Ignored", stat: "$60M+ in class action settlements", text: "You describe exactly what you want. They send whoever\u2019s available. Matches driven by quotas, not compatibility. Physical attraction treated as optional.", links: [{ label: "Class action details", url: "https://topclassactions.com/lawsuit-settlements/lawsuit-news/its-just-lunch-matchmaking-site-settles-class-action-for-60m-in-dates/" }] },
+              { icon: "block", issue: "You Pay Even When You Say No", stat: "Declined matches still count", text: "She wasn\u2019t your type? Doesn\u2019t matter. That \u201Cintroduction\u201D still counts. Non-refundable contracts, $2\u20133K per date whether you wanted it or not.", links: [{ label: "Contract terms", url: "https://blog.photofeeler.com/three-day-rule/" }] },
+              { icon: "query_stats", issue: "Zero Process Transparency", stat: "No dashboard. No metrics. No proof.", text: "No way to see what\u2019s happening. No KPIs, no weekly updates. Your physical preferences \u2014 attraction, body type, ethnicity \u2014 get filed away and ignored.", links: [{ label: "Client complaints", url: "https://lumasearch.com/blog/its-just-lunch-reviews-2025/" }] },
+              { icon: "auto_fix_off", issue: "Zero Digital Identity Rebuilding", stat: "They never fix how you show up.", text: "No service rebuilds your profiles, photos, bios, or Instagram. They swipe for you, introduce you, or coach you \u2014 all on top of the same broken positioning. You don\u2019t match how you are in real life, and nobody fixes that.", links: [] },
             ].map((comp) => (
               <div key={comp.issue} className="bg-surface-container-low p-5 rounded-2xl flex items-start gap-4">
                 <span className="material-symbols-outlined text-xl text-gold shrink-0 mt-1" style={I}>{comp.icon}</span>
@@ -131,9 +142,9 @@ export function LandingPage() {
                     <span className="text-gold text-xs font-heading">{comp.stat}</span>
                   </div>
                   <p className="text-on-surface-variant text-sm leading-relaxed mt-1">{comp.text}</p>
-                  <div className="flex gap-3 mt-2">
+                  {comp.links.length > 0 && <div className="flex gap-3 mt-2">
                     {comp.links.map((l) => <a key={l.url} href={l.url} target="_blank" rel="noopener noreferrer" className="text-gold/50 text-[10px] uppercase tracking-widest hover:text-gold transition-colors flex items-center gap-1"><span className="material-symbols-outlined text-xs">open_in_new</span>{l.label}</a>)}
-                  </div>
+                  </div>}
                 </div>
               </div>
             ))}
