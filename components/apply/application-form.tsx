@@ -86,14 +86,7 @@ export function ApplicationForm() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
-  // Keyboard
-  useEffect(() => {
-    const h = (e: KeyboardEvent) => { if (e.key === "Enter" && canAdvance() && !submitting) next(); };
-    window.addEventListener("keydown", h);
-    return () => window.removeEventListener("keydown", h);
-  });
-
-  // Session persistence
+  // Restore from session on mount only
   useEffect(() => {
     try {
       const s = sessionStorage.getItem("pdc_apply");
@@ -102,11 +95,8 @@ export function ApplicationForm() {
         if (setters[k] && v) setters[k](v);
       }); }
     } catch {}
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    sessionStorage.setItem("pdc_apply", JSON.stringify({ intent, lifeWindow, city, profession, income, shape, age, height, weight, ownEthnicity, ownBodyType, biggestChallenge, challengeNotes, duration, triedBefore, currentResults, priority, herAgeMin, herAgeMax, herEthnicities, herBodyTypes, fullName, phone, step }));
-  }, [intent, lifeWindow, city, profession, income, shape, age, height, weight, ownEthnicity, ownBodyType, biggestChallenge, challengeNotes, duration, triedBefore, currentResults, priority, herAgeMin, herAgeMax, herEthnicities, herBodyTypes, fullName, phone, step]);
 
   const canAdvance = (): boolean => {
     switch (step) {
@@ -174,15 +164,30 @@ export function ApplicationForm() {
     } catch {}
   };
 
-  const next = () => {
-    // Disqualification gates — log then redirect
-    if (step === 4 && income === "no") { logDisqualification("income_under_100k"); router.push("/?dq=income"); return; }
-    if (step === 5 && shape === "no") { logDisqualification("not_in_shape"); router.push("/?dq=shape"); return; }
-    if (step === TOTAL_STEPS - 1) handleSubmit();
-    else setStep(step + 1);
+  const saveSession = (nextStep: number) => {
+    try {
+      sessionStorage.setItem("pdc_apply", JSON.stringify({ intent, lifeWindow, city, profession, income, shape, age, height, weight, ownEthnicity, ownBodyType, biggestChallenge, challengeNotes, duration, triedBefore, currentResults, priority, herAgeMin, herAgeMax, herEthnicities, herBodyTypes, fullName, phone, step: nextStep }));
+    } catch {}
   };
 
-  const back = () => { if (step > 0) setStep(step - 1); };
+  const next = () => {
+    if (step === 4 && income === "no") { logDisqualification("income_under_100k"); router.push("/?dq=income"); return; }
+    if (step === 5 && shape === "no") { logDisqualification("not_in_shape"); router.push("/?dq=shape"); return; }
+    if (step === TOTAL_STEPS - 1) { handleSubmit(); return; }
+    const nextStep = step + 1;
+    saveSession(nextStep);
+    setStep(nextStep);
+  };
+
+  const back = () => { if (step > 0) { saveSession(step - 1); setStep(step - 1); } };
+
+  // Keyboard enter to advance
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => { if (e.key === "Enter" && canAdvance() && !submitting) next(); };
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step, submitting, intent, lifeWindow, city, profession, income, shape, age, ownEthnicity, ownBodyType, biggestChallenge, duration, triedBefore, currentResults, priority, herAgeMin, herAgeMax, herEthnicities, fullName, email, phone]);
 
   // UI helpers
   const Pill = ({ value, selected, onSelect, children }: { value: string; selected: string; onSelect: (v: string) => void; children: React.ReactNode }) => (
