@@ -292,32 +292,29 @@ export function LandingPage() {
       <section id="pricing" className="py-20 md:py-28">
         <div className="max-w-5xl mx-auto px-6">
           <h2 className="font-heading text-3xl md:text-4xl font-bold text-center">What you&apos;re already paying.</h2>
-          <p className="text-on-surface-variant text-sm text-center mt-3 max-w-lg mx-auto">The status quo isn&apos;t free. Here&apos;s what doing nothing actually costs.</p>
+          <p className="text-on-surface-variant text-sm text-center mt-3 max-w-lg mx-auto">The status quo isn&apos;t free. Here&apos;s what doing nothing actually costs you every year.</p>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
+          <div className="space-y-4 mt-12">
             {[
-              { label: "DIY Apps", cost: "$5\u201310K/yr" },
-              { label: "Your Time", cost: "$25K+/yr" },
-              { label: "Nightlife", cost: "$5K/qtr" },
-              { label: "Matchmakers", cost: "$10\u201325K/qtr" },
+              { label: "Dating Apps", cost: "$5,000\u2013$10,000 / year", text: "Hinge Premium, Bumble Boost, Tinder Gold, Super Likes, paid boosts. $40\u2013$80/month across 3\u20134 apps adds up fast \u2014 for a system that monetizes your frustration, not your results." },
+              { label: "Your Time", cost: "$25,000+ / year", text: "5\u201310 hours per week swiping, messaging, planning. At $100\u2013$300/hour, that\u2019s $2,000\u2013$12,000/month of executive time spent on something that isn\u2019t working." },
+              { label: "Nightlife & Social", cost: "$5,000+ / quarter", text: "$200\u2013$400 per weekend on drinks, venues, and logistics. No filtering, no vetting, no system. Purely hope-based with zero guarantee of quality." },
+              { label: "Matchmakers & Coaches", cost: "$10,000\u2013$25,000 / quarter", text: "One blind date per month. Your preferences ignored. Declined matches still count against your contract. Non-refundable. Zero transparency into what they\u2019re actually doing." },
             ].map((c) => (
-              <div key={c.label} className="bg-surface-container-low p-4 rounded-2xl text-center">
-                <p className="font-heading text-xl font-bold text-gold">{c.cost}</p>
-                <p className="text-on-surface-variant text-xs uppercase tracking-widest mt-1">{c.label}</p>
+              <div key={c.label} className="bg-surface-container-low p-5 rounded-2xl flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-6">
+                <div className="sm:w-56 shrink-0">
+                  <p className="text-on-surface font-heading font-semibold text-sm">{c.label}</p>
+                  <p className="text-gold font-heading text-lg font-bold">{c.cost}</p>
+                </div>
+                <p className="text-on-surface-variant text-sm leading-relaxed flex-1">{c.text}</p>
               </div>
             ))}
           </div>
 
-          <div className="bg-surface-container-low border-l-2 border-gold rounded-r-2xl p-5 mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div>
-              <p className="text-on-surface font-heading font-semibold">Total annual cost of the current approach:</p>
-              <p className="text-gold font-heading text-3xl font-bold mt-1">$25K&ndash;$50K+</p>
-            </div>
-            <div className="text-right">
-              <p className="text-on-surface font-heading font-semibold">Our service:</p>
-              <p className="text-gold font-heading text-3xl font-bold mt-1">$2K/mo</p>
-              <p className="text-on-surface-variant text-xs mt-1">Month-to-month. Cancel anytime.</p>
-            </div>
+          <div className="bg-gold/10 border border-gold/20 rounded-2xl p-6 mt-8 text-center">
+            <p className="text-on-surface-variant text-sm">Combined annual cost of the current approach</p>
+            <p className="text-gold font-heading text-4xl md:text-5xl font-bold mt-2">$25K&ndash;$50K+</p>
+            <p className="text-on-surface-variant text-sm mt-2">And you&apos;re still not getting quality dates.</p>
           </div>
 
           <div className="text-center mt-8">
