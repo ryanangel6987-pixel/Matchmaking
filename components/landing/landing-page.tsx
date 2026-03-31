@@ -282,8 +282,8 @@ export function LandingPage() {
             {[
               { label: "DIY Apps", cost: "$5\u201310K/yr" },
               { label: "Your Time", cost: "$25K+/yr" },
-              { label: "Matchmakers", cost: "$10\u201325K/qtr" },
               { label: "Nightlife", cost: "$5K/qtr" },
+              { label: "Matchmakers", cost: "$10\u201325K/qtr" },
             ].map((c) => (
               <div key={c.label} className="bg-surface-container-low p-4 rounded-2xl text-center">
                 <p className="font-heading text-xl font-bold text-gold">{c.cost}</p>
