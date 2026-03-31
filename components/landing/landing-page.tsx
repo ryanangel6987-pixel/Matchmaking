@@ -126,7 +126,7 @@ export function LandingPage() {
             If your digital identity doesn&apos;t match who you actually are in real life, no amount of swiping, coaching, or matchmaking will fix it.
           </p>
           <p className="text-on-surface text-base md:text-lg mt-4 max-w-2xl mx-auto leading-relaxed font-medium">
-            Every other service skips this step. We don&apos;t. Fix how you show up first &mdash; then we scale the effort, vet every match, and track every metric. All you do is show up.
+            Every other service skips this step. We don&apos;t. Fix how you show up first &mdash; then we scale the effort, vet every match, and track every metric. All you do is show up. Quality dates weekly with total KPI transparency and full approval.
           </p>
         </div>
       </section>
