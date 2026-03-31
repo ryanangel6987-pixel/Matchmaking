@@ -319,7 +319,7 @@ export function LandingPage() {
 
           <div className="bg-surface-container-low rounded-2xl p-6 mt-6 text-center space-y-4">
             <p className="text-on-surface-variant text-sm leading-relaxed max-w-2xl mx-auto">
-              And that&apos;s not even the real cost. A wedding photographer is <span className="text-on-surface font-medium">$15,000 for one day</span>. A divorce is <span className="text-on-surface font-medium">$500,000+ conservatively</span>. Your partner is the most important decision of your life.
+              And that&apos;s not even the real cost. A wedding photographer is <span className="text-on-surface font-medium">$15,000 for one day</span>. A divorce is <span className="text-on-surface font-medium">$500,000+ conservatively</span>. Not to mention the cost to your mental peace and emotional wellbeing if you get this wrong. Your partner is the most important decision of your life.
             </p>
             <p className="font-heading text-lg md:text-xl text-gold italic">
               Isn&apos;t it worth investing a little to meet the right quality women in the first place?
