@@ -116,13 +116,17 @@ export function LandingPage() {
       <section className="py-16 md:py-24">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <h2 className="font-heading text-2xl md:text-4xl lg:text-5xl font-bold leading-tight text-on-surface">
-            Every service you&apos;ve tried has the <span className="text-gold">same blind spot.</span>
+            Attraction comes first.<br className="hidden md:block" />
+            <span className="text-gold">Everything else comes second.</span>
           </h2>
           <p className="text-on-surface-variant text-base md:text-lg mt-8 max-w-2xl mx-auto leading-relaxed">
-            They all operate on the output &mdash; swiping, introducing, coaching. None of them fix the input: <span className="text-on-surface font-medium">how you show up online.</span>
+            A beautiful woman walks into a room and you don&apos;t need a questionnaire to know you&apos;re interested. Women vet you the same way &mdash; visually, instantly, based on how you show up.
           </p>
           <p className="text-on-surface-variant text-base md:text-lg mt-4 max-w-2xl mx-auto leading-relaxed">
-            Your digital identity still misrepresents you. The women you want in real life never see you online. Until that changes, nothing else will.
+            She decides in seconds based on your photos, your presence, your positioning. If that doesn&apos;t match who you actually are, no amount of swiping, coaching, or matchmaking will fix it.
+          </p>
+          <p className="text-on-surface text-base md:text-lg mt-4 max-w-2xl mx-auto leading-relaxed font-medium">
+            Every other service skips this step. We don&apos;t. Fix how you show up first &mdash; then everything else works.
           </p>
         </div>
       </section>
