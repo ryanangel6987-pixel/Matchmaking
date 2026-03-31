@@ -374,6 +374,11 @@ export function LandingPage() {
               <p className="text-on-surface-variant text-xs mt-1">most common</p>
             </div>
           </div>
+          <div className="text-center mt-10">
+            <Link href="/apply" className="gold-gradient text-on-gold font-semibold rounded-full px-8 py-3.5 text-base hover:opacity-90 transition-opacity shadow-lg inline-block">
+              Start Your Application
+            </Link>
+          </div>
         </div>
       </section>
 
