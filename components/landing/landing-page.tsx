@@ -39,10 +39,13 @@ export function LandingPage() {
             <span className="text-gold text-xs font-medium uppercase tracking-widest">Exclusive Management</span>
           </div>
           <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight">
-            4&ndash;8 Quality Dates Monthly.{" "}<br className="hidden md:block" /><span className="text-gold">You Just Show Up.</span>
+            <span className="text-gold">Private Dating Concierge</span>
           </h1>
-          <p className="text-on-surface-variant text-lg md:text-xl mt-6 max-w-2xl mx-auto leading-relaxed">
-            A dedicated concierge rebuilds your digital identity, runs your dating apps daily, vets every match to your exact standards, and delivers dates to your phone. You do nothing except approve and show up.
+          <p className="font-heading text-xl md:text-2xl lg:text-3xl font-semibold text-on-surface mt-4 max-w-3xl mx-auto leading-snug">
+            Get 4&ndash;8 Quality Dates a Month On Demand &mdash; Without Apps, Matchmakers, or Swiping.
+          </p>
+          <p className="text-on-surface-variant text-base md:text-lg mt-6 max-w-2xl mx-auto leading-relaxed">
+            Your dating life, managed. A dedicated concierge rebuilds how you show up online, runs your apps daily, and delivers vetted dates to your phone.
           </p>
           <p className="text-gold font-heading text-lg md:text-xl italic mt-4">Copy. Send. Show up.</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
