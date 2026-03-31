@@ -32,15 +32,15 @@ export function LandingPageMobile() {
       <section className="pt-24 pb-12 px-6">
         <div className="inline-flex items-center gap-1.5 bg-gold/10 border border-gold/20 rounded-full px-3 py-1 mb-6">
           <span className="material-symbols-outlined text-gold text-xs" style={IF}>verified</span>
-          <span className="text-gold text-[10px] font-medium uppercase tracking-widest">Private Dating Concierge</span>
+          <span className="text-gold text-xs font-medium uppercase tracking-widest">Private Dating Concierge</span>
         </div>
         <h1 className="font-heading text-3xl font-bold leading-tight tracking-tight">
           Get 4&ndash;8 Quality Dates a Month On Demand &mdash; <span className="text-gold">Without Apps, Matchmakers, or Swiping.</span>
         </h1>
-        <p className="text-on-surface-variant text-sm mt-4 leading-relaxed">
+        <p className="text-on-surface-variant text-base mt-4 leading-relaxed">
           Your dating life, managed. A dedicated concierge rebuilds how you show up online, runs your apps daily, and delivers vetted dates to your phone.
         </p>
-        <p className="text-gold font-heading text-base italic mt-3">Copy. Send. Show up.</p>
+        <p className="text-gold font-heading text-lg italic mt-3">Copy. Send. Show up.</p>
       </section>
 
       <CTA />
@@ -56,7 +56,7 @@ export function LandingPageMobile() {
           ].map((s) => (
             <div key={s.label} className="bg-surface-container-low rounded-xl p-3 text-center">
               <p className="font-heading text-lg font-bold text-gold">{s.value}</p>
-              <p className="text-on-surface-variant text-[9px] uppercase tracking-widest mt-0.5">{s.label}</p>
+              <p className="text-on-surface-variant text-xs uppercase tracking-widest mt-0.5">{s.label}</p>
             </div>
           ))}
         </div>
@@ -64,11 +64,11 @@ export function LandingPageMobile() {
 
       {/* ═══ THE PROBLEM ═══ */}
       <section className="px-6 py-10">
-        <p className="text-gold text-[10px] uppercase tracking-widest mb-3">The Real Problem</p>
+        <p className="text-gold text-xs uppercase tracking-widest mb-3">The Real Problem</p>
         <h2 className="font-heading text-2xl font-bold leading-tight">
           Dating apps failed you. Matchmakers failed you. <span className="text-gold">Here&apos;s why.</span>
         </h2>
-        <p className="text-on-surface-variant text-sm mt-4 leading-relaxed">
+        <p className="text-on-surface-variant text-base mt-4 leading-relaxed">
           Every service you&apos;ve used operates on top of the same broken foundation.
         </p>
         <div className="space-y-3 mt-6">
@@ -81,9 +81,9 @@ export function LandingPageMobile() {
             <div key={c.title} className="bg-surface-container-low p-4 rounded-xl">
               <div className="flex items-center gap-2 mb-1.5">
                 <span className="material-symbols-outlined text-gold text-lg" style={I}>{c.icon}</span>
-                <h3 className="font-heading text-sm font-semibold">{c.title}</h3>
+                <h3 className="font-heading text-base font-semibold">{c.title}</h3>
               </div>
-              <p className="text-on-surface-variant text-xs leading-relaxed">{c.text}</p>
+              <p className="text-on-surface-variant text-sm leading-relaxed">{c.text}</p>
             </div>
           ))}
         </div>
@@ -96,17 +96,17 @@ export function LandingPageMobile() {
         <h2 className="font-heading text-2xl font-bold leading-tight">
           Attraction comes first. <span className="text-gold">Everything else comes second.</span>
         </h2>
-        <p className="text-on-surface-variant text-sm mt-4 leading-relaxed">
+        <p className="text-on-surface-variant text-base mt-4 leading-relaxed">
           A beautiful woman walks into a room and you don&apos;t need a questionnaire to know you&apos;re interested. Women vet you the same way &mdash; visually, instantly.
         </p>
-        <p className="text-on-surface text-sm mt-3 leading-relaxed font-medium">
+        <p className="text-on-surface text-base mt-3 leading-relaxed font-medium">
           If your digital identity doesn&apos;t match who you actually are, nothing else works. We fix that first.
         </p>
       </section>
 
       {/* ═══ INDUSTRY FAILURES ═══ */}
       <section className="px-6 py-10 bg-surface-container-lowest">
-        <p className="text-gold text-[10px] uppercase tracking-widest mb-3">You Deserve Better</p>
+        <p className="text-gold text-xs uppercase tracking-widest mb-3">You Deserve Better</p>
         <h2 className="font-heading text-xl font-bold leading-tight">
           What &ldquo;premium&rdquo; services <span className="text-gold">actually do to you.</span>
         </h2>
@@ -119,8 +119,8 @@ export function LandingPageMobile() {
             { title: "No Identity Rebuild", text: "Nobody fixes how you show up. You still attract below your level." },
           ].map((c) => (
             <div key={c.title} className="bg-surface-container-low p-4 rounded-xl">
-              <h3 className="font-heading text-sm font-semibold text-on-surface">{c.title}</h3>
-              <p className="text-on-surface-variant text-xs leading-relaxed mt-1">{c.text}</p>
+              <h3 className="font-heading text-base font-semibold text-on-surface">{c.title}</h3>
+              <p className="text-on-surface-variant text-sm leading-relaxed mt-1">{c.text}</p>
             </div>
           ))}
         </div>
@@ -131,7 +131,7 @@ export function LandingPageMobile() {
       {/* ═══ AMPLIFY ═══ */}
       <section className="px-6 py-10 text-center">
         <h2 className="font-heading text-2xl font-bold">What does another year of this look like?</h2>
-        <p className="text-on-surface-variant text-sm mt-4">Your friends are getting engaged. You&apos;re still swiping.</p>
+        <p className="text-on-surface-variant text-base mt-4">Your friends are getting engaged. You&apos;re still swiping.</p>
         <p className="text-on-surface-variant text-sm mt-2">Another year. Same apps. Same results.</p>
         <div className="border-l-2 border-gold pl-4 mt-6 text-left">
           <p className="text-gold font-heading text-sm italic">&ldquo;The risk isn&apos;t trying something new. The risk is doing the same thing for another year.&rdquo;</p>
@@ -142,7 +142,7 @@ export function LandingPageMobile() {
 
       {/* ═══ THE NEW CATEGORY ═══ */}
       <section className="px-6 py-10">
-        <p className="text-gold text-[10px] uppercase tracking-widest mb-3">A New Category</p>
+        <p className="text-gold text-xs uppercase tracking-widest mb-3">A New Category</p>
         <h2 className="font-heading text-2xl font-bold leading-tight">
           Not apps. Not matchmakers. <span className="text-gold">Private Dating Concierge.</span>
         </h2>
@@ -156,8 +156,8 @@ export function LandingPageMobile() {
             <div key={s.num} className="bg-surface-container-low p-4 rounded-xl flex gap-3">
               <span className="font-heading text-lg font-bold text-gold/30 shrink-0">{s.num}</span>
               <div>
-                <h3 className="font-heading text-sm font-semibold">{s.title}</h3>
-                <p className="text-on-surface-variant text-xs leading-relaxed mt-1">{s.text}</p>
+                <h3 className="font-heading text-base font-semibold">{s.title}</h3>
+                <p className="text-on-surface-variant text-sm leading-relaxed mt-1">{s.text}</p>
               </div>
             </div>
           ))}
@@ -171,12 +171,12 @@ export function LandingPageMobile() {
       <section className="px-6 py-8 bg-surface-container-lowest">
         <div className="space-y-3">
           <div className="bg-surface-container-low p-4 rounded-xl border-l-2 border-red-400/30">
-            <p className="text-red-400/60 text-[9px] uppercase tracking-widest font-bold mb-2">Without us</p>
-            <p className="text-on-surface-variant text-xs leading-relaxed">2 hours swiping. Matches below your level. Quality dates: zero.</p>
+            <p className="text-red-400/60 text-xs uppercase tracking-widest font-bold mb-2">Without us</p>
+            <p className="text-on-surface-variant text-sm leading-relaxed">2 hours swiping. Matches below your level. Quality dates: zero.</p>
           </div>
           <div className="bg-surface-container-low p-4 rounded-xl border-l-2 border-gold">
-            <p className="text-gold text-[9px] uppercase tracking-widest font-bold mb-2">With us</p>
-            <p className="text-on-surface-variant text-xs leading-relaxed">Phone buzzes. Jessica, 28. Thursday 7:30. Copy. Send. Done.</p>
+            <p className="text-gold text-xs uppercase tracking-widest font-bold mb-2">With us</p>
+            <p className="text-on-surface-variant text-sm leading-relaxed">Phone buzzes. Jessica, 28. Thursday 7:30. Copy. Send. Done.</p>
             <p className="text-gold font-medium text-xs mt-1">15 seconds. Quality date booked.</p>
           </div>
         </div>
@@ -192,7 +192,7 @@ export function LandingPageMobile() {
             { time: "Week 2\u20133", title: "First Date", highlight: true },
           ].map((s) => (
             <div key={s.time} className={`p-3 rounded-xl text-center ${s.highlight ? "bg-gold/10 border border-gold/20" : "bg-surface-container-low"}`}>
-              <p className="text-gold text-[9px] uppercase tracking-widest">{s.time}</p>
+              <p className="text-gold text-xs uppercase tracking-widest">{s.time}</p>
               <p className={`font-heading text-xs font-semibold mt-1 ${s.highlight ? "text-gold" : "text-on-surface"}`}>{s.title}</p>
             </div>
           ))}
@@ -213,7 +213,7 @@ export function LandingPageMobile() {
           ].map((c) => (
             <div key={c.label} className="bg-surface-container-low p-3 rounded-xl text-center">
               <p className="font-heading text-base font-bold text-gold">{c.cost}</p>
-              <p className="text-on-surface-variant text-[9px] uppercase tracking-widest mt-0.5">{c.label}</p>
+              <p className="text-on-surface-variant text-xs uppercase tracking-widest mt-0.5">{c.label}</p>
             </div>
           ))}
         </div>
@@ -243,7 +243,7 @@ export function LandingPageMobile() {
             <div key={r.title} className="bg-surface-container-low p-4 rounded-xl flex items-start gap-3">
               <span className="material-symbols-outlined text-gold text-lg shrink-0 mt-0.5" style={I}>{r.icon}</span>
               <div>
-                <h3 className="font-heading text-sm font-semibold">{r.title}</h3>
+                <h3 className="font-heading text-base font-semibold">{r.title}</h3>
                 <p className="text-on-surface-variant text-xs">{r.text}</p>
               </div>
             </div>
@@ -251,7 +251,7 @@ export function LandingPageMobile() {
         </div>
         <div className="bg-gold/10 border border-gold/20 rounded-xl p-4 mt-4 text-center">
           <p className="font-heading text-3xl font-bold text-gold">4&ndash;8</p>
-          <p className="text-gold text-[9px] uppercase tracking-widest mt-1 font-bold">Dates Per Month</p>
+          <p className="text-gold text-xs uppercase tracking-widest mt-1 font-bold">Dates Per Month</p>
         </div>
       </section>
 
@@ -271,8 +271,8 @@ export function LandingPageMobile() {
           ].map((t, i) => (
             <div key={i} className="bg-surface-container-low p-4 rounded-xl">
               <div className="flex gap-1 mb-2">{Array.from({ length: 5 }).map((_, j) => <span key={j} className="material-symbols-outlined text-gold text-xs" style={IF}>star</span>)}</div>
-              <p className="text-red-400/60 text-[10px]"><span className="uppercase tracking-widest">Before:</span> {t.before}</p>
-              <p className="text-gold text-[10px] font-medium mt-0.5"><span className="uppercase tracking-widest">After:</span> {t.after}</p>
+              <p className="text-red-400/60 text-xs"><span className="uppercase tracking-widest">Before:</span> {t.before}</p>
+              <p className="text-gold text-xs font-medium mt-0.5"><span className="uppercase tracking-widest">After:</span> {t.after}</p>
               <p className="text-on-surface font-heading text-xs font-semibold mt-2">{t.name} <span className="text-on-surface-variant font-normal">&middot; {t.role}</span></p>
             </div>
           ))}
@@ -296,11 +296,11 @@ export function LandingPageMobile() {
           ].map((item, i) => (
             <div key={i} className="bg-surface-container-low rounded-xl overflow-hidden">
               <button onClick={() => setFaqOpen(faqOpen === i ? null : i)} className="w-full flex items-center justify-between p-4 text-left">
-                <span className="text-on-surface font-medium text-xs pr-3">{item.q}</span>
+                <span className="text-on-surface font-medium text-sm pr-3">{item.q}</span>
                 <span className={`material-symbols-outlined text-gold text-base shrink-0 transition-transform ${faqOpen === i ? "rotate-180" : ""}`}>expand_more</span>
               </button>
               <div className={`grid transition-all duration-300 ${faqOpen === i ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
-                <div className="overflow-hidden"><p className="px-4 pb-4 text-on-surface-variant text-xs leading-relaxed">{item.a}</p></div>
+                <div className="overflow-hidden"><p className="px-4 pb-4 text-on-surface-variant text-sm leading-relaxed">{item.a}</p></div>
               </div>
             </div>
           ))}
@@ -320,7 +320,7 @@ export function LandingPageMobile() {
               <div className={`w-12 h-12 mx-auto rounded-full flex items-center justify-center ${s.highlight ? "bg-gold" : "bg-surface-container-low"}`}>
                 <span className={`material-symbols-outlined text-base ${s.highlight ? "text-on-gold" : "text-gold"}`} style={s.highlight ? IF : I}>{s.highlight ? "notifications_active" : s.time === "Today" ? "bolt" : "public"}</span>
               </div>
-              <p className="text-gold text-[9px] uppercase tracking-widest mt-2">{s.time}</p>
+              <p className="text-gold text-xs uppercase tracking-widest mt-2">{s.time}</p>
               <p className={`font-heading text-xs font-semibold ${s.highlight ? "text-gold" : "text-on-surface"}`}>{s.title}</p>
             </div>
           ))}
@@ -332,7 +332,7 @@ export function LandingPageMobile() {
       {/* ═══ FOOTER ═══ */}
       <footer className="px-6 py-8 text-center">
         <img src="/logo.png" alt="PDC" className="h-4 w-auto mx-auto opacity-30" />
-        <p className="text-outline text-[10px] mt-3">&copy; {new Date().getFullYear()} Private Dating Concierge</p>
+        <p className="text-outline text-xs mt-3">&copy; {new Date().getFullYear()} Private Dating Concierge</p>
       </footer>
 
     </div>
