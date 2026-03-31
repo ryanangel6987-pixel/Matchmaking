@@ -109,12 +109,21 @@ export function LandingPage() {
             ))}
           </div>
 
-          <div className="bg-surface-container-low border-l-2 border-gold p-6 rounded-r-xl mt-10 max-w-3xl">
-            <p className="font-heading text-lg text-on-surface">The common thread? None of them fix the root cause.</p>
-            <p className="text-on-surface-variant text-sm mt-2 leading-relaxed">
-              There is a fundamental gap between who you are in real life and how you show up online. Every service you&apos;ve tried operates on top of that broken foundation. They swipe for you, introduce you, or coach you &mdash; but your digital identity still misrepresents you. Until that&apos;s fixed, nothing else works.
-            </p>
-          </div>
+        </div>
+      </section>
+
+      {/* ═══ THE BLIND SPOT — AHA MOMENT ═══ */}
+      <section className="py-16 md:py-24">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h2 className="font-heading text-2xl md:text-4xl lg:text-5xl font-bold leading-tight text-on-surface">
+            Every service you&apos;ve tried has the <span className="text-gold">same blind spot.</span>
+          </h2>
+          <p className="text-on-surface-variant text-base md:text-lg mt-8 max-w-2xl mx-auto leading-relaxed">
+            They all operate on the output &mdash; swiping, introducing, coaching. None of them fix the input: <span className="text-on-surface font-medium">how you show up online.</span>
+          </p>
+          <p className="text-on-surface-variant text-base md:text-lg mt-4 max-w-2xl mx-auto leading-relaxed">
+            Your digital identity still misrepresents you. The women you want in real life never see you online. Until that changes, nothing else will.
+          </p>
         </div>
       </section>
 
