@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { LandingPageMobile } from "./landing-page-mobile";
 
 const I = { fontVariationSettings: "'FILL' 0, 'wght' 300" } as const;
 const IF = { fontVariationSettings: "'FILL' 1, 'wght' 400" } as const;
@@ -10,7 +11,14 @@ export function LandingPage() {
   const [faqOpen, setFaqOpen] = useState<number | null>(null);
 
   return (
-    <div className="min-h-screen bg-surface text-on-surface">
+    <>
+    {/* Mobile version */}
+    <div className="lg:hidden">
+      <LandingPageMobile />
+    </div>
+
+    {/* Desktop version */}
+    <div className="hidden lg:block min-h-screen bg-surface text-on-surface">
 
       {/* ═══ 1. NAV ═══ */}
       <nav className="fixed top-0 inset-x-0 z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/10">
@@ -520,5 +528,6 @@ export function LandingPage() {
         </Link>
       </div>
     </div>
+    </>
   );
 }
