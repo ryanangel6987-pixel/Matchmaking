@@ -343,7 +343,7 @@ export function LandingPage() {
             {[
               { icon: "event_available", title: "Month-to-Month", text: "No long-term contracts. Walk anytime. We earn your business every 30 days." },
               { icon: "rocket_launch", title: "First Intro in 2\u20133 Weeks", text: "Rapid onboarding. Immediate execution. You\u2019re not waiting months." },
-              { icon: "visibility", title: "Full Transparency", text: "Weekly KPI dashboard. Every number visible. No black box." },
+              { icon: "visibility", title: "24/7 KPI Dashboard", text: "Daily KPI dashboard. Every number visible. No black box." },
               { icon: "inventory_2", title: "You Keep Everything", text: "Cancel and keep all rebuilt assets \u2014 profiles, photos, bios. Yours forever." },
               { icon: "chat", title: "24/7 WhatsApp Access", text: "Direct line to your dedicated manager. Not a call center." },
             ].map((r) => (
