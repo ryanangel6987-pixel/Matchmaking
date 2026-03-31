@@ -128,6 +128,11 @@ export function LandingPage() {
           <p className="text-on-surface text-base md:text-lg mt-4 max-w-2xl mx-auto leading-relaxed font-medium">
             Every other service skips this step. We don&apos;t. Fix how you show up first &mdash; then we scale the effort, vet every match, and track every metric. All you do is show up. Quality dates weekly with total KPI transparency and full approval.
           </p>
+          <div className="mt-8">
+            <Link href="/apply" className="gold-gradient text-on-gold font-semibold rounded-full px-8 py-3.5 text-base hover:opacity-90 transition-opacity shadow-lg inline-block">
+              Start Your Application
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -218,6 +223,11 @@ export function LandingPage() {
           </div>
 
           <p className="text-center text-gold font-heading text-lg mt-10 font-semibold">Your only job: approve dates and show up.</p>
+          <div className="text-center mt-8">
+            <Link href="/apply" className="gold-gradient text-on-gold font-semibold rounded-full px-8 py-3.5 text-base hover:opacity-90 transition-opacity shadow-lg inline-block">
+              Start Your Application
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -234,6 +244,11 @@ export function LandingPage() {
               <p className="text-on-surface-variant text-sm leading-relaxed">Phone buzzes. Jessica, 28. Marketing Director. Thursday 7:30. Copy. Send. Done.</p>
               <p className="text-gold font-medium text-sm mt-2">15 seconds. Quality date booked.</p>
             </div>
+          </div>
+          <div className="text-center mt-8">
+            <Link href="/apply" className="gold-gradient text-on-gold font-semibold rounded-full px-8 py-3.5 text-base hover:opacity-90 transition-opacity shadow-lg inline-block">
+              Start Your Application
+            </Link>
           </div>
         </div>
       </section>
@@ -392,6 +407,11 @@ export function LandingPage() {
                 </div>
               </div>
             ))}
+          </div>
+          <div className="text-center mt-10">
+            <Link href="/apply" className="gold-gradient text-on-gold font-semibold rounded-full px-8 py-3.5 text-base hover:opacity-90 transition-opacity shadow-lg inline-block">
+              Start Your Application
+            </Link>
           </div>
         </div>
       </section>
