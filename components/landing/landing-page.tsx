@@ -410,7 +410,7 @@ export function LandingPage() {
               { q: "Can I cancel anytime?", a: "Yes. Month-to-month, no contract. If you cancel, you keep all rebuilt assets \u2014 profiles, photos, bios. Clean termination on all accounts." },
               { q: "What cities do you serve?", a: "Major US cities including New York, LA, San Francisco, Chicago, and Miami. Expanding quarterly." },
               { q: "How much does it cost vs alternatives?", a: "DIY apps cost $5\u201310K/year plus 10+ hrs/week. Matchmakers charge $10\u201325K/quarter. We deliver 4\u20138 dates/month with full transparency for $2K/month." },
-              { q: "Is this just for men?", a: "Currently designed for high-performing men. Exploring options for women and non-binary clients." },
+              { q: "Is this just for men?", a: "Yes. This service is built exclusively for high-performing men." },
             ].map((item, i) => (
               <div key={i} className="bg-surface-container-low rounded-2xl overflow-hidden">
                 <button onClick={() => setFaqOpen(faqOpen === i ? null : i)} className="w-full flex items-center justify-between p-5 text-left">
