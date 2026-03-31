@@ -317,6 +317,15 @@ export function LandingPage() {
             <p className="text-on-surface-variant text-sm mt-2">And you&apos;re still not getting quality dates.</p>
           </div>
 
+          <div className="bg-surface-container-low rounded-2xl p-6 mt-6 text-center space-y-4">
+            <p className="text-on-surface-variant text-sm leading-relaxed max-w-2xl mx-auto">
+              And that&apos;s not even the real cost. A wedding photographer is <span className="text-on-surface font-medium">$15,000 for one day</span>. A divorce is <span className="text-on-surface font-medium">$500,000+ conservatively</span>. Your partner is the most important decision of your life.
+            </p>
+            <p className="font-heading text-lg md:text-xl text-gold italic">
+              Isn&apos;t it worth investing a little to meet the right quality women in the first place?
+            </p>
+          </div>
+
           <div className="text-center mt-8">
             <Link href="/apply" className="gold-gradient text-on-gold font-semibold rounded-full px-8 py-3.5 text-base hover:opacity-90 transition-opacity shadow-lg inline-block">
               Start Your Application
