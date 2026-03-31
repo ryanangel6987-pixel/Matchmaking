@@ -245,11 +245,6 @@ export function LandingPage() {
               <p className="text-gold font-medium text-sm mt-2">15 seconds. Quality date booked.</p>
             </div>
           </div>
-          <div className="text-center mt-8">
-            <Link href="/apply" className="gold-gradient text-on-gold font-semibold rounded-full px-8 py-3.5 text-base hover:opacity-90 transition-opacity shadow-lg inline-block">
-              Start Your Application
-            </Link>
-          </div>
         </div>
       </section>
 
@@ -274,6 +269,11 @@ export function LandingPage() {
                 {step.bullets && <ul className="space-y-1.5 mt-2">{step.bullets.map((b) => <li key={b} className="text-on-surface-variant text-xs flex items-start gap-2"><span className="material-symbols-outlined text-gold text-xs mt-0.5" style={IF}>check</span>{b}</li>)}</ul>}
               </div>
             ))}
+          </div>
+          <div className="text-center mt-10">
+            <Link href="/apply" className="gold-gradient text-on-gold font-semibold rounded-full px-8 py-3.5 text-base hover:opacity-90 transition-opacity shadow-lg inline-block">
+              Start Your Application
+            </Link>
           </div>
         </div>
       </section>
