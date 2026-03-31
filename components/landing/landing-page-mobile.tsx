@@ -335,15 +335,6 @@ export function LandingPageMobile() {
         <p className="text-outline text-[10px] mt-3">&copy; {new Date().getFullYear()} Private Dating Concierge</p>
       </footer>
 
-      {/* Spacer for sticky CTA */}
-      <div className="h-16" />
-
-      {/* ═══ STICKY BOTTOM CTA ═══ */}
-      <div className="fixed bottom-0 inset-x-0 z-40 glass-panel border-t border-outline-variant/10 safe-area-pb px-4 py-3">
-        <Link href="/apply" className="block gold-gradient text-on-gold font-semibold rounded-full py-3 text-sm text-center">
-          Start Your Application
-        </Link>
-      </div>
     </div>
   );
 }

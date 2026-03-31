@@ -521,12 +521,6 @@ export function LandingPage() {
         </div>
       </footer>
 
-      {/* ═══ STICKY MOBILE CTA ═══ */}
-      <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 glass-panel border-t border-outline-variant/10 safe-area-pb px-4 py-3">
-        <Link href="/apply" className="block gold-gradient text-on-gold font-semibold rounded-full py-3 text-sm text-center hover:opacity-90 transition-opacity">
-          Start Your Application
-        </Link>
-      </div>
     </div>
     </>
   );
