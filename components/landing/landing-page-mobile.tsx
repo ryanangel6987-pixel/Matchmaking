@@ -29,7 +29,7 @@ export function LandingPageMobile() {
       </nav>
 
       {/* ═══ HERO ═══ */}
-      <section className="pt-24 pb-12 px-6">
+      <section className="pt-24 pb-12 px-6 text-center">
         <div className="inline-flex items-center gap-1.5 bg-gold/10 border border-gold/20 rounded-full px-3 py-1 mb-6">
           <span className="material-symbols-outlined text-gold text-xs" style={IF}>verified</span>
           <span className="text-gold text-xs font-medium uppercase tracking-widest">Private Dating Concierge</span>
@@ -37,7 +37,7 @@ export function LandingPageMobile() {
         <h1 className="font-heading text-3xl font-bold leading-tight tracking-tight">
           Get 4&ndash;8 Quality Dates a Month On Demand &mdash; <span className="text-gold">Without Apps, Matchmakers, or Swiping.</span>
         </h1>
-        <p className="text-on-surface-variant text-base mt-4 leading-relaxed">
+        <p className="text-on-surface-variant text-base mt-4 leading-relaxed max-w-sm mx-auto">
           Your dating life, managed. A dedicated concierge rebuilds how you show up online, runs your apps daily, and delivers vetted dates to your phone.
         </p>
         <p className="text-gold font-heading text-lg italic mt-3">Copy. Send. Show up.</p>
@@ -112,15 +112,18 @@ export function LandingPageMobile() {
         </h2>
         <div className="space-y-3 mt-6">
           {[
-            { title: "Blind Dates Only", text: "No photos. No names. Cold-called strangers filling seats." },
-            { title: "Preferences Ignored", text: "$60M+ in settlements. Quotas over compatibility." },
-            { title: "Pay When You Say No", text: "Declined matches still count. Non-refundable." },
-            { title: "Zero Transparency", text: "No dashboard. No metrics. Your preferences filed away." },
-            { title: "No Identity Rebuild", text: "Nobody fixes how you show up. You still attract below your level." },
+            { icon: "visibility_off", title: "Blind Dates Only", text: "No photos. No names. Cold-called strangers filling seats." },
+            { icon: "person_off", title: "Preferences Ignored", text: "$60M+ in settlements. Quotas over compatibility." },
+            { icon: "block", title: "Pay When You Say No", text: "Declined matches still count. Non-refundable." },
+            { icon: "query_stats", title: "Zero Transparency", text: "No dashboard. No metrics. Your preferences filed away." },
+            { icon: "auto_fix_off", title: "No Identity Rebuild", text: "Nobody fixes how you show up. You still attract below your level." },
           ].map((c) => (
-            <div key={c.title} className="bg-surface-container-low p-4 rounded-xl">
-              <h3 className="font-heading text-base font-semibold text-on-surface">{c.title}</h3>
-              <p className="text-on-surface-variant text-sm leading-relaxed mt-1">{c.text}</p>
+            <div key={c.title} className="bg-surface-container-low p-5 rounded-xl">
+              <div className="flex items-center gap-2.5 mb-2">
+                <span className="material-symbols-outlined text-gold text-xl" style={I}>{c.icon}</span>
+                <h3 className="font-heading text-base font-semibold text-on-surface">{c.title}</h3>
+              </div>
+              <p className="text-on-surface-variant text-sm leading-relaxed">{c.text}</p>
             </div>
           ))}
         </div>
