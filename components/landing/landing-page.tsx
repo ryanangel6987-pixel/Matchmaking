@@ -109,6 +109,11 @@ export function LandingPage() {
             ))}
           </div>
 
+          <div className="text-center mt-10">
+            <Link href="/apply" className="gold-gradient text-on-gold font-semibold rounded-full px-8 py-3.5 text-base hover:opacity-90 transition-opacity shadow-lg inline-block">
+              Start Your Application
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -170,6 +175,11 @@ export function LandingPage() {
               </div>
             ))}
           </div>
+          <div className="text-center mt-10">
+            <Link href="/apply" className="gold-gradient text-on-gold font-semibold rounded-full px-8 py-3.5 text-base hover:opacity-90 transition-opacity shadow-lg inline-block">
+              Start Your Application
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -186,6 +196,11 @@ export function LandingPage() {
           </div>
           <div className="border-l-2 border-gold pl-6 mt-10 max-w-lg mx-auto text-left">
             <p className="font-heading text-lg text-gold italic">&ldquo;The risk isn&apos;t trying something new. The risk is doing the same thing for another year.&rdquo;</p>
+          </div>
+          <div className="text-center mt-10">
+            <Link href="/apply" className="gold-gradient text-on-gold font-semibold rounded-full px-8 py-3.5 text-base hover:opacity-90 transition-opacity shadow-lg inline-block">
+              Start Your Application
+            </Link>
           </div>
         </div>
       </section>
