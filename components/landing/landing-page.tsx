@@ -109,7 +109,7 @@ export function LandingPage() {
           <div className="bg-surface-container-low border-l-2 border-gold p-6 rounded-r-xl mt-10 max-w-3xl">
             <p className="font-heading text-lg text-on-surface">The common thread? None of them fix the root cause.</p>
             <p className="text-on-surface-variant text-sm mt-2 leading-relaxed">
-              There is a fundamental gap between who you are in real life and how you show up online. Every service you\u2019ve tried operates on top of that broken foundation. They swipe for you, introduce you, or coach you \u2014 but your digital identity still misrepresents you. Until that\u2019s fixed, nothing else works.
+              There is a fundamental gap between who you are in real life and how you show up online. Every service you&apos;ve tried operates on top of that broken foundation. They swipe for you, introduce you, or coach you &mdash; but your digital identity still misrepresents you. Until that&apos;s fixed, nothing else works.
             </p>
           </div>
         </div>
@@ -272,82 +272,42 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ═══ 10. WHAT YOU'RE CURRENTLY SPENDING — VALUE ANCHOR ═══ */}
-      <section className="py-20 md:py-28">
-        <div className="max-w-6xl mx-auto px-6">
-          <p className="text-gold text-xs uppercase tracking-widest mb-4">The Hidden Costs</p>
-          <h2 className="font-heading text-3xl md:text-4xl font-bold">What you&apos;re already paying.</h2>
-          <p className="text-on-surface-variant text-base mt-4 max-w-2xl">Whether you act or not, the status quo is costing you capital, time, and opportunity.</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+      {/* ═══ 10. WHAT YOU'RE ALREADY PAYING ═══ */}
+      <section id="pricing" className="py-20 md:py-28">
+        <div className="max-w-5xl mx-auto px-6">
+          <h2 className="font-heading text-3xl md:text-4xl font-bold text-center">What you&apos;re already paying.</h2>
+          <p className="text-on-surface-variant text-sm text-center mt-3 max-w-lg mx-auto">The status quo isn&apos;t free. Here&apos;s what doing nothing actually costs.</p>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
             {[
-              { icon: "smartphone", title: "DIY Apps", cost: "$5K\u2013$10K / year", text: "Premium subs, boosts, Super Likes. A broken funnel monetizing your frustration." },
-              { icon: "hourglass_top", title: "Time Opportunity Cost", cost: "$25K+ / year", text: "5+ hrs/week at $100+/hr = $2,000+/month of wasted executive time." },
-              { icon: "card_membership", title: "Traditional Matchmakers", cost: "$10K\u2013$25K / 3 months", text: "One blind date a month. Zero quality filters. Zero transparency." },
-              { icon: "local_bar", title: "Nightlife", cost: "$5K / 3 months", text: "$250+/week. No filtering, just logistics. Purely hope-based." },
+              { label: "DIY Apps", cost: "$5\u201310K/yr" },
+              { label: "Your Time", cost: "$25K+/yr" },
+              { label: "Matchmakers", cost: "$10\u201325K/qtr" },
+              { label: "Nightlife", cost: "$5K/qtr" },
             ].map((c) => (
-              <div key={c.title} className="bg-surface-container-low p-6 rounded-2xl">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-xl text-on-surface-variant" style={I}>{c.icon}</span>
-                    <h3 className="font-heading text-base font-semibold text-on-surface">{c.title}</h3>
-                  </div>
-                  <span className="text-gold font-heading text-sm font-bold">{c.cost}</span>
-                </div>
-                <p className="text-on-surface-variant text-sm mt-3 leading-relaxed">{c.text}</p>
+              <div key={c.label} className="bg-surface-container-low p-4 rounded-2xl text-center">
+                <p className="font-heading text-xl font-bold text-gold">{c.cost}</p>
+                <p className="text-on-surface-variant text-xs uppercase tracking-widest mt-1">{c.label}</p>
               </div>
             ))}
           </div>
-          <div className="bg-surface-container-low border-l-2 border-gold rounded-r-2xl p-6 mt-8 flex items-center justify-between">
-            <div>
-              <p className="text-gold text-xs uppercase tracking-widest">Total Annual Exposure</p>
-              <p className="text-on-surface-variant text-sm mt-1">Combined financial and time cost of the current state.</p>
-            </div>
-            <span className="font-heading text-3xl md:text-4xl font-bold text-on-surface">$25K&ndash;$50K+</span>
-          </div>
-        </div>
-      </section>
 
-      {/* ═══ 11. YOUR INVESTMENT ═══ */}
-      <section id="pricing" className="py-20 md:py-28 bg-surface-container-lowest">
-        <div className="max-w-5xl mx-auto px-6">
-          <p className="text-gold text-xs uppercase tracking-widest mb-4 text-center">Investment</p>
-          <h2 className="font-heading text-3xl md:text-4xl font-bold text-center">Your Investment Structure</h2>
-          <div className="bg-surface-container-low rounded-2xl p-6 mt-12">
-            <div className="flex flex-col md:flex-row md:items-center gap-6">
-              <div className="md:w-48 shrink-0">
-                <p className="text-gold text-xs uppercase tracking-widest">Foundation Setup</p>
-                <p className="font-heading text-4xl font-bold text-on-surface mt-1">$5,000</p>
-                <p className="text-on-surface-variant text-sm">One-Time</p>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 flex-1">
-                {["Digital identity rebuild", "Profile architecture", "Photo optimization", "Manager onboarding", "Playbook calibration", "4-layer preference filter", "Manager training", "Proven playbooks", "Weekly KPIs"].map((item) => (
-                  <div key={item} className="flex items-center gap-2 text-sm text-on-surface-variant">
-                    <span className="material-symbols-outlined text-gold text-sm" style={IF}>check</span>{item}
-                  </div>
-                ))}
-              </div>
+          <div className="bg-surface-container-low border-l-2 border-gold rounded-r-2xl p-5 mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <p className="text-on-surface font-heading font-semibold">Total annual cost of the current approach:</p>
+              <p className="text-gold font-heading text-3xl font-bold mt-1">$25K&ndash;$50K+</p>
+            </div>
+            <div className="text-right">
+              <p className="text-on-surface font-heading font-semibold">Our service:</p>
+              <p className="text-gold font-heading text-3xl font-bold mt-1">$2K/mo</p>
+              <p className="text-on-surface-variant text-xs mt-1">Month-to-month. Cancel anytime.</p>
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-            <div className="bg-surface-container-low rounded-2xl p-6 text-center space-y-4">
-              <p className="text-on-surface-variant text-sm">Month-to-Month</p>
-              <p className="font-heading text-4xl font-bold text-on-surface">$2,000</p>
-              <p className="text-on-surface-variant text-sm">Per Month</p>
-              <div className="border-t border-outline-variant/10 pt-4 space-y-2 text-sm text-on-surface-variant">
-                <p>Cancel anytime</p><p>Zero commitment</p><p>All core features</p><p>24/7 Manager access</p>
-              </div>
-              <Link href="/apply" className="block gold-gradient text-on-gold font-semibold rounded-full py-3 text-sm hover:opacity-90 transition-opacity mt-4">Get Started</Link>
-            </div>
-            <div className="bg-surface-container-low rounded-2xl p-6 text-center space-y-4 ring-2 ring-gold/30 relative">
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gold text-on-gold text-xs font-bold uppercase tracking-widest px-4 py-1 rounded-full">Most Popular</span>
-              <p className="text-gold text-sm">3-Month Package</p>
-              <p className="font-heading text-4xl font-bold text-on-surface">$5,000</p>
-              <p className="text-on-surface-variant text-sm">Per 3 Months</p>
-              <div className="border-t border-outline-variant/10 pt-4 space-y-2 text-sm text-on-surface-variant">
-                <p className="text-gold font-semibold">Save $1,000 vs. monthly</p><p>Instagram rebrand included</p><p>Most clients choose this</p>
-              </div>
-              <Link href="/apply" className="block gold-gradient text-on-gold font-semibold rounded-full py-3 text-sm hover:opacity-90 transition-opacity mt-4">Apply Now</Link>
-            </div>
+
+          <div className="text-center mt-8">
+            <Link href="/apply" className="gold-gradient text-on-gold font-semibold rounded-full px-8 py-3.5 text-base hover:opacity-90 transition-opacity shadow-lg inline-block">
+              Start Your Application
+            </Link>
           </div>
         </div>
       </section>
