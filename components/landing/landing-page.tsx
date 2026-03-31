@@ -123,10 +123,10 @@ export function LandingPage() {
             A beautiful woman walks into a room and you don&apos;t need a questionnaire to know you&apos;re interested. Women vet you the same way &mdash; visually, instantly, based on how you show up.
           </p>
           <p className="text-on-surface-variant text-base md:text-lg mt-4 max-w-2xl mx-auto leading-relaxed">
-            She decides in seconds based on your photos, your presence, your positioning. If that doesn&apos;t match who you actually are, no amount of swiping, coaching, or matchmaking will fix it.
+            If your digital identity doesn&apos;t match who you actually are in real life, no amount of swiping, coaching, or matchmaking will fix it.
           </p>
           <p className="text-on-surface text-base md:text-lg mt-4 max-w-2xl mx-auto leading-relaxed font-medium">
-            Every other service skips this step. We don&apos;t. Fix how you show up first &mdash; then everything else works.
+            Every other service skips this step. We don&apos;t. Fix how you show up first &mdash; then we scale the effort, vet every match, and track every metric. All you do is show up.
           </p>
         </div>
       </section>
