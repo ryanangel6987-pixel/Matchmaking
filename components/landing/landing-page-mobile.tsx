@@ -168,7 +168,7 @@ export function LandingPageMobile() {
             { num: "01", title: "We Rebuild Your Digital Identity", text: "How you show up online finally matches real life." },
             { num: "02", title: "We Manage Your Dating Life Daily", text: "Your dedicated manager runs all your apps. Every day." },
             { num: "03", title: "Every Date Vetted to Your Preferences", text: "Attraction, body type, ethnicity, age \u2014 non-negotiable." },
-            { num: "04", title: "Total Transparency", text: "Dashboard 24/7. Daily swipes, weekly matches, monthly stats." },
+            { num: "04", title: "Total Transparency", text: "Dashboard 24/7. Daily swipes, weekly matches, monthly stats. Message your personal dating concierge 24/7." },
           ].map((s) => (
             <div key={s.num} className="bg-surface-container-low p-4 rounded-xl flex gap-3">
               <span className="font-heading text-lg font-bold text-gold/30 shrink-0">{s.num}</span>
@@ -239,9 +239,14 @@ export function LandingPageMobile() {
           <p className="text-gold font-heading text-2xl font-bold mt-1">$25K&ndash;$50K+</p>
           <p className="text-on-surface-variant text-xs mt-1">And still no quality dates.</p>
         </div>
-        <p className="text-on-surface-variant text-xs text-center mt-4 leading-relaxed">
-          A wedding photographer: $15,000. A divorce: $500,000+. Not to mention your mental peace. <span className="text-gold italic">Isn&apos;t it worth investing to meet the right women in the first place?</span>
-        </p>
+        <div className="text-center mt-6 space-y-3">
+          <p className="text-on-surface text-base leading-relaxed">
+            A wedding photographer: <span className="font-heading font-bold text-gold">$15,000</span> for one day. A divorce: <span className="font-heading font-bold text-gold">$500,000+</span> conservatively. Not to mention the cost to your mental peace and emotional wellbeing.
+          </p>
+          <p className="text-gold font-heading text-lg italic">
+            Isn&apos;t it worth investing a little to meet the right quality women in the first place?
+          </p>
+        </div>
       </section>
 
       <CTA />
