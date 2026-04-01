@@ -105,16 +105,16 @@ export function LandingPageMobile() {
 
       <CTA />
 
-      {/* ═══ ATTRACTION FIRST ═══ */}
+      {/* ═══ PERSONAL BRAND FIRST ═══ */}
       <section className="px-6 py-10 text-center">
         <h2 className="font-heading text-2xl font-bold leading-tight">
-          Attraction comes first. <span className="text-gold">Everything else comes second.</span>
+          Your personal brand comes first. <span className="text-gold">Everything else comes second.</span>
         </h2>
         <p className="text-on-surface-variant text-base mt-4 leading-relaxed">
-          A beautiful woman walks into a room and you don&apos;t need a questionnaire to know you&apos;re interested. Women vet you the same way &mdash; visually, instantly.
+          A beautiful woman walks into a room and you don&apos;t need a questionnaire to know you&apos;re interested. Women vet you the same way &mdash; visually, instantly, based on how you show up.
         </p>
         <p className="text-on-surface text-base mt-3 leading-relaxed font-medium">
-          If your digital identity doesn&apos;t match who you actually are, nothing else works. We fix that first.
+          If your personal brand doesn&apos;t match who you actually are in real life, no amount of swiping, coaching, or matchmaking will fix it. We fix that first.
         </p>
       </section>
 
@@ -148,8 +148,7 @@ export function LandingPageMobile() {
       {/* ═══ AMPLIFY ═══ */}
       <section className="px-6 py-10 text-center">
         <h2 className="font-heading text-2xl font-bold">What does another year of this look like?</h2>
-        <p className="text-on-surface-variant text-base mt-4">Your friends are getting engaged. You&apos;re still swiping.</p>
-        <p className="text-on-surface-variant text-sm mt-2">Another year. Same apps. Same results.</p>
+        <p className="text-on-surface-variant text-base mt-4">Your friends are getting engaged. You&apos;re still swiping. Another year. Same apps. Same results.</p>
         <div className="border-l-2 border-gold pl-4 mt-6 text-left">
           <p className="text-gold font-heading text-sm italic">&ldquo;The risk isn&apos;t trying something new. The risk is doing the same thing for another year.&rdquo;</p>
         </div>
@@ -268,7 +267,7 @@ export function LandingPageMobile() {
         </div>
         <div className="bg-gold/10 border border-gold/20 rounded-xl p-4 mt-4 text-center">
           <p className="font-heading text-3xl font-bold text-gold">4&ndash;8</p>
-          <p className="text-gold text-xs uppercase tracking-widest mt-1 font-bold">Dates Per Month</p>
+          <p className="text-gold text-xs uppercase tracking-widest mt-1 font-bold">Vetted Dates Per Month</p>
         </div>
       </section>
 
