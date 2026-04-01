@@ -170,8 +170,8 @@ export function ApplicationForm() {
   };
 
   const next = () => {
-    if (step === 1 && income === "no") { logDisqualification("income_under_100k"); router.push("/?dq=income"); return; }
-    if (step === 1 && shape === "no") { logDisqualification("not_in_shape"); router.push("/?dq=shape"); return; }
+    if (step === 3 && income === "no") { logDisqualification("income_under_100k"); router.push("/?dq=income"); return; }
+    if (step === 4 && shape === "no") { logDisqualification("not_in_shape"); router.push("/?dq=shape"); return; }
     if (step === TOTAL_STEPS - 1) { handleSubmit(); return; }
     const nextStep = step + 1;
     saveSession(nextStep);
@@ -245,21 +245,21 @@ export function ApplicationForm() {
             <input type="text" value={city} onChange={(e) => setCity(e.target.value)} placeholder="e.g. New York" autoFocus className={`${ic} text-lg`} />
           </Q>}
 
-          {/* 1: Career */}
-          {step === 1 && <Q label="Career" title="What do you do professionally?">
+          {/* 2: Career */}
+          {step === 2 && <Q label="Career" title="What do you do professionally?">
             <input type="text" value={profession} onChange={(e) => setProfession(e.target.value)} placeholder="e.g. Tech Executive" autoFocus className={`${ic} text-lg`} />
           </Q>}
 
-          {/* 1: Income Gate */}
-          {step === 1 && <Q label="Qualification" title="Are you a professional or entrepreneur making at least $100K/year?">
+          {/* 3: Income Gate */}
+          {step === 3 && <Q label="Qualification" title="Are you a professional or entrepreneur making at least $100K/year?">
             <div className="space-y-3">
               <Pill value="yes" selected={income} onSelect={setIncome}><p className="font-medium">Yes</p></Pill>
               <Pill value="no" selected={income} onSelect={setIncome}><p className="font-medium">No</p></Pill>
             </div>
           </Q>}
 
-          {/* 1: Shape Gate */}
-          {step === 1 && <Q label="Qualification" title="Are you in at least average physical shape?">
+          {/* 4: Shape Gate */}
+          {step === 4 && <Q label="Qualification" title="Are you in at least average physical shape?">
             <div className="space-y-3">
               <Pill value="yes" selected={shape} onSelect={setShape}><p className="font-medium">Yes, I&apos;m in good shape</p></Pill>
               <Pill value="working" selected={shape} onSelect={setShape}><p className="font-medium">I&apos;m working on it but getting there</p></Pill>
@@ -267,8 +267,8 @@ export function ApplicationForm() {
             </div>
           </Q>}
 
-          {/* 1: About You */}
-          {step === 1 && <Q label="About You" title="Tell us a bit about yourself">
+          {/* 5: About You */}
+          {step === 5 && <Q label="About You" title="Tell us a bit about yourself">
             <div className="space-y-4">
               <div className="grid grid-cols-3 gap-3">
                 <div className="space-y-1"><label className="text-on-surface-variant text-xs">Age</label><input type="number" value={age} onChange={(e) => setAge(e.target.value)} placeholder="32" className={`${ic} text-base`} /></div>
@@ -290,8 +290,8 @@ export function ApplicationForm() {
             </div>
           </Q>}
 
-          {/* 1: Problem */}
-          {step === 1 && <Q label="The Problem" title="What's the biggest challenge you're facing with dating right now?">
+          {/* 6: Problem */}
+          {step === 6 && <Q label="The Problem" title="What's the biggest challenge you're facing with dating right now?">
             <div className="space-y-3">
               <Pill value="no_time" selected={biggestChallenge} onSelect={setBiggestChallenge}><p className="font-medium">I don&apos;t have time to manage dating apps</p></Pill>
               <Pill value="low_quality" selected={biggestChallenge} onSelect={setBiggestChallenge}><p className="font-medium">The quality of matches doesn&apos;t match my standards</p></Pill>
@@ -304,8 +304,8 @@ export function ApplicationForm() {
               className="w-full bg-surface-container-low border-2 border-outline-variant/20 rounded-2xl px-5 py-4 text-on-surface text-sm placeholder:text-outline focus:border-gold/40 outline-none transition-colors resize-none mt-4" />
           </Q>}
 
-          {/* 1: Duration */}
-          {step === 1 && <Q label="Duration" title="How long has this been an issue?">
+          {/* 7: Duration */}
+          {step === 7 && <Q label="Duration" title="How long has this been an issue?">
             <div className="space-y-3">
               <Pill value="less_than_3" selected={duration} onSelect={setDuration}><p className="font-medium">Less than 3 months</p></Pill>
               <Pill value="3_6" selected={duration} onSelect={setDuration}><p className="font-medium">3–6 months</p></Pill>
@@ -315,8 +315,8 @@ export function ApplicationForm() {
             </div>
           </Q>}
 
-          {/* 1: Tried Before */}
-          {step === 1 && <Q label="Prior Attempts" title="What have you tried so far to improve your dating life?">
+          {/* 8: Tried Before */}
+          {step === 8 && <Q label="Prior Attempts" title="What have you tried so far to improve your dating life?">
             <div className="space-y-3">
               <Pill value="nothing" selected={triedBefore} onSelect={setTriedBefore}><p className="font-medium">Nothing yet — this is my first step</p></Pill>
               <Pill value="apps" selected={triedBefore} onSelect={setTriedBefore}><p className="font-medium">Dating apps (Hinge, Bumble, Tinder, etc.)</p></Pill>
@@ -326,8 +326,8 @@ export function ApplicationForm() {
             </div>
           </Q>}
 
-          {/* 1: Current Results */}
-          {step === 1 && <Q label="Current State" title="How many quality dates are you getting per month right now?">
+          {/* 9: Current Results */}
+          {step === 9 && <Q label="Current State" title="How many quality dates are you getting per month right now?">
             <div className="space-y-3">
               <Pill value="none" selected={currentResults} onSelect={setCurrentResults}><p className="font-medium">None — I&apos;m not dating at all</p></Pill>
               <Pill value="0_1" selected={currentResults} onSelect={setCurrentResults}><p className="font-medium">0–1 dates, but they&apos;re not great</p></Pill>
@@ -336,8 +336,8 @@ export function ApplicationForm() {
             </div>
           </Q>}
 
-          {/* 1: Priority */}
-          {step === 1 && <Q label="Priority" title="On a scale of 1–10, how much of a priority is handling this right now?">
+          {/* 10: Priority */}
+          {step === 10 && <Q label="Priority" title="On a scale of 1–10, how much of a priority is handling this right now?">
             <div className="grid grid-cols-5 gap-2">
               {[1,2,3,4,5,6,7,8,9,10].map((n) => (
                 <button key={n} type="button" onClick={() => setPriority(n)}
@@ -348,8 +348,8 @@ export function ApplicationForm() {
             <div className="flex justify-between text-xs text-on-surface-variant"><span>Not a priority</span><span>Top priority</span></div>
           </Q>}
 
-          {/* 1: Her Prefs */}
-          {step === 1 && <Q label="Your Type" title="Tell us about your ideal partner">
+          {/* 11: Her Prefs */}
+          {step === 11 && <Q label="Your Type" title="Tell us about your ideal partner">
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1"><label className="text-on-surface-variant text-xs">Her Age (Min)</label><input type="number" value={herAgeMin} onChange={(e) => setHerAgeMin(e.target.value)} placeholder="25" className={`${ic} text-base`} /></div>
@@ -366,8 +366,8 @@ export function ApplicationForm() {
             </div>
           </Q>}
 
-          {/* 1: Contact */}
-          {step === 1 && <Q label="Final Step" title="Where should we reach you?" sub="We'll text you to confirm your consultation time.">
+          {/* 12: Contact */}
+          {step === 12 && <Q label="Final Step" title="Where should we reach you?" sub="We'll text you to confirm your consultation time.">
             <div className="space-y-4">
               <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Full Name" autoFocus className={`${ic} text-base`} />
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" className={`${ic} text-base`} />
