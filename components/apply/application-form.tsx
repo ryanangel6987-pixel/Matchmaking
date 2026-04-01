@@ -234,7 +234,7 @@ export function ApplicationForm() {
               <Pill value="new_city" selected={lifeWindow} onSelect={setLifeWindow}>Moved to a new city recently</Pill>
               <Pill value="milestone" selected={lifeWindow} onSelect={setLifeWindow}>Hitting a milestone birthday</Pill>
               <Pill value="career" selected={lifeWindow} onSelect={setLifeWindow}>Career change or big promotion</Pill>
-              <Pill value="frustrated" selected={lifeWindow} onSelect={setLifeWindow}>Tired of poor quality dates</Pill>
+              <Pill value="frustrated" selected={lifeWindow} onSelect={setLifeWindow}>Tired of dates below my level</Pill>
               <Pill value="handled" selected={lifeWindow} onSelect={setLifeWindow}>Just want this handled for me</Pill>
               <Pill value="curious" selected={lifeWindow} onSelect={setLifeWindow}>Just curious</Pill>
             </div>
