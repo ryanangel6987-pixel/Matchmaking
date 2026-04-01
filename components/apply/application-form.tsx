@@ -105,7 +105,7 @@ export function ApplicationForm() {
       case 2: return profession.trim().length >= 2;
       case 3: return !!income;
       case 4: return !!shape;
-      case 5: return !!age && !!ownEthnicity && !!ownBodyType;
+      case 5: return !!age;
       case 6: return !!biggestChallenge;
       case 7: return !!duration;
       case 8: return !!triedBefore;
@@ -268,25 +268,11 @@ export function ApplicationForm() {
           </Q>}
 
           {/* 5: About You */}
-          {step === 5 && <Q label="About You" title="Tell us a bit about yourself">
-            <div className="space-y-4">
-              <div className="grid grid-cols-3 gap-3">
-                <div className="space-y-1"><label className="text-on-surface-variant text-xs">Age</label><input type="number" value={age} onChange={(e) => setAge(e.target.value)} placeholder="32" className={`${ic} text-base`} /></div>
-                <div className="space-y-1"><label className="text-on-surface-variant text-xs">Height</label><input type="text" value={height} onChange={(e) => setHeight(e.target.value)} placeholder={`5'10"`} className={`${ic} text-base`} /></div>
-                <div className="space-y-1"><label className="text-on-surface-variant text-xs">Weight</label><input type="text" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="180 lbs" className={`${ic} text-base`} /></div>
-              </div>
-              <div className="space-y-2">
-                <label className="text-on-surface-variant text-xs">Your Ethnicity</label>
-                <div className="flex flex-wrap gap-2">
-                  {ETHNICITY_OPTIONS.map((o) => <button key={o} type="button" onClick={() => setOwnEthnicity(o)} className={`px-3 py-2 rounded-full text-xs font-medium transition-all ${ownEthnicity === o ? "bg-gold text-on-gold shadow-md" : "bg-surface-container-low border border-outline-variant/30 text-on-surface-variant hover:bg-surface-container-high"}`}>{o}</button>)}
-                </div>
-              </div>
-              <div className="space-y-2">
-                <label className="text-on-surface-variant text-xs">Your Body Type</label>
-                <div className="flex flex-wrap gap-2">
-                  {BODY_TYPE_OPTIONS.map((o) => <button key={o} type="button" onClick={() => setOwnBodyType(o)} className={`px-3 py-2 rounded-full text-xs font-medium transition-all ${ownBodyType === o ? "bg-gold text-on-gold shadow-md" : "bg-surface-container-low border border-outline-variant/30 text-on-surface-variant hover:bg-surface-container-high"}`}>{o}</button>)}
-                </div>
-              </div>
+          {step === 5 && <Q label="Demographics" title="Age, height, and weight">
+            <div className="grid grid-cols-3 gap-3">
+              <div className="space-y-1"><label className="text-on-surface-variant text-xs">Age</label><input type="number" value={age} onChange={(e) => setAge(e.target.value)} placeholder="32" className={`${ic} text-base`} /></div>
+              <div className="space-y-1"><label className="text-on-surface-variant text-xs">Height</label><input type="text" value={height} onChange={(e) => setHeight(e.target.value)} placeholder={`5'10"`} className={`${ic} text-base`} /></div>
+              <div className="space-y-1"><label className="text-on-surface-variant text-xs">Weight</label><input type="text" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="180 lbs" className={`${ic} text-base`} /></div>
             </div>
           </Q>}
 
