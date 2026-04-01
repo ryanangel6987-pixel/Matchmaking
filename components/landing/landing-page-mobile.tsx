@@ -113,16 +113,17 @@ export function LandingPageMobile() {
         <p className="text-on-surface-variant text-base mt-4 leading-relaxed">
           A beautiful woman walks into a room and you don&apos;t need a questionnaire to know you&apos;re interested. Women vet you the same way &mdash; visually, instantly, based on how you show up.
         </p>
-        <p className="text-on-surface text-base mt-3 leading-relaxed font-medium">
-          If your personal brand doesn&apos;t match who you actually are in real life, no amount of swiping, coaching, or matchmaking will fix it. We fix that first.
+        <p className="text-on-surface-variant text-base mt-3 leading-relaxed">
+          If your personal brand doesn&apos;t match who you actually are in real life, no amount of swiping, coaching, or matchmaking will fix it.
         </p>
+        <p className="text-gold font-heading text-xl font-bold mt-4">We fix that first.</p>
       </section>
 
       {/* ═══ INDUSTRY FAILURES ═══ */}
       <section className="px-6 py-10 bg-surface-container-lowest">
         <p className="text-gold text-xs uppercase tracking-widest mb-3">You Deserve Better</p>
         <h2 className="font-heading text-xl font-bold leading-tight">
-          What &ldquo;premium&rdquo; services <span className="text-gold">actually do to you.</span>
+          What &ldquo;premium&rdquo; services <span className="text-gold">actually deliver.</span>
         </h2>
         <div className="space-y-3 mt-6">
           {[
@@ -130,7 +131,7 @@ export function LandingPageMobile() {
             { icon: "person_off", title: "Preferences Ignored", text: "$60M+ in settlements. Quotas over compatibility." },
             { icon: "block", title: "Pay When You Say No", text: "Declined matches still count. Non-refundable." },
             { icon: "query_stats", title: "Zero Process Transparency", text: "No dashboard. No metrics. Your preferences filed away." },
-            { icon: "auto_fix_off", title: "No Identity Rebuild", text: "Nobody fixes how you show up. You still attract below your level." },
+            { icon: "auto_fix_off", title: "Personal Brand Ignored", text: "Nobody fixes how you show up. You still attract below your level." },
           ].map((c) => (
             <div key={c.title} className="bg-surface-container-low p-5 rounded-xl flex items-start gap-4">
               <span className="material-symbols-outlined text-xl text-gold shrink-0 mt-1" style={I}>{c.icon}</span>
