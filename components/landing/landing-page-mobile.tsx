@@ -24,7 +24,7 @@ export function LandingPageMobile() {
       <nav className="fixed top-0 inset-x-0 z-50 bg-surface/90 backdrop-blur-xl">
         <div className="flex items-center justify-between px-5 h-14">
           <img src="/logo.png" alt="PDC" className="h-5 w-auto" />
-          <Link href="/apply" className="gold-gradient text-on-gold font-semibold rounded-full px-4 py-1.5 text-xs">Apply Now</Link>
+          <Link href="/apply" className="gold-gradient text-on-gold font-semibold rounded-full px-5 py-2 text-sm">Apply</Link>
         </div>
       </nav>
 
