@@ -48,7 +48,7 @@ const ETHNICITY_OPTIONS = [
 ];
 const BODY_TYPE_OPTIONS = ["Slim", "Athletic / Fit", "Average", "Curvy", "Muscular", "Plus Size", "Petite"];
 
-const TOTAL_STEPS = 14;
+const TOTAL_STEPS = 15;
 
 /* ------------------------------------------------------------------ */
 /*  Component                                                          */
@@ -82,6 +82,8 @@ export function ApplicationForm() {
   const [herAgeMax, setHerAgeMax] = useState("");
   const [herEthnicities, setHerEthnicities] = useState<string[]>([]);
   const [herBodyTypes, setHerBodyTypes] = useState<string[]>([]);
+  const [goal, setGoal] = useState("");
+  const [timeline, setTimeline] = useState("");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -111,9 +113,10 @@ export function ApplicationForm() {
       case 8: return !!duration;
       case 9: return !!triedBefore;
       case 10: return !!currentResults;
-      case 11: return priority >= 1;
-      case 12: return !!herAgeMin && !!herAgeMax && herEthnicities.length > 0;
-      case 13: return fullName.trim().length >= 2 && email.includes("@") && phone.trim().length >= 7;
+      case 11: return !!goal;
+      case 12: return !!timeline;
+      case 13: return priority >= 1;
+      case 14: return fullName.trim().length >= 2 && email.includes("@") && phone.trim().length >= 7;
       default: return false;
     }
   };
@@ -130,7 +133,7 @@ export function ApplicationForm() {
       intent, life_window: lifeWindow, income_qualified: income, shape_qualified: shape,
       biggest_challenge: biggestChallenge, challenge_notes: challengeNotes.trim(),
       duration, tried_before: triedBefore, current_results: currentResults,
-      priority_level: priority, ideal_partner: "",
+      priority_level: priority, goal, timeline, ideal_partner: "",
       her_age_min: herAgeMin ? parseInt(herAgeMin) : null, her_age_max: herAgeMax ? parseInt(herAgeMax) : null,
       her_ethnicities: herEthnicities, her_body_types: herBodyTypes,
       lead_score: score, lead_tier: tier, submitted_at: new Date().toISOString(),
@@ -327,8 +330,28 @@ export function ApplicationForm() {
             </div>
           </Q>}
 
-          {/* 11: Priority */}
-          {step === 11 && <Q label="Priority" title="On a scale of 1–10, how much of a priority is handling this right now?">
+          {/* 11: Goal */}
+          {step === 11 && <Q label="Future State" title="What&apos;s your goal for your dating life over the next 6 months?">
+            <div className="space-y-3">
+              <Pill value="consistent_quality" selected={goal} onSelect={setGoal}>Consistent quality dates every week</Pill>
+              <Pill value="relationship" selected={goal} onSelect={setGoal}>Find a serious relationship</Pill>
+              <Pill value="options" selected={goal} onSelect={setGoal}>Have multiple quality options at all times</Pill>
+              <Pill value="handled" selected={goal} onSelect={setGoal}>Just want my dating life handled and off my plate</Pill>
+            </div>
+          </Q>}
+
+          {/* 12: Timeline */}
+          {step === 12 && <Q label="Timeline" title="How quickly do you want to get there?">
+            <div className="space-y-3">
+              <Pill value="asap" selected={timeline} onSelect={setTimeline}>As soon as possible</Pill>
+              <Pill value="1_month" selected={timeline} onSelect={setTimeline}>Within the next month</Pill>
+              <Pill value="3_months" selected={timeline} onSelect={setTimeline}>Within 3 months</Pill>
+              <Pill value="no_rush" selected={timeline} onSelect={setTimeline}>No rush — just want it done right</Pill>
+            </div>
+          </Q>}
+
+          {/* 13: Priority */}
+          {step === 13 && <Q label="Priority" title="On a scale of 1–10, how much of a priority is handling this right now?">
             <div className="grid grid-cols-5 gap-2">
               {[1,2,3,4,5,6,7,8,9,10].map((n) => (
                 <button key={n} type="button" onClick={() => setPriority(n)}
@@ -339,26 +362,8 @@ export function ApplicationForm() {
             <div className="flex justify-between text-xs text-on-surface-variant"><span>Not a priority</span><span>Top priority</span></div>
           </Q>}
 
-          {/* 12: Her Prefs */}
-          {step === 12 && <Q label="Your Type" title="Tell us about your ideal partner">
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1"><label className="text-on-surface-variant text-xs">Her Age (Min)</label><input type="number" value={herAgeMin} onChange={(e) => setHerAgeMin(e.target.value)} placeholder="25" className={`${ic} text-base`} /></div>
-                <div className="space-y-1"><label className="text-on-surface-variant text-xs">Her Age (Max)</label><input type="number" value={herAgeMax} onChange={(e) => setHerAgeMax(e.target.value)} placeholder="35" className={`${ic} text-base`} /></div>
-              </div>
-              <div className="space-y-2">
-                <label className="text-on-surface-variant text-xs">Ethnicity Preferences (select all that apply)</label>
-                <MultiPill options={ETHNICITY_OPTIONS} selected={herEthnicities} onChange={setHerEthnicities} noPreference />
-              </div>
-              <div className="space-y-2">
-                <label className="text-on-surface-variant text-xs">Body Type Preferences (select all that apply)</label>
-                <MultiPill options={BODY_TYPE_OPTIONS} selected={herBodyTypes} onChange={setHerBodyTypes} noPreference />
-              </div>
-            </div>
-          </Q>}
-
-          {/* 13: Contact */}
-          {step === 13 && <Q label="Final Step" title="Where should we reach you?" sub="We'll text you to confirm your consultation time.">
+          {/* 14: Contact */}
+          {step === 14 && <Q label="Final Step" title="Where can we reach you?" sub="We&apos;ll text you to confirm your consultation time.">
             <div className="space-y-4">
               <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Full Name" autoFocus className={`${ic} text-base`} />
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" className={`${ic} text-base`} />
