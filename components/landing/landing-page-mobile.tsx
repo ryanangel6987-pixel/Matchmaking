@@ -302,7 +302,7 @@ export function LandingPageMobile() {
         <h2 className="font-heading text-xl font-bold text-center">FAQ</h2>
         <div className="mt-6 space-y-2">
           {[
-            { q: "How is this different from a matchmaker?", a: "We rebuild your digital identity first, then run your apps daily with full transparency. Month-to-month." },
+            { q: "How is this different from a matchmaker?", a: "Traditional matchmakers charge $15,000\u2013$50,000 and never touch your digital identity \u2014 they\u2019re a black box. We rebuild your entire digital presence first, then run your dating apps daily with full transparency. You can see every performance metric and KPI daily, approve every date, pay month-to-month, and have access to your private concierge 24/7." },
             { q: "What apps do you manage?", a: "Hinge, Bumble, Tinder, Raya, The League, and others." },
             { q: "How fast will I see dates?", a: "First date notification within 2\u20133 weeks." },
             { q: "What if matches aren\u2019t my type?", a: "4-layer preference filter. Your manager learns your taste. Quality improves weekly." },
