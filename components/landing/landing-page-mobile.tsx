@@ -29,21 +29,35 @@ export function LandingPageMobile() {
       </nav>
 
       {/* ═══ HERO ═══ */}
-      <section className="pt-24 pb-12 px-6 text-center">
-        <div className="inline-flex items-center gap-1.5 bg-gold/10 border border-gold/20 rounded-full px-3 py-1 mb-6">
-          <span className="material-symbols-outlined text-gold text-xs" style={IF}>verified</span>
-          <span className="text-gold text-xs font-medium uppercase tracking-widest">Private Dating Concierge</span>
+      <section className="relative pt-24 pb-12 px-6 text-center overflow-hidden">
+        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-gold/5 rounded-full blur-[100px]" />
+        <div className="relative">
+          <div className="inline-flex items-center gap-1.5 bg-gold/10 border border-gold/20 rounded-full px-3 py-1 mb-6">
+            <span className="material-symbols-outlined text-gold text-xs" style={IF}>verified</span>
+            <span className="text-gold text-xs font-medium uppercase tracking-widest">Exclusive Management</span>
+          </div>
+          <h1 className="font-heading text-3xl font-bold leading-tight tracking-tight">
+            <span className="text-gold">Private Dating Concierge</span>
+          </h1>
+          <p className="font-heading text-lg font-semibold text-on-surface mt-3 leading-snug">
+            Get 4&ndash;8 Quality Dates a Month On Demand &mdash; Without Apps, Matchmakers, or Swiping.
+          </p>
+          <p className="text-on-surface-variant text-base mt-4 leading-relaxed">
+            Your dating life, managed. A dedicated concierge rebuilds how you show up online, runs your apps daily, and delivers vetted dates to your phone.
+          </p>
+          <p className="text-gold font-heading text-lg italic mt-4">Copy. Send. Show up.</p>
+          <div className="mt-8">
+            <Link href="/apply" className="gold-gradient text-on-gold font-semibold rounded-full px-8 py-3.5 text-base hover:opacity-90 transition-opacity shadow-lg inline-block">
+              Start Your Application
+            </Link>
+          </div>
+          <div className="flex items-center justify-center gap-4 mt-6 text-xs text-on-surface-variant flex-wrap">
+            <span className="flex items-center gap-1"><span className="material-symbols-outlined text-gold text-sm" style={IF}>shield</span> Vetted Only</span>
+            <span className="flex items-center gap-1"><span className="material-symbols-outlined text-gold text-sm" style={IF}>lock</span> Confidential</span>
+            <span className="flex items-center gap-1"><span className="material-symbols-outlined text-gold text-sm" style={IF}>diamond</span> Month-to-Month</span>
+          </div>
         </div>
-        <h1 className="font-heading text-3xl font-bold leading-tight tracking-tight">
-          Get 4&ndash;8 Quality Dates a Month On Demand &mdash; <span className="text-gold">Without Apps, Matchmakers, or Swiping.</span>
-        </h1>
-        <p className="text-on-surface-variant text-base mt-4 leading-relaxed max-w-sm mx-auto">
-          Your dating life, managed. A dedicated concierge rebuilds how you show up online, runs your apps daily, and delivers vetted dates to your phone.
-        </p>
-        <p className="text-gold font-heading text-lg italic mt-3">Copy. Send. Show up.</p>
       </section>
-
-      <CTA />
 
       {/* ═══ SOCIAL PROOF ═══ */}
       <section className="px-6 py-6">
