@@ -90,7 +90,7 @@ export function LandingPageMobile() {
             { icon: "smartphone", title: "Dating Apps", text: "10+ hrs/week swiping. Matches below your level. Zero quality dates." },
             { icon: "camera_alt", title: "Photographers", text: "Better lighting. Same dates. Women don\u2019t date men for good photos \u2014 they date men with good personal brands." },
             { icon: "handshake", title: "Matchmakers", text: "$5\u201325K for blind dates. Preferences ignored. Non-refundable." },
-            { icon: "school", title: "Coaches", text: "Learned frameworks. Still doing all the work yourself." },
+            { icon: "school", title: "Coaches", text: "Learned frameworks. Still doing all the work yourself. Homework, not booked dates." },
           ].map((c) => (
             <div key={c.title} className="bg-surface-container-low p-4 rounded-xl">
               <div className="flex items-center gap-2 mb-1.5">
