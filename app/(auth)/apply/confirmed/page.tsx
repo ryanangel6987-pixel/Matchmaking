@@ -2,19 +2,6 @@
 
 import Image from "next/image";
 
-const TESTIMONIALS = [
-  { name: "TJ", role: "Tech Sales Manager", result: "Went from bad matches to 4/5 quality dates weekly from launching his profile" },
-  { name: "AJ", role: "Computer Scientist", result: "Went from zero prior success, matches, or likes to unlimited quality dates in 30 days" },
-  { name: "Raj", role: "Consultant", result: "Went from bad matches on dating apps to unlimited dates every week" },
-  { name: "Mike", role: "Data Scientist", result: "Went from $1,500 wasted on dating photographers to unlimited weekly dates" },
-  { name: "Ryan", role: "Software Engineer", result: "Went from a few bad likes a week to 10\u201320 quality matches weekly per app" },
-  { name: "Mike B.", role: "Blockchain Co-founder", result: "Went from 3\u20135 likes a week to 120+ likes on Hinge and unlimited dates every week" },
-  { name: "Tri", role: "Finance Data Analyst", result: "Went from 3 likes in 6 months to 10 likes a day per app and hot weekly dates" },
-  { name: "Marshall", role: "Software Engineer", result: "Went from super low quality matches and quitting dating apps to multiple weekly dates" },
-  { name: "David", role: "PR Manager", result: "Went from bad matches to multiple quality dates weekly in 30 days" },
-  { name: "Bhavesh", role: "Engineer", result: "Went from a divorce to 2\u20135 dates weekly in 30 days from launching his profile" },
-];
-
 export default function BookingConfirmedPage() {
   return (
     <div className="min-h-screen bg-surface">
@@ -40,8 +27,8 @@ export default function BookingConfirmedPage() {
           </p>
         </div>
 
-        {/* ═══ 2. ACTION ITEMS ═══ */}
-        <div className="bg-surface-container-low rounded-2xl p-6 space-y-4">
+        {/* ═══ 2. BEFORE YOUR CALL + COME PREPARED ═══ */}
+        <div className="bg-surface-container-low rounded-2xl p-6 space-y-6">
           <p className="text-gold text-xs uppercase tracking-widest font-bold">Before Your Call</p>
           {[
             { num: "1", icon: "sms", text: "Check your texts to confirm your consultation time" },
@@ -57,15 +44,37 @@ export default function BookingConfirmedPage() {
               </div>
             </div>
           ))}
+
+          <div className="border-t border-outline-variant/10 pt-5">
+            <p className="text-gold text-xs uppercase tracking-widest font-bold mb-3">Come Prepared</p>
+            <p className="text-on-surface-variant text-sm leading-relaxed mb-3">
+              The more your matchmaker knows going in, the faster you get results. Have these ready:
+            </p>
+            <ul className="space-y-2.5">
+              {[
+                "3\u20135 recent photos of yourself (phone photos are fine)",
+                "Reference photos of your type \u2014 exes, celebrities, anyone who represents what you\u2019re attracted to",
+                "Your top 3 deal-breakers",
+                "Your preferred neighborhoods and venues for dates",
+                "Any questions you want to ask",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-3 text-on-surface text-sm">
+                  <span className="material-symbols-outlined text-gold text-sm mt-0.5" style={{ fontVariationSettings: "'FILL' 1, 'wght' 400" }}>check_circle</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
-        {/* ═══ 3. WHAT HAPPENS NEXT ═══ */}
+        {/* ═══ 3. WHAT HAPPENS NEXT (WITH DECISION STEP) ═══ */}
         <div className="space-y-4">
           <h2 className="font-heading text-xl font-bold text-on-surface text-center">What Happens Next</h2>
           <div className="space-y-3">
             {[
               { icon: "call", title: "Your Consultation", text: "30-minute deep dive into your type, preferences, and goals.", time: "Your booked time" },
-              { icon: "auto_fix_high", title: "Identity Rebuild", text: "We reconstruct your digital presence across every platform.", time: "Within 48 hours" },
+              { icon: "handshake", title: "If We\u2019re a Good Fit", text: "We agree on next steps together. No pressure, no hard sell \u2014 just a mutual decision.", time: "End of call" },
+              { icon: "auto_fix_high", title: "Identity Rebuild Begins", text: "We start reconstructing your digital presence within 48 hours.", time: "Within 48 hours" },
               { icon: "person", title: "Manager Assigned", text: "Your dedicated manager is briefed and begins daily operations.", time: "Day 7" },
               { icon: "notifications_active", title: "First Date Notification", text: "Her name. One detail. The day. Her number. A pre-written text.", time: "Week 2\u20133", highlight: true },
             ].map((step) => (
@@ -80,51 +89,6 @@ export default function BookingConfirmedPage() {
                   </div>
                   <p className="text-on-surface-variant text-xs mt-0.5 leading-relaxed">{step.text}</p>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ═══ 4. PREPARE FOR YOUR CALL ═══ */}
-        <div className="bg-surface-container-low rounded-2xl p-6 space-y-5">
-          <p className="text-gold text-xs uppercase tracking-widest font-bold">Come Prepared</p>
-          <p className="text-on-surface-variant text-sm leading-relaxed">
-            The more your matchmaker knows going in, the faster you get results. Have these ready for the call:
-          </p>
-          <ul className="space-y-2.5">
-            {[
-              "3\u20135 recent photos of yourself (phone photos are fine)",
-              "Reference photos of your type — exes, celebrities, anyone who represents what you\u2019re attracted to",
-              "Your top 3 deal-breakers",
-              "Your preferred neighborhoods and venues for dates",
-              "Any questions you want to ask",
-            ].map((item) => (
-              <li key={item} className="flex items-start gap-3 text-on-surface text-sm">
-                <span className="material-symbols-outlined text-gold text-sm mt-0.5" style={{ fontVariationSettings: "'FILL' 1, 'wght' 400" }}>check_circle</span>
-                {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* ═══ 5. CLIENT TESTIMONIALS ═══ */}
-        <div className="space-y-4">
-          <h2 className="font-heading text-xl font-bold text-center text-on-surface">Clients Like You</h2>
-          <p className="text-on-surface-variant text-xs text-center uppercase tracking-widest">Real results from real clients</p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {TESTIMONIALS.map((t, i) => (
-              <div key={i} className="bg-surface-container-low rounded-2xl p-4 space-y-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-gold/15 flex items-center justify-center">
-                    <span className="text-gold font-heading font-bold text-xs">{t.name[0]}</span>
-                  </div>
-                  <div>
-                    <p className="text-on-surface font-heading font-semibold text-sm">{t.name}</p>
-                    <p className="text-on-surface-variant text-[10px] uppercase tracking-widest">{t.role}</p>
-                  </div>
-                </div>
-                <p className="text-on-surface-variant text-xs leading-relaxed">{t.result}</p>
               </div>
             ))}
           </div>
