@@ -48,7 +48,7 @@ const ETHNICITY_OPTIONS = [
 ];
 const BODY_TYPE_OPTIONS = ["Slim", "Athletic / Fit", "Average", "Curvy", "Muscular", "Plus Size", "Petite"];
 
-const TOTAL_STEPS = 13;
+const TOTAL_STEPS = 14;
 
 /* ------------------------------------------------------------------ */
 /*  Component                                                          */
@@ -107,12 +107,13 @@ export function ApplicationForm() {
       case 4: return !!shape;
       case 5: return !!age;
       case 6: return !!biggestChallenge;
-      case 7: return !!duration;
-      case 8: return !!triedBefore;
-      case 9: return !!currentResults;
-      case 10: return priority >= 1;
-      case 11: return !!herAgeMin && !!herAgeMax && herEthnicities.length > 0;
-      case 12: return fullName.trim().length >= 2 && email.includes("@") && phone.trim().length >= 7;
+      case 7: return true; // free-text is optional, always can advance
+      case 8: return !!duration;
+      case 9: return !!triedBefore;
+      case 10: return !!currentResults;
+      case 11: return priority >= 1;
+      case 12: return !!herAgeMin && !!herAgeMax && herEthnicities.length > 0;
+      case 13: return fullName.trim().length >= 2 && email.includes("@") && phone.trim().length >= 7;
       default: return false;
     }
   };
@@ -286,12 +287,16 @@ export function ApplicationForm() {
               <Pill value="starting_over" selected={biggestChallenge} onSelect={setBiggestChallenge}><p className="font-medium">I&apos;m starting over and don&apos;t know where to begin</p></Pill>
               <Pill value="all_above" selected={biggestChallenge} onSelect={setBiggestChallenge}><p className="font-medium">All of the above</p></Pill>
             </div>
-            <textarea value={challengeNotes} onChange={(e) => setChallengeNotes(e.target.value)} placeholder="Tell us more — why do you feel you haven't had success? What's been missing? (optional)" rows={3}
-              className="w-full bg-surface-container-low border-2 border-outline-variant/20 rounded-2xl px-5 py-4 text-on-surface text-sm placeholder:text-outline focus:border-gold/40 outline-none transition-colors resize-none mt-4" />
           </Q>}
 
-          {/* 7: Duration */}
-          {step === 7 && <Q label="Duration" title="How long has this been an issue?">
+          {/* 7: Why no success */}
+          {step === 7 && <Q label="Go Deeper" title="Why do you feel you haven&apos;t had success yet? What&apos;s been missing?">
+            <textarea value={challengeNotes} onChange={(e) => setChallengeNotes(e.target.value)} placeholder="Be honest — this helps us understand your situation before the call." rows={4} autoFocus
+              className="w-full bg-surface-container-low border-2 border-outline-variant/20 rounded-2xl px-5 py-4 text-on-surface text-base placeholder:text-outline focus:border-gold/40 outline-none transition-colors resize-none" />
+          </Q>}
+
+          {/* 8: Duration */}
+          {step === 8 && <Q label="Duration" title="How long has this been an issue?">
             <div className="space-y-3">
               <Pill value="less_than_3" selected={duration} onSelect={setDuration}><p className="font-medium">Less than 3 months</p></Pill>
               <Pill value="3_6" selected={duration} onSelect={setDuration}><p className="font-medium">3–6 months</p></Pill>
@@ -301,8 +306,8 @@ export function ApplicationForm() {
             </div>
           </Q>}
 
-          {/* 8: Tried Before */}
-          {step === 8 && <Q label="Prior Attempts" title="What have you tried so far to improve your dating life?">
+          {/* 9: Tried Before */}
+          {step === 9 && <Q label="Prior Attempts" title="What have you tried so far to improve your dating life?">
             <div className="space-y-3">
               <Pill value="nothing" selected={triedBefore} onSelect={setTriedBefore}><p className="font-medium">Nothing yet — this is my first step</p></Pill>
               <Pill value="apps" selected={triedBefore} onSelect={setTriedBefore}><p className="font-medium">Dating apps (Hinge, Bumble, Tinder, etc.)</p></Pill>
@@ -312,8 +317,8 @@ export function ApplicationForm() {
             </div>
           </Q>}
 
-          {/* 9: Current Results */}
-          {step === 9 && <Q label="Current State" title="How many quality dates are you getting per month right now?">
+          {/* 10: Current Results */}
+          {step === 10 && <Q label="Current State" title="How many quality dates are you getting per month right now?">
             <div className="space-y-3">
               <Pill value="none" selected={currentResults} onSelect={setCurrentResults}><p className="font-medium">None — I&apos;m not dating at all</p></Pill>
               <Pill value="0_1" selected={currentResults} onSelect={setCurrentResults}><p className="font-medium">0–1 dates, but they&apos;re not great</p></Pill>
@@ -322,8 +327,8 @@ export function ApplicationForm() {
             </div>
           </Q>}
 
-          {/* 10: Priority */}
-          {step === 10 && <Q label="Priority" title="On a scale of 1–10, how much of a priority is handling this right now?">
+          {/* 11: Priority */}
+          {step === 11 && <Q label="Priority" title="On a scale of 1–10, how much of a priority is handling this right now?">
             <div className="grid grid-cols-5 gap-2">
               {[1,2,3,4,5,6,7,8,9,10].map((n) => (
                 <button key={n} type="button" onClick={() => setPriority(n)}
@@ -334,8 +339,8 @@ export function ApplicationForm() {
             <div className="flex justify-between text-xs text-on-surface-variant"><span>Not a priority</span><span>Top priority</span></div>
           </Q>}
 
-          {/* 11: Her Prefs */}
-          {step === 11 && <Q label="Your Type" title="Tell us about your ideal partner">
+          {/* 12: Her Prefs */}
+          {step === 12 && <Q label="Your Type" title="Tell us about your ideal partner">
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1"><label className="text-on-surface-variant text-xs">Her Age (Min)</label><input type="number" value={herAgeMin} onChange={(e) => setHerAgeMin(e.target.value)} placeholder="25" className={`${ic} text-base`} /></div>
@@ -352,8 +357,8 @@ export function ApplicationForm() {
             </div>
           </Q>}
 
-          {/* 12: Contact */}
-          {step === 12 && <Q label="Final Step" title="Where should we reach you?" sub="We'll text you to confirm your consultation time.">
+          {/* 13: Contact */}
+          {step === 13 && <Q label="Final Step" title="Where should we reach you?" sub="We'll text you to confirm your consultation time.">
             <div className="space-y-4">
               <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Full Name" autoFocus className={`${ic} text-base`} />
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" className={`${ic} text-base`} />
