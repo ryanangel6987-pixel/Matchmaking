@@ -341,7 +341,7 @@ export function ApplicationForm() {
           </Q>}
 
           {/* 12: Timeline */}
-          {step === 12 && <Q label="Timeline" title="How quickly do you want to get there?">
+          {step === 12 && <Q label="Timeline" title="What&apos;s your timeline to get there?">
             <div className="space-y-3">
               <Pill value="asap" selected={timeline} onSelect={setTimeline}>As soon as possible</Pill>
               <Pill value="1_month" selected={timeline} onSelect={setTimeline}>Within the next month</Pill>
