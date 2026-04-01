@@ -115,15 +115,15 @@ export function LandingPageMobile() {
             { icon: "visibility_off", title: "Blind Dates Only", text: "No photos. No names. Cold-called strangers filling seats." },
             { icon: "person_off", title: "Preferences Ignored", text: "$60M+ in settlements. Quotas over compatibility." },
             { icon: "block", title: "Pay When You Say No", text: "Declined matches still count. Non-refundable." },
-            { icon: "query_stats", title: "Zero Transparency", text: "No dashboard. No metrics. Your preferences filed away." },
+            { icon: "query_stats", title: "Zero Process Transparency", text: "No dashboard. No metrics. Your preferences filed away." },
             { icon: "auto_fix_off", title: "No Identity Rebuild", text: "Nobody fixes how you show up. You still attract below your level." },
           ].map((c) => (
-            <div key={c.title} className="bg-surface-container-low p-5 rounded-xl">
-              <div className="flex items-center gap-2.5 mb-2">
-                <span className="material-symbols-outlined text-gold text-xl" style={I}>{c.icon}</span>
+            <div key={c.title} className="bg-surface-container-low p-5 rounded-xl flex items-start gap-4">
+              <span className="material-symbols-outlined text-xl text-gold shrink-0 mt-1" style={I}>{c.icon}</span>
+              <div>
                 <h3 className="font-heading text-base font-semibold text-on-surface">{c.title}</h3>
+                <p className="text-on-surface-variant text-sm leading-relaxed mt-1">{c.text}</p>
               </div>
-              <p className="text-on-surface-variant text-sm leading-relaxed">{c.text}</p>
             </div>
           ))}
         </div>
