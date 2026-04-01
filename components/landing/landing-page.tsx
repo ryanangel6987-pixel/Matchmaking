@@ -456,7 +456,7 @@ export function LandingPage() {
               { q: "How quickly will I see dates?", a: "Most clients get their first date notification within 2\u20133 weeks. Your manager begins daily operations by Day 7." },
               { q: "What if matches aren\u2019t my type?", a: "Your preferences are calibrated through a 4-layer filter. During the first two weeks, your manager learns your exact taste. Quality improves weekly." },
               { q: "Can I cancel anytime?", a: "Yes. Month-to-month, no contract. If you cancel, you keep all rebuilt assets \u2014 profiles, photos, bios. Clean termination on all accounts." },
-              { q: "What cities do you serve?", a: "Major US cities including New York, LA, San Francisco, Chicago, and Miami. Expanding quarterly." },
+              { q: "What cities do you serve?", a: "Every major city in the United States." },
               { q: "How much does it cost vs alternatives?", a: "DIY apps cost $5\u201310K/year plus 10+ hrs/week. Matchmakers charge $10\u201325K/quarter. We deliver 4\u20138 dates/month with full transparency for $2K/month." },
               { q: "Is this just for men?", a: "Yes. This service is built exclusively for high-performing men." },
             ].map((item, i) => (

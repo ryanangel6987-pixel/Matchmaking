@@ -314,7 +314,7 @@ export function LandingPageMobile() {
             { q: "What if matches aren\u2019t my type?", a: "4-layer preference filter. Your manager learns your taste. Quality improves weekly." },
             { q: "How much does it cost vs alternatives?", a: "Traditional matchmakers charge $10,000\u2013$25,000 per quarter for roughly 6 blind dates \u2014 zero transparency into how they fill quotas, and many have been caught paying women to show up. DIY apps cost $5\u201310K/year in subscriptions plus 10+ hours/week of your time. We deliver 4\u20138 vetted dates per month with full transparency for a $5,000 setup plus $2,000/month. Cancel anytime and keep every asset we create \u2014 profiles, photos, bios. Most clients are getting quality dates within 2\u20133 weeks." },
             { q: "Can I cancel anytime?", a: "Yes. Month-to-month. No contract. If you cancel, you keep all rebuilt assets \u2014 profiles, photos, bios. Your identity upgrade is yours forever." },
-            { q: "What cities?", a: "NYC, LA, SF, Chicago, Miami. Expanding quarterly." },
+            { q: "What cities?", a: "Every major city in the United States." },
             { q: "Is this just for men?", a: "Yes. Built exclusively for high-performing men." },
           ].map((item, i) => (
             <div key={i} className="bg-surface-container-low rounded-xl overflow-hidden">

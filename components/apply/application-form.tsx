@@ -191,7 +191,7 @@ export function ApplicationForm() {
   // UI helpers
   const Pill = ({ value, selected, onSelect, children }: { value: string; selected: string; onSelect: (v: string) => void; children: React.ReactNode }) => (
     <button type="button" onClick={() => onSelect(value)}
-      className={`w-full text-left px-5 py-4 rounded-2xl transition-all duration-200 ${selected === value ? "bg-gold/15 border-2 border-gold text-on-surface shadow-lg shadow-gold/10" : "bg-surface-container-low border-2 border-outline-variant/30 text-on-surface-variant hover:bg-surface-container-high hover:border-outline-variant/50 hover:text-on-surface"}`}
+      className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 text-sm ${selected === value ? "bg-gold/15 border-2 border-gold text-on-surface shadow-lg shadow-gold/10" : "bg-surface-container-low border-2 border-outline-variant/30 text-on-surface-variant hover:bg-surface-container-high hover:border-outline-variant/50 hover:text-on-surface"}`}
     >{children}</button>
   );
 
@@ -224,19 +224,19 @@ export function ApplicationForm() {
       </div>
       <div className="fixed top-4 right-4 z-50"><span className="text-on-surface-variant text-xs">{step + 1} / {TOTAL_STEPS}</span></div>
 
-      <div className="flex-1 flex items-center justify-center px-6 py-20">
+      <div className="flex-1 flex items-center justify-center px-6 py-14">
         <div className="w-full max-w-md space-y-8">
 
           {/* 0: Where are you at */}
-          {step === 0 && <Q label="Getting Started" title="What best describes where you&apos;re at right now?">
-            <div className="space-y-3">
-              <Pill value="divorce" selected={lifeWindow} onSelect={setLifeWindow}><p className="font-medium">Just came out of a relationship — want to get back in the game</p></Pill>
-              <Pill value="new_city" selected={lifeWindow} onSelect={setLifeWindow}><p className="font-medium">Moved to a new city in the last 12 months</p></Pill>
-              <Pill value="milestone" selected={lifeWindow} onSelect={setLifeWindow}><p className="font-medium">Hitting a milestone (turning 35, 40, 45, 50)</p></Pill>
-              <Pill value="career" selected={lifeWindow} onSelect={setLifeWindow}><p className="font-medium">Career change or big promotion</p></Pill>
-              <Pill value="frustrated" selected={lifeWindow} onSelect={setLifeWindow}><p className="font-medium">Tired of poor quality dates below my level</p></Pill>
-              <Pill value="handled" selected={lifeWindow} onSelect={setLifeWindow}><p className="font-medium">Just want this area of my life handled for me</p></Pill>
-              <Pill value="curious" selected={lifeWindow} onSelect={setLifeWindow}><p className="font-medium">Just curious what this is</p></Pill>
+          {step === 0 && <Q label="Getting Started" title="What best describes you right now?">
+            <div className="space-y-2">
+              <Pill value="divorce" selected={lifeWindow} onSelect={setLifeWindow}>Recent split — getting back in the game</Pill>
+              <Pill value="new_city" selected={lifeWindow} onSelect={setLifeWindow}>Moved to a new city recently</Pill>
+              <Pill value="milestone" selected={lifeWindow} onSelect={setLifeWindow}>Hitting a milestone birthday</Pill>
+              <Pill value="career" selected={lifeWindow} onSelect={setLifeWindow}>Career change or big promotion</Pill>
+              <Pill value="frustrated" selected={lifeWindow} onSelect={setLifeWindow}>Tired of poor quality dates</Pill>
+              <Pill value="handled" selected={lifeWindow} onSelect={setLifeWindow}>Just want this handled for me</Pill>
+              <Pill value="curious" selected={lifeWindow} onSelect={setLifeWindow}>Just curious</Pill>
             </div>
           </Q>}
 
