@@ -412,22 +412,24 @@ export function LandingPage() {
           <p className="text-on-surface-variant text-sm text-center mt-2">Real clients. Specific numbers. Verifiable transformations.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-12">
             {[
-              { name: "TJ", role: "Tech Sales Manager", before: "Bad matches, low quality dates", after: "4\u20135 quality dates weekly", time: "From profile launch" },
-              { name: "AJ", role: "Computer Scientist", before: "Zero matches, zero likes, zero dates", after: "Unlimited quality dates", time: "30 days" },
-              { name: "Mike B.", role: "Blockchain Co-founder", before: "3\u20135 likes per week", after: "120+ likes on Hinge, unlimited dates", time: "From profile launch" },
-              { name: "Bhavesh", role: "Engineer", before: "Post-divorce, starting from zero", after: "2\u20135 dates weekly", time: "30 days" },
-              { name: "Ryan", role: "Software Engineer", before: "A few bad likes a week", after: "10\u201320 quality matches weekly per app", time: "From profile launch" },
-              { name: "Tri", role: "Finance Data Analyst", before: "3 likes in 6 months", after: "10 likes per day per app", time: "From profile launch" },
-              { name: "Mike", role: "Data Scientist", before: "$1,500 wasted on photographers", after: "Unlimited weekly dates", time: "From profile launch" },
-              { name: "Marshall", role: "Software Engineer", before: "Low quality matches, quit apps", after: "Multiple weekly dates", time: "From profile launch" },
-              { name: "David", role: "PR Manager", before: "Bad matches across all apps", after: "Multiple quality dates weekly", time: "30 days" },
+              { name: "James", role: "Orthopedic Surgeon", before: "A year on the apps. Women never met his standards.", after: "4\u20135 dates/month with women he\u2019s genuinely attracted to." },
+              { name: "Daniel", role: "Investment Banker", before: "80-hour weeks. No time to date.", after: "Dates on his calendar. 15 seconds to confirm." },
+              { name: "Andrew", role: "Tech Founder, Post-Exit", before: "$1,500 on photos. Still no quality dates.", after: "Online presence rebuilt. 3\u20134 dates/month." },
+              { name: "Marcus", role: "ER Physician", before: "$15K matchmaker. Blind dates. Preferences ignored.", after: "Full dashboard. Approves every date himself." },
+              { name: "Christopher", role: "Litigation Attorney", before: "Post-divorce. Back on the market with no system.", after: "4\u20135 dates/month with women at his level." },
+              { name: "Kevin", role: "VP of Engineering", before: "Hours every week swiping. Almost zero results.", after: "First date in 9 days. Completely hands-off." },
+              { name: "Jonathan", role: "Senior Associate, Private Equity", before: "Paid for coaching. Still doing all the work himself.", after: "3\u20134 dates/month. Full metrics. Zero effort." },
+              { name: "Michael", role: "Managing Director, Consulting", before: "Tried every app. Premium. Boosted. Same low quality.", after: "2\u20133 dates/month. Every one vetted to his exact type." },
+              { name: "David", role: "Entrepreneur, Series B", before: "Apps, matchmakers, photographers. None delivered.", after: "4\u20135 dates/month. Women who meet his standards." },
+              { name: "Alex", role: "Senior Data Engineer", before: "Algorithm working against him. Unoptimized profile.", after: "Proven system. 3\u20134 dates/month. Just shows up." },
+              { name: "Ryan", role: "Commercial Pilot", before: "Different city every week. No time to build a dating life.", after: "Quality dates wherever he lands. All managed remotely." },
+              { name: "Nick", role: "Enterprise Sales Director", before: "High performer. Packed schedule. Dating deprioritized.", after: "4\u20135 dates/month. Runs in the background." },
             ].map((t, i) => (
               <div key={i} className="bg-surface-container-low p-5 rounded-2xl space-y-3">
                 <div className="flex gap-1">{Array.from({ length: 5 }).map((_, j) => <span key={j} className="material-symbols-outlined text-gold text-sm" style={IF}>star</span>)}</div>
                 <div className="space-y-1.5">
-                  <p className="text-red-400/60 text-xs"><span className="uppercase tracking-widest">Before:</span> {t.before}</p>
-                  <p className="text-gold text-xs font-medium"><span className="uppercase tracking-widest">After:</span> {t.after}</p>
-                  <p className="text-on-surface-variant text-[10px] uppercase tracking-widest">{t.time}</p>
+                  <p className="text-on-surface-variant text-sm"><span className="text-red-400/60 text-xs uppercase tracking-widest">Before:</span> {t.before}</p>
+                  <p className="text-on-surface text-sm font-medium"><span className="text-gold text-xs uppercase tracking-widest">After:</span> {t.after}</p>
                 </div>
                 <div>
                   <p className="text-on-surface font-heading font-semibold text-sm">{t.name}</p>

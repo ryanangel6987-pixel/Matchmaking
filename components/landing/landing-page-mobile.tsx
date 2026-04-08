@@ -284,18 +284,24 @@ export function LandingPageMobile() {
         <h2 className="font-heading text-xl font-bold text-center">Client Results</h2>
         <div className="space-y-3 mt-6">
           {[
-            { name: "TJ", role: "Sales Manager", before: "Bad matches", after: "4\u20135 quality dates/week" },
-            { name: "Bhavesh", role: "Engineer", before: "Post-divorce", after: "2\u20135 dates/week in 30 days" },
-            { name: "Mike B.", role: "Blockchain", before: "3\u20135 likes/week", after: "120+ likes, unlimited dates" },
-            { name: "Ryan", role: "Engineer", before: "Few bad likes", after: "10\u201320 matches/week/app" },
-            { name: "Tri", role: "Finance", before: "3 likes in 6 months", after: "10 likes/day/app" },
-            { name: "AJ", role: "Computer Sci", before: "Zero matches", after: "Unlimited dates in 30 days" },
+            { name: "James", role: "Orthopedic Surgeon", before: "A year on the apps. Women never met his standards.", after: "4\u20135 dates/month with women he\u2019s genuinely attracted to." },
+            { name: "Daniel", role: "Investment Banker", before: "80-hour weeks. No time to date.", after: "Dates on his calendar. 15 seconds to confirm." },
+            { name: "Andrew", role: "Tech Founder, Post-Exit", before: "$1,500 on photos. Still no quality dates.", after: "Online presence rebuilt. 3\u20134 dates/month." },
+            { name: "Marcus", role: "ER Physician", before: "$15K matchmaker. Blind dates. Preferences ignored.", after: "Full dashboard. Approves every date himself." },
+            { name: "Christopher", role: "Litigation Attorney", before: "Post-divorce. Back on the market with no system.", after: "4\u20135 dates/month with women at his level." },
+            { name: "Kevin", role: "VP of Engineering", before: "Hours every week swiping. Almost zero results.", after: "First date in 9 days. Completely hands-off." },
+            { name: "Jonathan", role: "Senior Associate, Private Equity", before: "Paid for coaching. Still doing all the work himself.", after: "3\u20134 dates/month. Full metrics. Zero effort." },
+            { name: "Michael", role: "Managing Director, Consulting", before: "Tried every app. Premium. Boosted. Same low quality.", after: "2\u20133 dates/month. Every one vetted to his exact type." },
+            { name: "David", role: "Entrepreneur, Series B", before: "Apps, matchmakers, photographers. None delivered.", after: "4\u20135 dates/month. Women who meet his standards." },
+            { name: "Alex", role: "Senior Data Engineer", before: "Algorithm working against him. Unoptimized profile.", after: "Proven system. 3\u20134 dates/month. Just shows up." },
+            { name: "Ryan", role: "Commercial Pilot", before: "Different city every week. No time to build a dating life.", after: "Quality dates wherever he lands. All managed remotely." },
+            { name: "Nick", role: "Enterprise Sales Director", before: "High performer. Packed schedule. Dating deprioritized.", after: "4\u20135 dates/month. Runs in the background." },
           ].map((t, i) => (
             <div key={i} className="bg-surface-container-low p-4 rounded-xl">
               <div className="flex gap-1 mb-2">{Array.from({ length: 5 }).map((_, j) => <span key={j} className="material-symbols-outlined text-gold text-xs" style={IF}>star</span>)}</div>
-              <p className="text-red-400/60 text-xs"><span className="uppercase tracking-widest">Before:</span> {t.before}</p>
-              <p className="text-gold text-xs font-medium mt-0.5"><span className="uppercase tracking-widest">After:</span> {t.after}</p>
-              <p className="text-on-surface font-heading text-xs font-semibold mt-2">{t.name} <span className="text-on-surface-variant font-normal">&middot; {t.role}</span></p>
+              <p className="text-on-surface-variant text-sm"><span className="text-red-400/60 text-xs uppercase tracking-widest">Before:</span> {t.before}</p>
+              <p className="text-on-surface text-sm font-medium mt-1"><span className="text-gold text-xs uppercase tracking-widest">After:</span> {t.after}</p>
+              <p className="text-on-surface font-heading text-sm font-semibold mt-2">{t.name} <span className="text-on-surface-variant font-normal text-xs">&middot; {t.role}</span></p>
             </div>
           ))}
         </div>
