@@ -48,7 +48,7 @@ export default function BookingConfirmedPage() {
           <div className="border-t border-outline-variant/10 pt-5">
             <p className="text-gold text-xs uppercase tracking-widest font-bold mb-3">Come Prepared</p>
             <p className="text-on-surface-variant text-sm leading-relaxed mb-3">
-              The more your matchmaker knows going in, the faster you get results. Have these ready:
+              The more your concierge knows going in, the faster you get results. Have these ready:
             </p>
             <ul className="space-y-2.5">
               {[
