@@ -67,34 +67,6 @@ export default function BookingConfirmedPage() {
           </div>
         </div>
 
-        {/* ═══ 3. WHAT HAPPENS NEXT (WITH DECISION STEP) ═══ */}
-        <div className="space-y-4">
-          <h2 className="font-heading text-xl font-bold text-on-surface text-center">What Happens Next</h2>
-          <div className="space-y-3">
-            {[
-              { icon: "call", title: "Your Consultation", text: "30-minute deep dive into your type, preferences, and goals.", time: "Your booked time" },
-              { icon: "handshake", title: "If We\u2019re a Good Fit", text: "We agree on next steps together. No pressure, no hard sell \u2014 just a mutual decision.", time: "End of call" },
-              { icon: "photo_library", title: "Photo & Content", text: "Send your best photos. We select, enhance, and optimize.", time: "Day 1\u20132" },
-              { icon: "auto_fix_high", title: "Identity Rebuild", text: "Profiles, bios, prompts, and photo order reconstructed across every platform.", time: "Day 2\u20137" },
-              { icon: "person", title: "Manager Assigned", text: "Your dedicated manager is briefed on your profile and type. Apps go live.", time: "Day 7" },
-              { icon: "tune", title: "Calibration Phase", text: "Daily swiping and messaging using proven playbooks. Manager learns your taste.", time: "Day 7\u201314" },
-              { icon: "notifications_active", title: "First Date Notification", text: "Her name. One detail. The day. Her number. A pre-written text.", time: "Week 2\u20133", highlight: true },
-            ].map((step) => (
-              <div key={step.title} className={`flex gap-4 p-4 rounded-2xl ${step.highlight ? "bg-gold/10 border border-gold/20" : "bg-surface-container-low"}`}>
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${step.highlight ? "bg-gold text-on-gold" : "bg-surface-container-high"}`}>
-                  <span className={`material-symbols-outlined text-lg ${step.highlight ? "" : "text-gold"}`} style={{ fontVariationSettings: step.highlight ? "'FILL' 1, 'wght' 400" : "'FILL' 0, 'wght' 300" }}>{step.icon}</span>
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className={`font-heading text-sm font-semibold ${step.highlight ? "text-gold" : "text-on-surface"}`}>{step.title}</h3>
-                    <span className="text-outline text-[10px] uppercase tracking-widest">{step.time}</span>
-                  </div>
-                  <p className="text-on-surface-variant text-xs mt-0.5 leading-relaxed">{step.text}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
 
         {/* Footer */}
         <p className="text-center text-on-surface-variant/40 text-xs">
