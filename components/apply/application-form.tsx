@@ -140,11 +140,18 @@ export function ApplicationForm() {
     };
 
     try {
+      console.log("[Apply] Submitting to API...", payload.email);
       const res = await fetch("/api/applications", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+      const responseData = await res.json().catch(() => ({}));
+      console.log("[Apply] API response:", res.status, responseData);
+
       if (!res.ok) {
-        const d = await res.json().catch(() => ({}));
-        console.error("[Apply] API error:", d);
-        if (!d.error?.includes("duplicate")) { setError(d.error || `Failed to submit (${res.status}).`); setSubmitting(false); return; }
+        console.error("[Apply] API error:", responseData);
+        if (!responseData.error?.includes("duplicate")) {
+          setError(responseData.error || `Failed to submit (${res.status}).`);
+          setSubmitting(false);
+          return;
+        }
       }
     } catch (err) {
       console.error("[Apply] Network error:", err);
@@ -153,6 +160,7 @@ export function ApplicationForm() {
       return;
     }
 
+    console.log("[Apply] Success — redirecting to /apply/book");
     localStorage.setItem("pdc_application", JSON.stringify(payload));
     sessionStorage.removeItem("pdc_apply");
     router.push("/apply/book");
