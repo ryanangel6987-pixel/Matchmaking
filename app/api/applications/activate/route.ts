@@ -59,10 +59,12 @@ export async function POST(request: Request) {
 
   if (!profile) return NextResponse.json({ error: "Failed to create profile" }, { status: 500 });
 
-  // Create client record
+  // Create client record — starts at onboarding_complete since they've already applied + booked
   const { data: client } = await supabaseAdmin.from("clients").insert({
     profile_id: profile.id,
     onboarding_status: "not_started",
+    admin_pipeline_stage: "onboarding_complete",
+    admin_stage_changed_at: new Date().toISOString(),
   }).select("id").single();
 
   if (!client) return NextResponse.json({ error: "Failed to create client" }, { status: 500 });

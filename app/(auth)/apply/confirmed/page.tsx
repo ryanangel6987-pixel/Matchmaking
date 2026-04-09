@@ -1,8 +1,26 @@
 "use client";
 
+import { useEffect } from "react";
 import Image from "next/image";
 
 export default function BookingConfirmedPage() {
+  // Fire pipeline stage update to "call_booked"
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("pdc_application");
+      if (stored) {
+        const { email } = JSON.parse(stored);
+        if (email) {
+          fetch("/api/applications/stage", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, stage: "call_booked" }),
+          }).catch(() => {});
+        }
+      }
+    } catch {}
+  }, []);
+
   return (
     <div className="min-h-screen bg-surface">
       <div className="max-w-2xl mx-auto px-6 py-12 space-y-10">

@@ -28,6 +28,8 @@ interface Application {
   tried_before: string | null;
   current_results: string | null;
   priority_level: number | null;
+  goal: string | null;
+  timeline: string | null;
   ideal_partner: string | null;
   her_age_min: number | null;
   her_age_max: number | null;
@@ -82,6 +84,20 @@ const RESULTS_LABELS: Record<string, string> = {
   "0_1": "0-1 low quality dates",
   "2_3": "2-3, not quality enough",
   "4_plus": "4+ but wants better",
+};
+
+const GOAL_LABELS: Record<string, string> = {
+  consistent_quality: "Consistent quality dates every week",
+  relationship: "Find a serious relationship",
+  options: "Multiple quality options at all times",
+  handled: "Dating life handled and off my plate",
+};
+
+const TIMELINE_LABELS: Record<string, string> = {
+  asap: "As soon as possible",
+  "1_month": "Within the next month",
+  "3_months": "Within 3 months",
+  no_rush: "No rush — just want it done right",
 };
 
 export function ApplicationsCRM({ applications, adminProfileId }: { applications: Application[]; adminProfileId: string }) {
@@ -230,6 +246,7 @@ export function ApplicationsCRM({ applications, adminProfileId }: { applications
                         <Field label="Phone" value={app.phone} />
                         <Field label="Age" value={app.age} />
                         <Field label="Height" value={app.height} />
+                        <Field label="Weight" value={app.weight} />
                         <Field label="Ethnicity" value={app.own_ethnicity} />
                         <Field label="Body Type" value={app.own_body_type} />
                         <Field label="Lead Score" value={app.lead_score} />
@@ -253,6 +270,14 @@ export function ApplicationsCRM({ applications, adminProfileId }: { applications
                         <div className="bg-surface-container p-3 rounded-xl">
                           <p className="text-gold text-[10px] uppercase tracking-widest mb-1">Current Results</p>
                           <p className="text-on-surface text-sm">{RESULTS_LABELS[app.current_results ?? ""] ?? app.current_results ?? "—"}</p>
+                        </div>
+                        <div className="bg-surface-container p-3 rounded-xl">
+                          <p className="text-gold text-[10px] uppercase tracking-widest mb-1">6-Month Goal</p>
+                          <p className="text-on-surface text-sm">{GOAL_LABELS[app.goal ?? ""] ?? app.goal ?? "—"}</p>
+                        </div>
+                        <div className="bg-surface-container p-3 rounded-xl">
+                          <p className="text-gold text-[10px] uppercase tracking-widest mb-1">Timeline</p>
+                          <p className="text-on-surface text-sm">{TIMELINE_LABELS[app.timeline ?? ""] ?? app.timeline ?? "—"}</p>
                         </div>
                       </div>
 

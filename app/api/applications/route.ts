@@ -34,6 +34,8 @@ export async function POST(request: Request) {
     tried_before: body.tried_before,
     current_results: body.current_results,
     priority_level: body.priority_level,
+    goal: body.goal,
+    timeline: body.timeline,
     ideal_partner: body.ideal_partner,
     her_age_min: body.her_age_min,
     her_age_max: body.her_age_max,
@@ -42,6 +44,7 @@ export async function POST(request: Request) {
     lead_score: body.lead_score,
     lead_tier: body.lead_tier,
     status: body.status ?? "pending",
+    pipeline_stage: "new_signup",
   });
 
   if (error) {
@@ -81,6 +84,8 @@ export async function POST(request: Request) {
         tried_before: body.tried_before,
         current_results: body.current_results,
         priority_level: body.priority_level,
+        goal: body.goal,
+        timeline: body.timeline,
         ideal_partner: body.ideal_partner,
         her_age_min: body.her_age_min,
         her_age_max: body.her_age_max,

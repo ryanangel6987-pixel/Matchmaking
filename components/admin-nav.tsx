@@ -17,6 +17,11 @@ const tabs = [
     icon: "assignment",
   },
   {
+    label: "Pipeline",
+    href: "/admin/pipeline",
+    icon: "view_kanban",
+  },
+  {
     label: "Clients",
     href: "/admin/clients",
     icon: "people",
