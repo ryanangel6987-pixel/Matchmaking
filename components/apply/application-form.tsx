@@ -139,28 +139,63 @@ export function ApplicationForm() {
       lead_score: score, lead_tier: tier, submitted_at: new Date().toISOString(),
     };
 
+    // ═══ SUBMISSION WITH FULL LOGGING ═══
+    let apiSuccess = false;
+    let apiError = "";
+    let apiStatus = 0;
+
     try {
-      console.log("[Apply] Submitting to API...", payload.email);
-      const res = await fetch("/api/applications", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-      const responseData = await res.json().catch(() => ({}));
-      console.log("[Apply] API response:", res.status, responseData);
+      console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+      console.log("🚀 [APPLY] SUBMITTING APPLICATION");
+      console.log("📧 Email:", payload.email);
+      console.log("📍 City:", payload.city);
+      console.log("💼 Profession:", payload.profession);
+      console.log("🎯 Lead Score:", payload.lead_score, "| Tier:", payload.lead_tier);
+      console.log("📦 Full Payload:", JSON.stringify(payload, null, 2));
+      console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+      const res = await fetch("/api/applications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      apiStatus = res.status;
+      const responseText = await res.text();
+      console.log("📡 [APPLY] Response Status:", res.status);
+      console.log("📡 [APPLY] Response Body:", responseText);
+
+      let responseData: any = {};
+      try { responseData = JSON.parse(responseText); } catch { responseData = { raw: responseText }; }
 
       if (!res.ok) {
-        console.error("[Apply] API error:", responseData);
-        if (!responseData.error?.includes("duplicate")) {
-          setError(responseData.error || `Failed to submit (${res.status}).`);
+        apiError = responseData.error || responseData.raw || `HTTP ${res.status}`;
+        console.error("❌ [APPLY] API ERROR:", apiError);
+        console.error("❌ [APPLY] Full Response:", responseData);
+
+        if (!apiError.includes("duplicate")) {
+          setError(`Submission failed: ${apiError}`);
           setSubmitting(false);
           return;
+        } else {
+          console.log("⚠️ [APPLY] Duplicate email — continuing to booking page");
         }
+      } else {
+        apiSuccess = true;
+        console.log("✅ [APPLY] INSERT SUCCESSFUL");
       }
-    } catch (err) {
-      console.error("[Apply] Network error:", err);
-      setError("Network error. Please try again.");
+    } catch (err: any) {
+      console.error("🔥 [APPLY] NETWORK ERROR:", err.message || err);
+      console.error("🔥 [APPLY] Error object:", err);
+      setError(`Network error: ${err.message || "Failed to connect to server"}`);
       setSubmitting(false);
       return;
     }
 
-    console.log("[Apply] Success — redirecting to /apply/book");
+    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+    console.log(apiSuccess ? "✅ [APPLY] REDIRECTING TO /apply/book" : "⚠️ [APPLY] Redirecting (duplicate)");
+    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
     localStorage.setItem("pdc_application", JSON.stringify(payload));
     sessionStorage.removeItem("pdc_apply");
     router.push("/apply/book");

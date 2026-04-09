@@ -5,11 +5,22 @@ export const dynamic = "force-dynamic";
 
 // POST: Submit new application (public, no auth required)
 export async function POST(request: Request) {
+  console.log("━━━ [API /applications] POST received ━━━");
+
   const body = await request.json();
+  console.log("[API] Email:", body.email);
+  console.log("[API] SUPABASE_URL:", process.env.NEXT_PUBLIC_SUPABASE_URL ? "SET" : "❌ MISSING");
+  console.log("[API] SERVICE_ROLE_KEY:", process.env.SUPABASE_SERVICE_ROLE_KEY ? "SET (first 20 chars: " + process.env.SUPABASE_SERVICE_ROLE_KEY.substring(0, 20) + "...)" : "❌ MISSING");
+  console.log("[API] ANON_KEY:", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? "SET (first 20 chars: " + process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.substring(0, 20) + "...)" : "❌ MISSING");
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  console.log("[API] Using key type:", process.env.SUPABASE_SERVICE_ROLE_KEY ? "SERVICE_ROLE" : "ANON");
+  console.log("[API] URL:", supabaseUrl);
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl,
+    supabaseKey,
     { cookies: { getAll: () => [], setAll: () => {} } }
   );
 
