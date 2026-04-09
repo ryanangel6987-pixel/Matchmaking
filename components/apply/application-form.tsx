@@ -141,8 +141,17 @@ export function ApplicationForm() {
 
     try {
       const res = await fetch("/api/applications", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-      if (!res.ok) { const d = await res.json(); if (!d.error?.includes("duplicate")) { setError(d.error || "Failed to submit."); setSubmitting(false); return; } }
-    } catch {}
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        console.error("[Apply] API error:", d);
+        if (!d.error?.includes("duplicate")) { setError(d.error || `Failed to submit (${res.status}).`); setSubmitting(false); return; }
+      }
+    } catch (err) {
+      console.error("[Apply] Network error:", err);
+      setError("Network error. Please try again.");
+      setSubmitting(false);
+      return;
+    }
 
     localStorage.setItem("pdc_application", JSON.stringify(payload));
     sessionStorage.removeItem("pdc_apply");

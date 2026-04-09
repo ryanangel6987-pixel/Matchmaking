@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     { cookies: { getAll: () => [], setAll: () => {} } }
   );
 
-  const { error } = await supabase.from("applications").insert({
+  const { error, data } = await supabase.from("applications").insert({
     full_name: body.full_name,
     email: body.email,
     phone: body.phone,
@@ -45,8 +45,11 @@ export async function POST(request: Request) {
   });
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 400 });
+    console.error("[Applications API] Insert error:", error);
+    return NextResponse.json({ error: error.message, code: error.code, details: error.details, hint: error.hint }, { status: 400 });
   }
+
+  console.log("[Applications API] Insert success:", body.email);
 
   // Fire webhook to GoHighLevel (non-blocking)
   const ghlWebhookUrl = process.env.GHL_WEBHOOK_URL;
