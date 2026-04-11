@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Noto_Serif, Inter } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const notoSerif = Noto_Serif({
@@ -58,6 +59,7 @@ export default function RootLayout({
         </a>
         <TooltipProvider>{children}</TooltipProvider>
         <Toaster theme="dark" position="top-right" richColors />
+        <Analytics />
       </body>
     </html>
   );
