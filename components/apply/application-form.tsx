@@ -54,7 +54,7 @@ const TOTAL_STEPS = 15;
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 
-export function ApplicationForm() {
+export function ApplicationForm({ redirectTo = "/apply/book" }: { redirectTo?: string }) {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
@@ -153,7 +153,7 @@ export function ApplicationForm() {
 
     localStorage.setItem("pdc_application", JSON.stringify(payload));
     sessionStorage.removeItem("pdc_apply");
-    router.push("/apply/book");
+    router.push(redirectTo);
   };
 
   const logDisqualification = async (reason: string) => {
