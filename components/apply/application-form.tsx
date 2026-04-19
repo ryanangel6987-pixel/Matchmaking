@@ -54,11 +54,12 @@ const TOTAL_STEPS = 15;
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 
-export function ApplicationForm({ redirectTo = "/apply/book" }: { redirectTo?: string }) {
+export function ApplicationForm({ redirectTo = "/apply/book", pricingGate = false }: { redirectTo?: string; pricingGate?: boolean }) {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [showPricing, setShowPricing] = useState(false);
 
   // State
   const [intent, setIntent] = useState("");
@@ -181,7 +182,10 @@ export function ApplicationForm({ redirectTo = "/apply/book" }: { redirectTo?: s
   };
 
   const next = () => {
-    if (step === 3 && income === "no") { logDisqualification("income_under_100k"); router.push("/?dq=income"); return; }
+    if (step === 3 && income === "no") {
+      if (pricingGate) { setShowPricing(true); return; }
+      logDisqualification("income_under_100k"); router.push("/?dq=income"); return;
+    }
     if (step === 4 && shape === "no") { logDisqualification("not_in_shape"); router.push("/?dq=shape"); return; }
     if (step === TOTAL_STEPS - 1) { handleSubmit(); return; }
     const nextStep = step + 1;
@@ -234,6 +238,55 @@ export function ApplicationForm({ redirectTo = "/apply/book" }: { redirectTo?: s
           : <a href="/" className="flex items-center gap-1 text-on-surface-variant text-sm hover:text-gold transition-colors"><span className="material-symbols-outlined text-lg">arrow_back</span>Home</a>}
       </div>
       <div className="fixed top-4 right-4 z-50"><span className="text-on-surface-variant text-xs">{step + 1} / {TOTAL_STEPS}</span></div>
+
+      {/* Pricing confirmation overlay */}
+      {showPricing && (
+        <div className="fixed inset-0 z-[100] bg-surface flex items-center justify-center px-6">
+          <div className="w-full max-w-md space-y-8 text-center">
+            <div>
+              <p className="text-gold text-xs uppercase tracking-widest mb-3">Full Transparency</p>
+              <h2 className="font-heading text-2xl md:text-3xl font-bold text-on-surface">
+                Our Service Investment
+              </h2>
+              <p className="text-on-surface-variant text-sm mt-3 leading-relaxed">
+                We want to make sure this is the right fit for you before we move forward.
+              </p>
+            </div>
+
+            <div className="bg-surface-container-low rounded-2xl p-6 space-y-4">
+              <div className="flex items-baseline justify-center gap-1">
+                <span className="font-heading text-4xl font-bold text-gold">$5,000</span>
+                <span className="text-on-surface-variant text-sm">one-time setup</span>
+              </div>
+              <div className="border-t border-outline-variant/10 pt-4 flex items-baseline justify-center gap-1">
+                <span className="font-heading text-2xl font-bold text-on-surface">$2,000</span>
+                <span className="text-on-surface-variant text-sm">/ month</span>
+              </div>
+              <p className="text-outline text-xs">Cancel anytime. No long-term contracts.</p>
+            </div>
+
+            <div className="space-y-3">
+              <button
+                onClick={() => {
+                  setShowPricing(false);
+                  const nextStep = step + 1;
+                  saveSession(nextStep);
+                  setStep(nextStep);
+                }}
+                className="w-full py-4 rounded-full font-semibold text-base gold-gradient text-on-gold hover:opacity-90 shadow-lg transition-all duration-300"
+              >
+                I&apos;m Ready — Continue
+              </button>
+              <button
+                onClick={() => router.push("/")}
+                className="w-full py-3 rounded-full text-sm text-on-surface-variant hover:text-on-surface transition-colors"
+              >
+                Not the right time
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="flex-1 flex items-center justify-center px-6 py-14">
         <div className="w-full max-w-md space-y-8">
