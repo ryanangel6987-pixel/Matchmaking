@@ -278,7 +278,10 @@ export function ApplicationForm({ redirectTo = "/apply/book", pricingGate = fals
                 I&apos;m Ready — Continue
               </button>
               <button
-                onClick={() => router.push("/")}
+                onClick={() => {
+                  logDisqualification("declined_pricing");
+                  router.push("/");
+                }}
                 className="w-full py-3 rounded-full text-sm text-on-surface-variant hover:text-on-surface transition-colors"
               >
                 Not the right time
