@@ -100,6 +100,15 @@ const TIMELINE_LABELS: Record<string, string> = {
   no_rush: "No rush — just want it done right",
 };
 
+const CHALLENGE_LABELS: Record<string, string> = {
+  no_time: "No time to manage dating apps",
+  low_quality: "Quality of matches doesn't match standards",
+  bad_profile: "Profile doesn't represent who they are",
+  no_dates: "Not converting matches into dates",
+  starting_over: "Starting over, doesn't know where to begin",
+  all_above: "All of the above",
+};
+
 export function ApplicationsCRM({ applications, adminProfileId }: { applications: Application[]; adminProfileId: string }) {
   const router = useRouter();
   const [filter, setFilter] = useState<string>("all");
@@ -253,11 +262,31 @@ export function ApplicationsCRM({ applications, adminProfileId }: { applications
                         <Field label="Priority" value={app.priority_level ? `${app.priority_level}/10` : null} />
                       </div>
 
+                      {/* Gates */}
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="bg-surface-container p-3 rounded-xl">
+                          <p className="text-gold text-[10px] uppercase tracking-widest mb-1">Income Qualified</p>
+                          <p className={`text-sm font-medium ${app.income_qualified === "yes" ? "text-green-400" : "text-red-400"}`}>
+                            {app.income_qualified === "yes" ? "Yes — $100K+" : app.income_qualified === "no" ? "No" : "—"}
+                          </p>
+                        </div>
+                        <div className="bg-surface-container p-3 rounded-xl">
+                          <p className="text-gold text-[10px] uppercase tracking-widest mb-1">Shape Qualified</p>
+                          <p className={`text-sm font-medium ${app.shape_qualified === "yes" ? "text-green-400" : app.shape_qualified === "working" ? "text-gold" : "text-red-400"}`}>
+                            {app.shape_qualified === "yes" ? "Yes — in shape" : app.shape_qualified === "working" ? "Working on it" : app.shape_qualified === "no" ? "No" : "—"}
+                          </p>
+                        </div>
+                      </div>
+
                       {/* Qualification answers */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div className="bg-surface-container p-3 rounded-xl">
                           <p className="text-gold text-[10px] uppercase tracking-widest mb-1">Life Window</p>
                           <p className="text-on-surface text-sm">{LIFE_WINDOW_LABELS[app.life_window ?? ""] ?? app.life_window ?? "—"}</p>
+                        </div>
+                        <div className="bg-surface-container p-3 rounded-xl">
+                          <p className="text-gold text-[10px] uppercase tracking-widest mb-1">Biggest Challenge</p>
+                          <p className="text-on-surface text-sm">{CHALLENGE_LABELS[app.biggest_challenge ?? ""] ?? app.biggest_challenge ?? "—"}</p>
                         </div>
                         <div className="bg-surface-container p-3 rounded-xl">
                           <p className="text-gold text-[10px] uppercase tracking-widest mb-1">Duration Unsatisfied</p>
@@ -280,6 +309,14 @@ export function ApplicationsCRM({ applications, adminProfileId }: { applications
                           <p className="text-on-surface text-sm">{TIMELINE_LABELS[app.timeline ?? ""] ?? app.timeline ?? "—"}</p>
                         </div>
                       </div>
+
+                      {/* Why no success — free text */}
+                      {app.challenge_notes && (
+                        <div className="bg-surface-container p-3 rounded-xl">
+                          <p className="text-gold text-[10px] uppercase tracking-widest mb-1">Why They Haven&apos;t Had Success</p>
+                          <p className="text-on-surface text-sm leading-relaxed">{app.challenge_notes}</p>
+                        </div>
+                      )}
 
                       {/* Partner preferences */}
                       <div className="bg-surface-container p-3 rounded-xl space-y-2">
